@@ -41,6 +41,7 @@ Gelpy connects general-services professionals with people who need help, with sa
 - Each PR references exactly one Work Item issue.
 - Feature PRs write to `## [Unreleased]` in `CHANGELOG.md`; only release PRs bump the version.
 - Run `gelpy-verify-work-item` and attach its evidence before marking `Done`.
+- Codex review starts on its own when a PR opens. Do not request it. Follow `gelpy-codex-review`: read its response and resolve every comment before merge.
 - Use Conventional Commits. Include `Implements Work Item NNN-MMM`, `Refs: Gelpy/gelpy#<issue>`, and `Spec: gelpy-architecture/specs/NNN-slug`.
 - End completed work with a pushed branch and draft PR.
 

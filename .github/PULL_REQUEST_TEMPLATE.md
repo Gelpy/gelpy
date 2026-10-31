@@ -19,6 +19,7 @@ Explain the motivation or issue being addressed.
 - [ ] Branch fetched and rebased/fast-forwarded against the target branch
 - [ ] `gelpy-release-version` loaded and release decision recorded
 - [ ] `gelpy-verify-work-item` evidence attached
+- [ ] `gelpy-codex-review`: Codex answered and every comment is handled
 - [ ] `gelpy-apply-brand` checklist attached, if a visual surface changed
 - [ ] Work Item was `Ready` before execution and is `Done` locally before PR
 
