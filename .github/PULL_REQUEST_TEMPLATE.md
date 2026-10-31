@@ -16,7 +16,7 @@ Explain the motivation or issue being addressed.
 
 - [ ] Documentation/governance diff reviewed
 - [ ] Repo validation commands from `AGENTS.md`
-- [ ] Branch fetched and rebased/fast-forwarded against the target branch
+- [ ] Branch fetched and up to date with the target branch
 - [ ] `gelpy-release-version` loaded and release decision recorded
 - [ ] `gelpy-verify-work-item` evidence attached
 - [ ] `gelpy-codex-review`: Codex answered and every comment is handled
