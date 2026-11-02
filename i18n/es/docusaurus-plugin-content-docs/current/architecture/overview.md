@@ -69,7 +69,7 @@ flowchart LR
 
 - La API corre como contenedor en Cloudflare Containers, detrás de un Cloudflare Worker que recibe cada petición.
 - La app, el sitio web y la consola de administración se sirven como assets estáticos desde Cloudflare.
-- La base de datos es PostgreSQL gestionado. La elección del proveedor sigue abierta.
+- La base de datos es PostgreSQL gestionado, al que se accede a través de Cloudflare Hyperdrive.
 - No hay servidores administrados por el equipo.
 
 ## Entornos

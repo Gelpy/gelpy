@@ -44,7 +44,7 @@ Estos marcos guían el diseño. No son una certificación.
 ## Manejo de secretos
 
 - Los secretos de ejecución van en el almacén de secretos de Cloudflare, por Worker y por entorno.
-- GitHub guarda solo los tokens que necesitan los despliegues.
+- GitHub guarda solo credenciales de despliegue: tokens de despliegue y, para las migraciones de esquema, una credencial de base de datos exclusiva para migraciones, en entornos protegidos.
 - Los secretos nunca van en el código, los docs, los logs ni los fixtures de pruebas.
 
 ## Regla de logs
@@ -60,7 +60,7 @@ Test y producción están separados. Cada uno tiene su propia base de datos, sec
 Cada pull request debe pasar:
 
 - Lint y chequeo de tipos
-- Pruebas con al menos 80% de cobertura
+- Pruebas con al menos 90% de cobertura, con una meta de 95%
 - Un build exitoso
 - `npm audit`
 - Revisión de código

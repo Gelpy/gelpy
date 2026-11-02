@@ -69,7 +69,7 @@ flowchart LR
 
 - The API runs as a container on Cloudflare Containers, behind a Cloudflare Worker that receives every request.
 - The app, the website, and the admin console are served as static assets from Cloudflare.
-- The database is managed PostgreSQL. The provider choice is still open.
+- The database is managed PostgreSQL, reached through Cloudflare Hyperdrive.
 - There is no self-managed server.
 
 ## Environments

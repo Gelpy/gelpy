@@ -44,7 +44,7 @@ These guide the design. They are not a certification.
 ## Secrets management
 
 - Runtime secrets go in the Cloudflare secret store, per Worker and per environment.
-- GitHub stores only the tokens that deployments need.
+- GitHub stores only deployment credentials: deploy tokens and, for schema migrations, a migration-only database credential in protected environments.
 - Secrets never go into source code, docs, logs, or test fixtures.
 
 ## Logging rule
@@ -60,7 +60,7 @@ Test and production are separate. Each has its own database, secrets, OAuth clie
 Every pull request must pass:
 
 - Lint and type checks
-- Tests with at least 80% coverage
+- Tests with at least 90% coverage, with a 95% target
 - A successful build
 - `npm audit`
 - Code review
