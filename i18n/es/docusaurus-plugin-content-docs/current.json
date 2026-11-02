@@ -2,5 +2,17 @@
   "version.label": {
     "message": "Siguiente",
     "description": "The label for version current"
+  },
+  "sidebar.docs.category.Architecture": {
+    "message": "Arquitectura",
+    "description": "The label for category 'Architecture' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Security": {
+    "message": "Seguridad",
+    "description": "The label for category 'Security' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Contributing": {
+    "message": "Contribuir",
+    "description": "The label for category 'Contributing' in sidebar 'docs'"
   }
 }

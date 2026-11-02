@@ -10,6 +10,13 @@ Gelpy connects general-services professionals with people who need help, with sa
 
 This site holds Gelpy's public engineering documentation. It covers high-level architecture, data flow, and security posture. Phase 1 builds the application base only.
 
+## Start here
+
+- [Architecture overview](./architecture/overview.md): components, platform, environments, and release flow.
+- [Data flow](./architecture/data-flow.md): how requests and data move through the system.
+- [Security overview](./security/overview.md): security posture and data-handling rules.
+- [Documentation rules](./contributing/documentation-rules.md): how these docs grow and what may be published.
+
 ## How this site works
 
 - The `docs/` folder in the [Gelpy/gelpy](https://github.com/Gelpy/gelpy) repository is the source.

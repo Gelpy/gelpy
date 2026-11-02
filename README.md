@@ -15,13 +15,15 @@ npm ci
 npm start          # English
 npm run start:es   # Spanish
 npm run build      # Both locales; fails on broken links
+npm run check:public  # Public-safety scan of published content
+npm test           # Tests for the public-safety scan
 ```
 
 `docs/` holds the English source. Spanish pages live in `i18n/es/docusaurus-plugin-content-docs/current/`.
 
 ## Validation
 
-`npm run build`, `npm run check:public`
+`npm run build`, `npm run check:public`, `npm test`
 
 ## Related Repos
 

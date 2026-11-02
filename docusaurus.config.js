@@ -17,6 +17,7 @@ const config = {
   onBrokenAnchors: 'throw',
   onDuplicateRoutes: 'throw',
   markdown: {
+    mermaid: true,
     hooks: {
       onBrokenMarkdownLinks: 'throw',
     },
@@ -30,6 +31,8 @@ const config = {
       es: {label: 'Español', htmlLang: 'es'},
     },
   },
+
+  themes: ['@docusaurus/theme-mermaid'],
 
   presets: [
     [

@@ -12,11 +12,14 @@
     "start:es": "docusaurus start --locale es",
     "build": "docusaurus build",
     "serve": "docusaurus serve",
-    "clear": "docusaurus clear"
+    "clear": "docusaurus clear",
+    "check:public": "node scripts/check-public.mjs",
+    "test": "node --test --experimental-test-coverage --test-coverage-include=scripts/** --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 \"tests/**/*.test.mjs\""
   },
   "dependencies": {
     "@docusaurus/core": "3.10.2",
     "@docusaurus/preset-classic": "3.10.2",
+    "@docusaurus/theme-mermaid": "3.10.2",
     "@mdx-js/react": "^3.1.0",
     "clsx": "^2.1.1",
     "prism-react-renderer": "^2.4.1",
