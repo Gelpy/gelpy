@@ -47,7 +47,7 @@ Gelpy conecta a profesionales de servicios generales con personas que necesitan 
 
 ## Validación
 
-`npm run build`, `npm run check:public`, `npm test`
+`npm run build`, `npm run check:public`, `npm run check:brand`, `npm test`
 
 Corrige hallazgos de cobertura con pruebas, no con exclusiones.
 

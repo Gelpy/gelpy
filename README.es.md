@@ -16,14 +16,17 @@ npm start          # Inglés
 npm run start:es   # Español
 npm run build      # Ambos idiomas; falla ante enlaces rotos
 npm run check:public  # Revisión de seguridad pública del contenido publicado
-npm test           # Pruebas de la revisión de seguridad pública
+npm run check:brand  # Sin colores ni fuentes fijos, sin archivos de fuentes ni editables
+npm test           # Pruebas de los scripts del sitio
 ```
+
+El tema de Gelpy viene del paquete privado `@gelpy/design-system` en GitHub Packages. Si tienes un token que pueda leerlo, expórtalo como `NODE_AUTH_TOKEN` antes de `npm ci`. Sin token, `npm ci` omite el paquete y el sitio se construye con el tema por defecto. CI define `GELPY_REQUIRE_BRAND=1` en los push y en los pull requests del mismo repositorio, así que ahí falla si falta el tema. Nunca subas un token: `.npmrc` solo lo lee del entorno.
 
 `docs/` tiene la fuente en inglés. Las páginas en español viven en `i18n/es/docusaurus-plugin-content-docs/current/`.
 
 ## Validación
 
-`npm run build`, `npm run check:public`, `npm test`
+`npm run build`, `npm run check:public`, `npm run check:brand`, `npm test`
 
 ## Repos relacionados
 

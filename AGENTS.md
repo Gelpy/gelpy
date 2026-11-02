@@ -47,7 +47,7 @@ Gelpy connects general-services professionals with people who need help, with sa
 
 ## Validation
 
-`npm run build`, `npm run check:public`, `npm test`
+`npm run build`, `npm run check:public`, `npm run check:brand`, `npm test`
 
 Fix owned-source coverage findings with tests, not exclusions.
 
