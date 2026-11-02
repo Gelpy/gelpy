@@ -1,0 +1,98 @@
+/*
+ * Maps Docusaurus (Infima) variables to @gelpy/design-system tokens.
+ * Loaded only when the package is installed. No raw colors or font
+ * families here: every value comes from a --gelpy-* token.
+ */
+
+/*
+ * Shared mapping. `html[data-theme='dark']` matches the specificity of
+ * Infima's own dark rules, so the tokens win in both modes.
+ */
+:root,
+html[data-theme='dark'] {
+  --ifm-color-primary: var(--gelpy-text-link);
+  --ifm-color-primary-dark: color-mix(in srgb, var(--gelpy-text-link) 88%, var(--gelpy-text-primary));
+  --ifm-color-primary-darker: color-mix(in srgb, var(--gelpy-text-link) 76%, var(--gelpy-text-primary));
+  --ifm-color-primary-darkest: color-mix(in srgb, var(--gelpy-text-link) 60%, var(--gelpy-text-primary));
+  --ifm-color-primary-light: color-mix(in srgb, var(--gelpy-text-link) 88%, var(--gelpy-bg-canvas));
+  --ifm-color-primary-lighter: color-mix(in srgb, var(--gelpy-text-link) 76%, var(--gelpy-bg-canvas));
+  --ifm-color-primary-lightest: color-mix(in srgb, var(--gelpy-text-link) 60%, var(--gelpy-bg-canvas));
+
+  --ifm-background-color: var(--gelpy-bg-canvas);
+  --ifm-background-surface-color: var(--gelpy-bg-subtle);
+  --ifm-navbar-background-color: var(--gelpy-bg-canvas);
+  --ifm-footer-background-color: var(--gelpy-bg-subtle);
+  --ifm-footer-color: var(--gelpy-text-body);
+  --ifm-footer-link-color: var(--gelpy-text-link);
+
+  --ifm-font-color-base: var(--gelpy-text-body);
+  --ifm-heading-color: var(--gelpy-text-primary);
+  --ifm-link-color: var(--gelpy-text-link);
+  --ifm-color-content-secondary: var(--gelpy-text-muted);
+  --ifm-menu-color: var(--gelpy-text-body);
+  --ifm-navbar-link-color: var(--gelpy-text-primary);
+  --ifm-breadcrumb-color-active: var(--gelpy-text-link);
+  --ifm-toc-border-color: var(--gelpy-border-default);
+  --ifm-table-border-color: var(--gelpy-border-default);
+  --ifm-hr-background-color: var(--gelpy-border-default);
+  --ifm-code-background: var(--gelpy-bg-subtle);
+  --ifm-color-secondary-contrast-background: var(--gelpy-bg-subtle);
+  --ifm-color-secondary-contrast-foreground: var(--gelpy-text-body);
+  --ifm-color-secondary-dark: var(--gelpy-border-strong);
+
+  --ifm-font-family-base: var(--gelpy-font-family-brand);
+  --ifm-heading-font-family: var(--gelpy-font-family-brand);
+  --ifm-font-weight-light: var(--gelpy-font-weight-regular);
+  --ifm-font-weight-normal: var(--gelpy-font-weight-regular);
+  --ifm-font-weight-semibold: var(--gelpy-font-weight-medium);
+  --ifm-font-weight-bold: var(--gelpy-font-weight-bold);
+  --ifm-heading-font-weight: var(--gelpy-font-weight-bold);
+
+  --ifm-global-radius: var(--gelpy-radius-sm);
+  --ifm-code-border-radius: var(--gelpy-radius-sm);
+  --ifm-card-border-radius: var(--gelpy-radius-md);
+  --ifm-button-border-radius: var(--gelpy-radius-pill);
+  --ifm-pagination-nav-border-radius: var(--gelpy-radius-md);
+}
+
+/* Dark mode: deep navy surfaces; links and accents use sky, allowed on navy. */
+html[data-theme='dark'] {
+  --ifm-color-primary-dark: color-mix(in srgb, var(--gelpy-text-link) 88%, var(--gelpy-bg-canvas));
+  --ifm-color-primary-darker: color-mix(in srgb, var(--gelpy-text-link) 76%, var(--gelpy-bg-canvas));
+  --ifm-color-primary-darkest: color-mix(in srgb, var(--gelpy-text-link) 60%, var(--gelpy-bg-canvas));
+  --ifm-color-primary-light: color-mix(in srgb, var(--gelpy-text-link) 88%, var(--gelpy-text-primary));
+  --ifm-color-primary-lighter: color-mix(in srgb, var(--gelpy-text-link) 76%, var(--gelpy-text-primary));
+  --ifm-color-primary-lightest: color-mix(in srgb, var(--gelpy-text-link) 60%, var(--gelpy-text-primary));
+  --ifm-navbar-background-color: var(--gelpy-bg-subtle);
+  --ifm-footer-background-color: var(--gelpy-bg-subtle);
+  --ifm-code-background: var(--gelpy-surface-card);
+  --ifm-color-secondary-contrast-background: var(--gelpy-surface-raised);
+  --ifm-hover-overlay: var(--gelpy-bg-tint);
+}
+
+/* Logo clear space. Navbar height keeps the logo above its 60 px minimum width. */
+.navbar__logo {
+  margin-right: var(--gelpy-space-md);
+}
+
+.navbar__logo img {
+  min-width: var(--gelpy-logo-min-width);
+}
+
+/* Orange is an accent: a thin rule under page titles, never small text. */
+.markdown > header > h1::after,
+.markdown > h1:first-child::after {
+  content: '';
+  display: block;
+  width: var(--gelpy-space-xxl);
+  height: var(--gelpy-space-xs);
+  margin-top: var(--gelpy-space-sm);
+  border-radius: var(--gelpy-radius-pill);
+  background: var(--gelpy-brand-accent);
+}
+
+/* Links inside text are underlined, so they never rely on color alone. */
+.markdown a {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}

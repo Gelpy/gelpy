@@ -14,7 +14,8 @@
     "serve": "docusaurus serve",
     "clear": "docusaurus clear",
     "check:public": "node scripts/check-public.mjs",
-    "test": "node --test --experimental-test-coverage --test-coverage-include=scripts/** --test-coverage-lines=90 --test-coverage-branches=90 --test-coverage-functions=90 \"tests/**/*.test.mjs\""
+    "test": "node --test --experimental-test-coverage --test-coverage-include=scripts/** --test-coverage-lines=90 --test-coverage-branches=90 --test-coverage-functions=90 \"tests/**/*.test.mjs\"",
+    "check:brand": "node scripts/check-brand.mjs"
   },
   "dependencies": {
     "@docusaurus/core": "3.10.2",
@@ -42,5 +43,8 @@
     "serialize-javascript": "^7.1.4",
     "tinypool": "^2.2.0",
     "uuid": "^11.1.1"
+  },
+  "optionalDependencies": {
+    "@gelpy/design-system": "0.1.0"
   }
 }

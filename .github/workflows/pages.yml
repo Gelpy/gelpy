@@ -18,6 +18,11 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    env:
+      # Pushes, manual runs, and pull requests from this repository may read
+      # the private @gelpy/design-system package. Pull requests from forks
+      # never get the token and build with the default theme.
+      TRUSTED_SOURCE: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -29,16 +34,25 @@ jobs:
           cache: npm
 
       - name: Install dependencies
+        env:
+          NODE_AUTH_TOKEN: ${{ env.TRUSTED_SOURCE == 'true' && secrets.GELPY_PACKAGES_TOKEN || '' }}
         run: npm ci
+
+      - name: Require the brand theme
+        if: env.TRUSTED_SOURCE == 'true'
+        run: echo "GELPY_REQUIRE_BRAND=1" >> "$GITHUB_ENV"
 
       - name: Audit dependencies
         run: npm audit --audit-level=high
 
-      - name: Test public-safety check
+      - name: Test site scripts
         run: npm test
 
       - name: Check public content
         run: npm run check:public
+
+      - name: Check brand rules (no fonts, manual, or editables)
+        run: npm run check:brand
 
       - name: Build site (en, es)
         run: npm run build
