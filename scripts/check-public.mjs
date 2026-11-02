@@ -1,0 +1,175 @@
+#!/usr/bin/env node
+// Public-safety check for the published site content.
+//
+// Scans what the site publishes and fails when it finds secrets, internal
+// hosts or IP addresses, personal data, or terms from the private reference
+// project. Findings print with a redacted excerpt, so CI logs never repeat a
+// secret.
+//
+// Usage: node scripts/check-public.mjs [path ...]
+// Without paths it scans DEFAULT_TARGETS from the current directory.
+
+import {readdirSync, readFileSync, statSync, existsSync} from 'node:fs';
+import {join, relative, resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+
+export const DEFAULT_TARGETS = [
+  'docs',
+  'i18n',
+  'docusaurus.config.js',
+  'sidebars.js',
+  'static',
+];
+
+const SKIP_DIRS = new Set(['node_modules', '.git', '.docusaurus', 'build']);
+
+// Hosts that public content may link to: Gelpy's public hosts, plus public
+// reference sites that Docusaurus writes into its generated translation files.
+// GitHub links must stay inside the public Gelpy/gelpy repository.
+const ALLOWED_HOSTS = new Set([
+  'gelpy.app',
+  'www.gelpy.app',
+  'docs.gelpy.app',
+  'www.unicode.org',
+]);
+const ALLOWED_GITHUB_PREFIX = '/gelpy/gelpy';
+
+const IPV4_OCTET = '(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)';
+
+export const RULES = [
+  // Secrets
+  {id: 'private-key', category: 'secret', re: /-----BEGIN [A-Z ]*PRIVATE KEY-----/g},
+  {id: 'github-token', category: 'secret', re: /\b(?:gh[pousr]_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{22,})\b/g},
+  {id: 'aws-access-key', category: 'secret', re: /\b(?:AKIA|ASIA)[0-9A-Z]{16}\b/g},
+  {id: 'google-api-key', category: 'secret', re: /\bAIza[0-9A-Za-z_-]{35}\b/g},
+  {id: 'slack-token', category: 'secret', re: /\bxox[abprs]-[0-9A-Za-z-]{10,}\b/g},
+  {id: 'stripe-key', category: 'secret', re: /\b[rs]k_(?:live|test)_[0-9A-Za-z]{16,}\b/g},
+  {id: 'jwt', category: 'secret', re: /\beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/g},
+  {id: 'credential-in-url', category: 'secret', re: /\b[a-z][a-z0-9+.-]*:\/\/[^\s/:@'"`]+:[^\s/@'"`]+@/gi},
+  {
+    id: 'secret-assignment',
+    category: 'secret',
+    re: /\b(?:api[_-]?key|secret|token|password|passwd|client[_-]?secret|access[_-]?key)\b["']?\s*[:=]\s*["'`][^"'`\s]{8,}["'`]/gi,
+  },
+
+  // Internal hosts and addresses
+  {id: 'test-host', category: 'internal', re: /\b[a-z0-9-]+-test\.gelpy\.app\b/gi},
+  {id: 'test-worker', category: 'internal', re: /\bgelpy-[a-z]+-test\b/gi},
+  {id: 'internal-host', category: 'internal', re: /\b(?:localhost|[a-z0-9-]+\.(?:internal|local|lan|corp|intranet|home\.arpa))\b/gi},
+  {id: 'platform-host', category: 'internal', re: /\b[a-z0-9-]+\.(?:workers\.dev|pages\.dev|r2\.dev|r2\.cloudflarestorage\.com)\b/gi},
+  {id: 'ipv4', category: 'internal', re: new RegExp(`(?<!\\d)(?<!\\d\\.)(?:${IPV4_OCTET}\\.){3}${IPV4_OCTET}(?!\\d|\\.\\d)`, 'g')},
+  {id: 'ipv6-private', category: 'internal', re: /(?<![0-9a-f:])(?:fe80|f[cd][0-9a-f]{2})::?[0-9a-f:]*[0-9a-f]/gi},
+
+  // Personal data
+  {id: 'email', category: 'personal-data', re: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g},
+  {id: 'phone', category: 'personal-data', re: /\+\d{1,3}[\s.-]?\(?\d{1,4}\)?(?:[\s.-]?\d{2,4}){2,4}\b/g},
+
+  // Private reference project
+  {id: 'reference-project-term', category: 'reference-project', re: /portfolio|edjosephgr|profile-professional/gi},
+];
+
+const URL_RE = /\bhttps?:\/\/[^\s)'"`<>\]}]+/gi;
+
+/** Returns null when the URL is allowed, or the reason it is not. */
+export function urlProblem(raw) {
+  let url;
+  try {
+    url = new URL(raw);
+  } catch {
+    return 'unparseable URL';
+  }
+  const host = url.hostname.toLowerCase();
+  if (ALLOWED_HOSTS.has(host)) return null;
+  if (host === 'github.com') {
+    const path = url.pathname.toLowerCase();
+    if (path === ALLOWED_GITHUB_PREFIX || path.startsWith(`${ALLOWED_GITHUB_PREFIX}/`)) return null;
+    return 'GitHub link outside Gelpy/gelpy';
+  }
+  return 'host is not on the public allowlist';
+}
+
+/** Masks a match so the report never repeats it in full. */
+export function redact(text) {
+  if (text.length <= 4) return '•'.repeat(text.length);
+  return `${text.slice(0, 3)}${'•'.repeat(Math.min(text.length - 3, 8))}`;
+}
+
+function position(text, index) {
+  const before = text.slice(0, index);
+  const line = before.split('\n').length;
+  const column = index - before.lastIndexOf('\n');
+  return {line, column};
+}
+
+/** Scans one text and returns its findings. */
+export function scanText(text, file = '<text>') {
+  const findings = [];
+  for (const rule of RULES) {
+    rule.re.lastIndex = 0;
+    for (const match of text.matchAll(rule.re)) {
+      findings.push({file, ...position(text, match.index), rule: rule.id, category: rule.category, excerpt: redact(match[0])});
+    }
+  }
+  for (const match of text.matchAll(URL_RE)) {
+    const problem = urlProblem(match[0]);
+    if (problem) {
+      findings.push({file, ...position(text, match.index), rule: 'url-not-allowed', category: 'internal', excerpt: redact(match[0]), detail: problem});
+    }
+  }
+  return findings.sort((a, b) => a.line - b.line || a.column - b.column);
+}
+
+/** Lists the files under the given targets, skipping build output. */
+export function collectFiles(targets, root = process.cwd()) {
+  const files = [];
+  const walk = (path) => {
+    const stats = statSync(path);
+    if (stats.isDirectory()) {
+      for (const entry of readdirSync(path).sort()) {
+        if (!SKIP_DIRS.has(entry)) walk(join(path, entry));
+      }
+    } else if (stats.isFile()) {
+      files.push(path);
+    }
+  };
+  for (const target of targets) {
+    const path = resolve(root, target);
+    if (existsSync(path)) walk(path);
+  }
+  return files;
+}
+
+/** Scans files. Binary files (with a NUL byte) are skipped. */
+export function scanFiles(files, root = process.cwd()) {
+  const findings = [];
+  let scanned = 0;
+  for (const file of files) {
+    const buffer = readFileSync(file);
+    if (buffer.includes(0)) continue;
+    scanned += 1;
+    findings.push(...scanText(buffer.toString('utf8'), relative(root, file) || file));
+  }
+  return {scanned, findings};
+}
+
+export function formatFinding(f) {
+  const detail = f.detail ? ` (${f.detail})` : '';
+  return `${f.file}:${f.line}:${f.column} ${f.category}/${f.rule}${detail}: ${f.excerpt}`;
+}
+
+export function main(args = process.argv.slice(2), {root = process.cwd(), log = console.log, error = console.error} = {}) {
+  const targets = args.length > 0 ? args : DEFAULT_TARGETS;
+  const {scanned, findings} = scanFiles(collectFiles(targets, root), root);
+  for (const finding of findings) error(formatFinding(finding));
+  const summary = `check:public: ${scanned} files scanned in ${targets.join(', ')}; ${findings.length} findings`;
+  if (findings.length > 0) {
+    error(summary);
+    return 1;
+  }
+  log(summary);
+  return 0;
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+  process.exitCode = main();
+}

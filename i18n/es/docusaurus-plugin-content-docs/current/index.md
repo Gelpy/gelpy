@@ -10,6 +10,13 @@ Gelpy conecta a profesionales de servicios generales con personas que necesitan 
 
 Este sitio reúne la documentación pública de ingeniería de Gelpy. Cubre la arquitectura de alto nivel, el flujo de datos y la postura de seguridad. La Fase 1 construye solo la base de la aplicación.
 
+## Empieza aquí
+
+- [Visión general de la arquitectura](./architecture/overview.md): componentes, plataforma, entornos y flujo de release.
+- [Flujo de datos](./architecture/data-flow.md): cómo se mueven las peticiones y los datos en el sistema.
+- [Visión general de seguridad](./security/overview.md): postura de seguridad y reglas de manejo de datos.
+- [Reglas de documentación](./contributing/documentation-rules.md): cómo crecen estos docs y qué se puede publicar.
+
 ## Cómo funciona este sitio
 
 - La carpeta `docs/` del repositorio [Gelpy/gelpy](https://github.com/Gelpy/gelpy) es la fuente.
