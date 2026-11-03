@@ -14,6 +14,7 @@ This site holds Gelpy's public engineering documentation. It covers high-level a
 
 - [Architecture overview](./architecture/overview.md): components, platform, environments, and release flow.
 - [Data flow](./architecture/data-flow.md): how requests and data move through the system.
+- [App shell](./architecture/app-shell.md): navigation, onboarding, languages, and themes in the app.
 - [Security overview](./security/overview.md): security posture and data-handling rules.
 - [Documentation rules](./contributing/documentation-rules.md): how these docs grow and what may be published.
 

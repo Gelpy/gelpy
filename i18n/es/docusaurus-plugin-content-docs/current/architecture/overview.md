@@ -99,4 +99,5 @@ Las migraciones SQL son la única fuente del esquema de la base de datos. La API
 ## Páginas relacionadas
 
 - [Flujo de datos](./data-flow.md)
+- [Base de la app](./app-shell.md)
 - [Visión general de seguridad](../security/overview.md)
