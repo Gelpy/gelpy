@@ -10,7 +10,7 @@ The app shell is the base of the Gelpy app. It holds navigation, first-launch on
 
 :::note Status
 
-The app shell is in development and runs only in the test environment. It is not in production yet. This page describes how it works today; it will be updated when the shell reaches production.
+The app shell runs in production on the web, since app release 0.2.0 (2026-11-03). The Android version is in preview: it is not published on Google Play yet.
 
 :::
 
@@ -41,7 +41,7 @@ flowchart LR
 - On first launch, the app shows a short set of onboarding screens before the tabs.
 - People can skip onboarding at any time.
 - Once onboarding is finished or skipped, the app remembers it on the device and goes straight to the tabs from then on.
-- One screen asks whether to turn on notifications. People can say "Not now", and onboarding does not ask again.
+- On Android, one screen explains why notifications help and asks whether to turn them on. People can say "Not now", and onboarding does not ask again. The web skips this step.
 
 ## Languages
 

@@ -10,7 +10,7 @@ La base de la app (el app shell) es el punto de partida de la app de Gelpy. Reú
 
 :::note Estado
 
-La base de la app está en desarrollo y solo corre en el entorno de test. Todavía no está en producción. Esta página describe cómo funciona hoy y se actualizará cuando llegue a producción.
+La base de la app corre en producción en la web desde la versión 0.2.0 de la app (2026-11-03). La versión de Android está en preview: todavía no está publicada en Google Play.
 
 :::
 
@@ -41,7 +41,7 @@ flowchart LR
 - La primera vez, la app muestra unas pocas pantallas de onboarding antes de las pestañas.
 - Se puede omitir el onboarding en cualquier momento.
 - Cuando se termina u omite, la app lo recuerda en el dispositivo y desde entonces va directo a las pestañas.
-- Una pantalla pregunta si se quieren activar las notificaciones. Se puede responder "Ahora no", y el onboarding no vuelve a preguntar.
+- En Android, una pantalla explica para qué sirven las notificaciones y pregunta si se quieren activar. Se puede responder "Ahora no", y el onboarding no vuelve a preguntar. En la web este paso no aparece.
 
 ## Idiomas
 
