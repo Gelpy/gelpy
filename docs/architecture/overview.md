@@ -99,4 +99,5 @@ SQL migrations are the only source of the database schema. The API generates its
 ## Related pages
 
 - [Data flow](./data-flow.md)
+- [App shell](./app-shell.md)
 - [Security overview](../security/overview.md)
