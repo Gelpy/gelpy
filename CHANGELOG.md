@@ -18,3 +18,4 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - Add `npm run check:brand`, which fails on hard-coded colors or font families in site code and on tracked font files, brand manuals, or editable sources.
 - Underline links inside page text so they do not rely on color alone.
 - Add the app shell page in English and Spanish: the three tabs, the onboarding redirect, languages, themes, and screen sizes. The shell runs in production on the web; Android is in preview.
+- Add the identity and sign-in page in English and Spanish: account types, email and password with a confirmation link, Google, phone by SMS, sessions, fingerprint unlock, passkeys, the admin console, and data handling, each with its status. Update the sign-in sections of the data flow and security overview pages to match.

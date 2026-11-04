@@ -34,12 +34,15 @@ These guide the design. They are not a certification.
 | Credentials | Password hashes, passkeys, tokens | Never logged, never returned by the API, never shown in docs |
 | Secrets | API keys, signing keys, connection strings | Stored in the platform's secret store, never in source code |
 
-## Authentication (planned)
+## Authentication
 
-- Sign-in with Google, or with email and password plus a one-time code.
-- Optional biometric unlock on Android and server-verified passkeys on Android and web. People can revoke them.
-- Passwords and one-time codes are stored only as hashes.
+- Sign-in with email and password, confirmed by an email link, or with Google. The phone is verified by SMS.
+- Optional fingerprint unlock on Android, and passkeys verified by the server.
+- Passwords, confirmation links, and sessions are stored only as hashes.
 - Refresh tokens rotate on every use and stop working after sign-out.
+- The admin console accepts only admins, with separate console sessions.
+
+See [Identity and sign-in](./identity.md) for the flows and the status of each one.
 
 ## Secrets management
 
