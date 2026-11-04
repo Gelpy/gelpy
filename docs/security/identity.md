@@ -22,7 +22,7 @@ Identity runs in the test environment. It is not in production yet. Each section
 | Phone verification by SMS | Test environment |
 | Fingerprint unlock on Android | Test environment, Android preview build |
 | Passkeys | Server side in the test environment; app screens coming soon |
-| Admin console with Google accounts of `gelpy.app` only | In development |
+| Admin console with Google accounts of `gelpy.app` only | Test environment |
 
 ## Account types
 
@@ -113,7 +113,7 @@ If someone registered with an email and password but never confirmed it, and the
 
 ## Admin console
 
-The admin console is for Gelpy operators only. It is moving to Google sign-in with accounts of the `gelpy.app` organization only:
+The admin console is for Gelpy operators only. It signs in only with Google accounts of the `gelpy.app` organization:
 
 - Google itself refuses accounts outside the organization.
 - The API accepts a console sign-in only when the token was issued for the console, the account belongs to `gelpy.app`, its email is verified, and the account already exists as an admin. Console sign-in never creates accounts.

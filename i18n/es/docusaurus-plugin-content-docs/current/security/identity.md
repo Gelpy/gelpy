@@ -22,7 +22,7 @@ La identidad corre en el entorno de test. Todavía no está en producción. Cada
 | Verificación del teléfono por SMS | Entorno de test |
 | Desbloqueo con huella en Android | Entorno de test, build preview de Android |
 | Passkeys | Lado del servidor en el entorno de test; pantallas de la app próximamente |
-| Consola de admins solo con cuentas Google de `gelpy.app` | En desarrollo |
+| Consola de admins solo con cuentas Google de `gelpy.app` | Entorno de test |
 
 ## Tipos de cuenta
 
@@ -113,7 +113,7 @@ Si alguien se registró con un correo y una contraseña pero nunca lo confirmó,
 
 ## Consola de admins
 
-La consola de admins es solo para los operadores de Gelpy. Está pasando a un inicio de sesión con Google, solo con cuentas de la organización `gelpy.app`:
+La consola de admins es solo para los operadores de Gelpy. Solo se entra con cuentas Google de la organización `gelpy.app`:
 
 - Google mismo rechaza las cuentas de fuera de la organización.
 - La API acepta un inicio de sesión en la consola solo si el token se emitió para la consola, la cuenta pertenece a `gelpy.app`, su correo está verificado y la cuenta ya existe como admin. El inicio de sesión de la consola nunca crea cuentas.
