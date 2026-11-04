@@ -30,31 +30,9 @@ sequenceDiagram
 - Todo el tráfico usa HTTPS.
 - La API valida la entrada de cada petición con esquemas (Zod) antes de usarla.
 
-## Inicio de sesión (previsto)
+## Inicio de sesión
 
-Las personas inician sesión con Google o con email y contraseña. Un código de un solo uso (OTP) enviado por email o SMS verifica la cuenta. En Android se puede activar el desbloqueo biométrico, y en Android y web se puede registrar una passkey que el servidor verifica.
-
-```mermaid
-sequenceDiagram
-  autonumber
-  participant U as Persona
-  participant C as App
-  participant A as API
-  participant P as Proveedor de email o SMS
-
-  U->>C: Ingresa email y contraseña
-  C->>A: Crea la cuenta
-  A->>P: Envía el código de un solo uso
-  P-->>U: Código
-  U->>C: Ingresa el código
-  C->>A: Verifica el código
-  A-->>C: Token de acceso y token de refresco
-```
-
-- Las contraseñas se guardan solo como hashes con sal.
-- Los códigos de un solo uso se guardan solo como hashes. Vencen a los 10 minutos, admiten como máximo 5 intentos y nunca se escriben en los logs.
-- Cada token de refresco sirve una sola vez: al usarlo se emite uno nuevo. Cerrar sesión lo revoca.
-- Los desafíos de passkey vencen y no se pueden reutilizar.
+Las personas se registran con correo y contraseña, confirmados con un link por correo, o con Google. El teléfono se agrega después y se verifica por SMS. Las sesiones usan tokens de refresco de un solo uso. Consulta [Identidad e inicio de sesión](../security/identity.md) para ver los flujos, su estado y cómo se manejan los datos de identidad.
 
 ## Notificaciones (previsto)
 

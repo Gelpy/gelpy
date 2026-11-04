@@ -30,31 +30,9 @@ sequenceDiagram
 - All traffic uses HTTPS.
 - The API validates request input with schemas (Zod) before it uses it.
 
-## Sign-in (planned)
+## Sign-in
 
-People sign in with Google or with email and password. A one-time code (OTP) by email or SMS verifies the account. On Android, people can turn on biometric unlock, and on Android and web they can register a passkey that the server verifies.
-
-```mermaid
-sequenceDiagram
-  autonumber
-  participant U as Person
-  participant C as App
-  participant A as API
-  participant P as Email or SMS provider
-
-  U->>C: Enter email and password
-  C->>A: Create account
-  A->>P: Send one-time code
-  P-->>U: Code
-  U->>C: Enter code
-  C->>A: Verify code
-  A-->>C: Access token and refresh token
-```
-
-- Passwords are stored only as salted hashes.
-- One-time codes are stored only as hashes. They expire after 10 minutes, allow at most 5 attempts, and are never written to logs.
-- Each refresh token works once: using it issues a new one. Signing out revokes it.
-- Passkey challenges expire and cannot be reused.
+People register with email and password, confirmed by an email link, or with Google. A phone number is added later and verified by SMS. Sessions use refresh tokens that work once. See [Identity and sign-in](../security/identity.md) for the flows, their status, and how identity data is handled.
 
 ## Notifications (planned)
 

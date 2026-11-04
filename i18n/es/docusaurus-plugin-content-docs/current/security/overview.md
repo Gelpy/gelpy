@@ -34,12 +34,15 @@ Estos marcos guían el diseño. No son una certificación.
 | Credenciales | Hashes de contraseñas, passkeys, tokens | Nunca se registran en logs, nunca los devuelve la API y nunca aparecen en los docs |
 | Secretos | API keys, claves de firma, cadenas de conexión | Se guardan en el almacén de secretos de la plataforma, nunca en el código |
 
-## Autenticación (prevista)
+## Autenticación
 
-- Inicio de sesión con Google, o con email y contraseña más un código de un solo uso.
-- Desbloqueo biométrico opcional en Android y passkeys verificadas por el servidor en Android y web. Cada persona puede revocarlas.
-- Las contraseñas y los códigos de un solo uso se guardan solo como hashes.
+- Inicio de sesión con correo y contraseña, confirmados con un link por correo, o con Google. El teléfono se verifica por SMS.
+- Desbloqueo opcional con huella en Android, y passkeys verificadas por el servidor.
+- Las contraseñas, los links de confirmación y las sesiones se guardan solo como hashes.
 - Los tokens de refresco rotan en cada uso y dejan de funcionar al cerrar sesión.
+- La consola de admins solo acepta admins, con sesiones de consola separadas.
+
+Consulta [Identidad e inicio de sesión](./identity.md) para ver los flujos y el estado de cada uno.
 
 ## Manejo de secretos
 

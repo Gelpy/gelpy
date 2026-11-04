@@ -16,6 +16,7 @@ Este sitio reúne la documentación pública de ingeniería de Gelpy. Cubre la a
 - [Flujo de datos](./architecture/data-flow.md): cómo se mueven las peticiones y los datos en el sistema.
 - [Base de la app](./architecture/app-shell.md): navegación, onboarding, idiomas y temas de la app.
 - [Visión general de seguridad](./security/overview.md): postura de seguridad y reglas de manejo de datos.
+- [Identidad e inicio de sesión](./security/identity.md): registro, inicio de sesión, la consola de admins y los datos de identidad.
 - [Reglas de documentación](./contributing/documentation-rules.md): cómo crecen estos docs y qué se puede publicar.
 
 ## Cómo funciona este sitio
