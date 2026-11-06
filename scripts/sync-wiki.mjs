@@ -30,9 +30,13 @@ export function authEnv(token) {
   };
 }
 
+// Each git call is killed after this long, so a stalled clone or push fails the step instead of
+// holding the deploy.
+export const GIT_TIMEOUT_MS = 120_000;
+
 /** Runs git with captured output, so nothing it prints reaches the build log. */
-export function defaultGit(args, {cwd, env}) {
-  const result = spawnSync(resolveCommand('git'), args, {cwd, encoding: 'utf8', env: childEnv(env)});
+export function defaultGit(args, {cwd, env, timeout = GIT_TIMEOUT_MS}) {
+  const result = spawnSync(resolveCommand('git'), args, {cwd, encoding: 'utf8', env: childEnv(env), timeout, killSignal: 'SIGKILL'});
   return {status: result.status ?? 1, out: result.stdout ?? ''};
 }
 

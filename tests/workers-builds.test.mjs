@@ -8,6 +8,7 @@ import {
   FALLBACK_COMMITS,
   NOINDEX_HEADERS,
   RELEASE_REPO,
+  RELEASE_TIMEOUT_MS,
   brandEnv,
   branchOf,
   changedSinceBase,
@@ -300,4 +301,40 @@ test('defaultCapture echoes and returns the output, and reports an unknown comma
   assert.equal(missing.status, 127);
   assert.match(missing.output, /no-such-command-gelpy is not in/);
   assert.equal(defaultCapture({cmd: 'false', args: []}, sink).status, 1);
+});
+
+test('createRelease times out a stalled GitHub API and fails red (real fetch, local server)', async () => {
+  const {createServer} = await import('node:http');
+  const server = createServer((req, res) => {
+    res.writeHead(404, {'content-type': 'application/json'});
+    res.write('{"mess');
+    // Never ends the body: only the timeout can finish this request.
+  });
+  await new Promise((done) => server.listen(0, '127.0.0.1', done));
+  const local = `http://127.0.0.1:${server.address().port}`;
+  const signals = [];
+  const request = (url, options) => (signals.push(options.signal), globalThis.fetch(local, options));
+  const log = [];
+  const start = Date.now();
+  try {
+    const status = await createRelease({env: {GELPY_RELEASE_TOKEN: RELEASE, WORKERS_CI_COMMIT_SHA: 'c0ffee'}, version: '0.2.0', changelog: () => CHANGELOG, request, log: (line) => log.push(line), timeoutMs: 200});
+    assert.equal(status, 1);
+  } finally {
+    server.closeAllConnections();
+    server.close();
+  }
+  assert.ok(Date.now() - start < 5000, 'a 200 ms timeout, not a hang');
+  assert.ok(signals.length >= 1 && signals.every((signal) => signal instanceof AbortSignal));
+  // The stalled error body is aborted inside apiError, which then reports the status alone.
+  assert.equal(log.at(-1), 'workers-builds: deployed, but the release failed: 404');
+});
+
+test('createRelease sends an abort signal on both the lookup and the creation', async () => {
+  const signals = [];
+  let calls = 0;
+  const request = async (url, options) => (signals.push(options.signal), ++calls === 1 ? response(404) : response(201));
+  assert.equal(await createRelease({env: {GELPY_RELEASE_TOKEN: RELEASE, WORKERS_CI_COMMIT_SHA: 'c0ffee'}, version: '0.2.0', changelog: () => CHANGELOG, request, log: () => {}}), 0);
+  assert.equal(signals.length, 2);
+  assert.ok(signals.every((signal) => signal instanceof AbortSignal && !signal.aborted));
+  assert.equal(RELEASE_TIMEOUT_MS, 15_000);
 });

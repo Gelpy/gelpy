@@ -6,7 +6,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 
 import {resolveCommand} from '../scripts/lib/fixed-path.mjs';
-import {AUTHOR, WIKI_REMOTE, authEnv, changesOf, defaultGit, syncWiki} from '../scripts/sync-wiki.mjs';
+import {AUTHOR, GIT_TIMEOUT_MS, WIKI_REMOTE, authEnv, changesOf, defaultGit, syncWiki} from '../scripts/sync-wiki.mjs';
 
 // A fake value, assembled at runtime so no token-shaped literal is committed.
 const TOKEN = ['fake', 'wiki', 'value'].join('-');
@@ -130,4 +130,17 @@ test('sync-wiki.mjs never reads a token name from the environment', () => {
   const source = readFileSync('scripts/sync-wiki.mjs', 'utf8');
   assert.doesNotMatch(source, /GELPY_[A-Z_]*TOKEN/);
   assert.doesNotMatch(source, /process\.env/);
+});
+
+test('defaultGit kills a stalled git call after its timeout', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'sync-wiki-timeout-'));
+  try {
+    assert.equal(GIT_TIMEOUT_MS, 120_000);
+    const start = Date.now();
+    const result = defaultGit(['-c', 'alias.stall=!sleep 30', 'stall'], {cwd: dir, env: {}, timeout: 300});
+    assert.equal(result.status, 1, 'a killed git counts as a failed step');
+    assert.ok(Date.now() - start < 5000, 'killed at the timeout, not after 30 s');
+  } finally {
+    rmSync(dir, {recursive: true, force: true});
+  }
 });

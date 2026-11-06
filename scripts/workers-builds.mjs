@@ -155,6 +155,9 @@ export function readVersion(file = 'package.json') {
 // The GitHub Release that `cf:deploy` creates on main after a good deploy (Work Item 003-032).
 export const RELEASE_REPO = 'Gelpy/gelpy';
 const GITHUB_API = 'https://api.github.com';
+// Each GitHub API request, error body included, aborts after this long, so a stalled API fails
+// the release step instead of holding the deploy (and the wiki sync after it).
+export const RELEASE_TIMEOUT_MS = 15_000;
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -182,7 +185,7 @@ async function apiError(response) {
 // Everything else fails the step, so a good deploy whose release failed shows as a red build: an
 // API error, an empty section, or a missing WORKERS_CI_COMMIT_SHA. The token is sent only in the Authorization
 // header and never logged, in whole or in part.
-export async function createRelease({env, version = readVersion(), changelog = () => readFileSync('CHANGELOG.md', 'utf8'), request = globalThis.fetch, log = console.log}) {
+export async function createRelease({env, version = readVersion(), changelog = () => readFileSync('CHANGELOG.md', 'utf8'), request = globalThis.fetch, log = console.log, timeoutMs = RELEASE_TIMEOUT_MS}) {
   const token = env[RELEASE_TOKEN];
   if (!token) {
     log('workers-builds: release skipped: no token.');
@@ -206,7 +209,7 @@ export async function createRelease({env, version = readVersion(), changelog = (
   }
   const headers = {'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28'};
   try {
-    const existing = await request(`${GITHUB_API}/repos/${RELEASE_REPO}/releases/tags/${tag}`, {headers});
+    const existing = await request(`${GITHUB_API}/repos/${RELEASE_REPO}/releases/tags/${tag}`, {headers, signal: AbortSignal.timeout(timeoutMs)});
     if (existing.status === 200) {
       log(`workers-builds: ${tag} already released.`);
       return 0;
@@ -216,6 +219,7 @@ export async function createRelease({env, version = readVersion(), changelog = (
     if (!commit) return fail('WORKERS_CI_COMMIT_SHA is not set, so the tag would have no commit');
     const created = await request(`${GITHUB_API}/repos/${RELEASE_REPO}/releases`, {
       method: 'POST',
+      signal: AbortSignal.timeout(timeoutMs),
       headers: {...headers, 'Content-Type': 'application/json'},
       body: JSON.stringify({tag_name: tag, target_commitish: commit, name: `gelpy-docs ${tag}`, body: notes}),
     });
