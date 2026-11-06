@@ -258,6 +258,22 @@ export function defaultRun({cmd, args, env}) {
   return result.status ?? 1;
 }
 
+// Like defaultRun, but also returns what the command printed, after echoing it to the log.
+export function defaultCapture({cmd, args, env}, {stdout = process.stdout, stderr = process.stderr} = {}) {
+  let file;
+  try {
+    file = resolveCommand(cmd);
+  } catch (error) {
+    const message = `workers-builds: ${error instanceof Error ? error.message : String(error)}`;
+    stderr.write(`${message}\n`);
+    return {status: 127, output: message};
+  }
+  const result = spawnSync(file, args, {encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, env: childEnv(withoutSecrets(process.env), env)});
+  stdout.write(result.stdout ?? '');
+  stderr.write(result.stderr ?? '');
+  return {status: result.status ?? 1, output: `${result.stdout ?? ''}${result.stderr ?? ''}`};
+}
+
 // Runs the steps in order and stops at the first failure, naming it.
 export function runSteps(steps, {run = defaultRun, log = console.log, now = Date.now} = {}) {
   for (const current of steps) {
@@ -310,7 +326,11 @@ async function deploy(branch, {env, run, log, request, release, wiki}) {
   return released || synced;
 }
 
-function preview(branch, {run, log, noindex}) {
+// What `wrangler preview` prints when the Preview deployment got no URL, for example while the
+// Worker's Preview URLs setting is off. The PR check must not be green without a URL to review.
+export const NO_PREVIEW_URL = 'no active URLs';
+
+function preview(branch, {capture, log, noindex}) {
   if (branch === DEPLOY_BRANCH) {
     log(`workers-builds: ${branch} deploys; it creates no preview.`);
     return 0;
@@ -319,13 +339,25 @@ function preview(branch, {run, log, noindex}) {
     log(`workers-builds: ${OUTPUT_DIR}/_headers has no X-Robots-Tag: noindex, so no preview is created.`);
     return 1;
   }
-  return runSteps([PREVIEW], {run, log});
+  let output = '';
+  const status = runSteps([PREVIEW], {run: (current) => {
+    const result = capture(current);
+    output = result.output;
+    return result.status;
+  }, log});
+  if (status !== 0) return status;
+  if (output.includes(NO_PREVIEW_URL)) {
+    log(`workers-builds: wrangler uploaded the preview but reports ${NO_PREVIEW_URL}; turn on the Worker's Preview URLs setting (Settings > Domains & Routes), then rebuild.`);
+    return 1;
+  }
+  return 0;
 }
 
 export async function main(argv, {
   env = process.env,
   git = defaultGit,
   run = defaultRun,
+  capture = defaultCapture,
   log = console.log,
   noindex = previewIsNoindex,
   headers = writeNoindexHeaders,
@@ -346,7 +378,7 @@ export async function main(argv, {
     log(`workers-builds: ${error.message}`);
     return 2;
   }
-  return commands[command](branch, {env, git, run, log, noindex, headers, request, release, wiki});
+  return commands[command](branch, {env, git, run, capture, log, noindex, headers, request, release, wiki});
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

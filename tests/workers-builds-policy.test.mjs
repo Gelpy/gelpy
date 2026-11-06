@@ -105,7 +105,7 @@ test('only main\'s deploy reads the production secrets', async () => {
     const env = new Proxy(values, {get: (target, name) => (reads.add(String(name)), target[String(name)]), ownKeys: (target) => (reads.add('*'), Reflect.ownKeys(target))});
     return {env, reads};
   };
-  const quiet = {git: () => ({ok: false, out: ''}), run: () => 0, log: () => {}, noindex: () => true, headers: () => {}};
+  const quiet = {git: () => ({ok: false, out: ''}), run: () => 0, capture: () => ({status: 0, output: ''}), log: () => {}, noindex: () => true, headers: () => {}};
   const values = {GELPY_RELEASE_TOKEN: 'r', GELPY_WIKI_TOKEN: 'w'};
   for (const [command, branch] of [['build', 'claude/x'], ['preview', 'claude/x'], ['deploy', 'claude/x'], ['build', 'main'], ['preview', 'main']]) {
     const {env, reads} = watched({...values, WORKERS_CI_BRANCH: branch});

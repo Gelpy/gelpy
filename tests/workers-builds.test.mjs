@@ -13,6 +13,7 @@ import {
   changedSinceBase,
   createRelease,
   credentialPresence,
+  defaultCapture,
   defaultRun,
   fallbackScope,
   hasSection,
@@ -272,10 +273,31 @@ test('main deploy: other branches never deploy', async () => {
 
 test('main preview: PR branches preview only with noindex; main never previews', async () => {
   const ran = [];
-  assert.equal(await main(['preview', '--branch', 'feature'], {env: {}, run: (s) => (ran.push(s), 0), log: () => {}, noindex: () => true}), 0);
+  const withUrl = 'Preview: feature (updated)\nhttps://feature-gelpy-docs.example.workers.dev\n';
+  assert.equal(await main(['preview', '--branch', 'feature'], {env: {}, capture: (s) => (ran.push(s), {status: 0, output: withUrl}), log: () => {}, noindex: () => true}), 0);
   assert.deepEqual(ran.map((s) => [s.cmd, ...s.args].join(' ')), ['npx wrangler preview --config wrangler.jsonc']);
   const log = [];
-  assert.equal(await main(['preview', '--branch', 'feature'], {env: {}, run: () => assert.fail('no run'), log: (line) => log.push(line), noindex: () => false}), 1);
+  assert.equal(await main(['preview', '--branch', 'feature'], {env: {}, capture: () => assert.fail('no run'), log: (line) => log.push(line), noindex: () => false}), 1);
   assert.match(log[0], /no X-Robots-Tag: noindex/);
-  assert.equal(await main(['preview', '--branch', 'main'], {env: {}, run: () => assert.fail('no run'), log: () => {}}), 0);
+  assert.equal(await main(['preview', '--branch', 'main'], {env: {}, capture: () => assert.fail('no run'), log: () => {}}), 0);
+});
+
+test('main preview: red when wrangler uploads a preview with no URL, or fails', async () => {
+  const log = [];
+  const noUrl = 'Preview: feature (updated)\nNote: This Preview deployment has no active URLs.\n';
+  assert.equal(await main(['preview', '--branch', 'feature'], {env: {}, capture: () => ({status: 0, output: noUrl}), log: (line) => log.push(line), noindex: () => true}), 1);
+  assert.match(log.at(-1), /reports no active URLs; turn on the Worker's Preview URLs setting/);
+  assert.equal(await main(['preview', '--branch', 'feature'], {env: {}, capture: () => ({status: 3, output: 'boom'}), log: () => {}, noindex: () => true}), 3);
+});
+
+test('defaultCapture echoes and returns the output, and reports an unknown command', () => {
+  const out = [];
+  const err = [];
+  const sink = {stdout: {write: (text) => out.push(text)}, stderr: {write: (text) => err.push(text)}};
+  assert.deepEqual(defaultCapture({cmd: 'node', args: ['-e', 'console.log("hi"); console.error("warn")']}, sink), {status: 0, output: 'hi\nwarn\n'});
+  assert.deepEqual([out.join(''), err.join('')], ['hi\n', 'warn\n']);
+  const missing = defaultCapture({cmd: 'no-such-command-gelpy', args: []}, sink);
+  assert.equal(missing.status, 127);
+  assert.match(missing.output, /no-such-command-gelpy is not in/);
+  assert.equal(defaultCapture({cmd: 'false', args: []}, sink).status, 1);
 });
