@@ -23,4 +23,4 @@ Este sitio reúne la documentación pública de ingeniería de Gelpy. Cubre la a
 
 - La carpeta `docs/` del repositorio [Gelpy/gelpy](https://github.com/Gelpy/gelpy) es la fuente.
 - El inglés es el idioma por defecto. Las páginas en español viven en `i18n/es`.
-- Cada push a `main` construye y publica el sitio. El build falla ante cualquier enlace roto.
+- Cada merge a `main` construye y publica el sitio, y refleja estas páginas en la wiki del repositorio. El build falla ante cualquier enlace roto.

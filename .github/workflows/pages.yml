@@ -1,10 +1,17 @@
 name: Pages
 
+# Paused (ADR-0018, third amendment, Work Item 003-025): Cloudflare Workers Builds builds the
+# docs and the gelpy-docs Worker serves docs.gelpy.app; `npm run ci:local` runs every test
+# before a push. This workflow runs only by hand.
+# FAILOVER: restore these triggers, point docs.gelpy.app back to GitHub Pages, and turn off the
+# Workers Builds connection of gelpy-docs to use GitHub Actions again.
+# on:
+#   push:
+#     branches: [main]
+#   pull_request:
+#     branches: [main]
+#   workflow_dispatch:
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -35,7 +42,7 @@ jobs:
 
       - name: Install dependencies
         env:
-          NODE_AUTH_TOKEN: ${{ env.TRUSTED_SOURCE == 'true' && secrets.GELPY_PACKAGES_TOKEN || '' }}
+          GELPY_PACKAGES_TOKEN: ${{ env.TRUSTED_SOURCE == 'true' && secrets.GELPY_PACKAGES_TOKEN || '' }}
         run: npm ci
 
       - name: Require the brand theme

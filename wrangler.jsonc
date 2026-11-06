@@ -1,0 +1,25 @@
+// The engineering docs as Workers Static Assets with no Worker script (ADR-0018, Work Item
+// 003-025). One Worker, gelpy-docs, serves docs.gelpy.app. Workers Builds runs it through
+// scripts/workers-builds.mjs: main deploys it, and every PR branch gets a Preview deployment
+// of the same Worker on workers.dev, whose build sends X-Robots-Tag: noindex.
+// `wrangler deploy` creates the custom domain's DNS record and certificate; the record must not
+// already exist as a GitHub Pages CNAME.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "gelpy-docs",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    // Docusaurus output, with trailingSlash: false: /architecture/overview is overview.html,
+    // and each locale root is <locale>/index.html.
+    "directory": "build",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+  "workers_dev": false,
+  // Workers Builds previews: the site has no bindings, so the previews block is empty.
+  "preview_urls": true,
+  "previews": {},
+  // The site is assets-only, so Workers Logs would record nothing.
+  "observability": { "enabled": false },
+  "routes": [{ "pattern": "docs.gelpy.app", "custom_domain": true }]
+}

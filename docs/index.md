@@ -23,4 +23,4 @@ This site holds Gelpy's public engineering documentation. It covers high-level a
 
 - The `docs/` folder in the [Gelpy/gelpy](https://github.com/Gelpy/gelpy) repository is the source.
 - English is the default language. Spanish pages live under `i18n/es`.
-- Every push to `main` builds and publishes the site. The build fails on any broken link.
+- Every merge to `main` builds and publishes the site, and mirrors these pages into the repository's wiki. The build fails on any broken link.

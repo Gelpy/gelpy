@@ -63,7 +63,7 @@ flowchart LR
 | API | Lógica de negocio, autenticación y acceso a datos | Node.js, Express, TypeScript, Zod, cliente de Prisma |
 | Base de datos | Fuente de verdad de los datos | PostgreSQL gestionado con migraciones SQL |
 | Sistema de diseño | Tokens de diseño y assets compartidos | Tokens de diseño, assets SVG |
-| Docs de ingeniería | Este sitio | Docusaurus en GitHub Pages |
+| Docs de ingeniería | Este sitio | Docusaurus en Cloudflare Workers |
 
 ## Plataforma de ejecución
 

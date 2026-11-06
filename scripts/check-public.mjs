@@ -8,6 +8,11 @@
 //
 // Usage: node scripts/check-public.mjs [path ...]
 // Without paths it scans DEFAULT_TARGETS from the current directory.
+//
+// Live check (Work Item 003-025): node scripts/check-public.mjs --live <origin>
+// fetches / and /es/ and passes when both answer 200 with HTML in their
+// language from Cloudflare, not from GitHub Pages. cf:deploy runs it after
+// every deploy; it retries while a new custom domain's certificate is issued.
 
 import {readdirSync, readFileSync, statSync, existsSync} from 'node:fs';
 import {join, relative, resolve} from 'node:path';
@@ -170,6 +175,61 @@ export function main(args = process.argv.slice(2), {root = process.cwd(), log = 
   return 0;
 }
 
+export const LIVE_PATHS = [
+  {path: '/', lang: 'en'},
+  {path: '/es/', lang: 'es'},
+];
+
+/** Returns null when one live response is the docs Worker serving the page, or the reason it is not. */
+export function liveProblem({status, headers, body}, lang) {
+  if (status !== 200) return `status ${status}`;
+  if (headers.get('x-github-request-id')) return 'served by GitHub Pages';
+  if (!(headers.get('server') ?? '').toLowerCase().includes('cloudflare')) return 'not served by Cloudflare';
+  if (!(headers.get('content-type') ?? '').includes('text/html')) return 'not HTML';
+  if (!body.includes(`<html lang="${lang}"`)) return `no <html lang="${lang}">`;
+  return null;
+}
+
+const pause = (ms) => new Promise((done) => setTimeout(done, ms));
+
+/** Checks every live path, with retries, and returns an exit code. */
+export async function checkLive(origin, {request = globalThis.fetch, wait = pause, attempts = 6, delayMs = 10_000, log = console.log, error = console.error} = {}) {
+  let failed = 0;
+  for (const {path, lang} of LIVE_PATHS) {
+    const url = new URL(path, origin).href;
+    let problem = 'not checked';
+    for (let attempt = 1; attempt <= attempts; attempt += 1) {
+      try {
+        const response = await request(url, {redirect: 'follow'});
+        problem = liveProblem({status: response.status, headers: response.headers, body: await response.text()}, lang);
+      } catch (failure) {
+        problem = `network error: ${failure.message}`;
+      }
+      if (!problem) break;
+      if (attempt < attempts) await wait(delayMs);
+    }
+    if (problem) {
+      failed += 1;
+      error(`check:public --live: ${url}: ${problem}`);
+    } else {
+      log(`check:public --live: ${url}: 200 from Cloudflare (${lang})`);
+    }
+  }
+  return failed === 0 ? 0 : 1;
+}
+
+/** The command line: --live <origin>, or the content scan. */
+export async function cli(args = process.argv.slice(2), options = {}) {
+  if (args[0] === '--live') {
+    if (!args[1]) {
+      (options.error ?? console.error)('Usage: node scripts/check-public.mjs --live <origin>');
+      return 2;
+    }
+    return checkLive(args[1], options);
+  }
+  return main(args, options);
+}
+
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
-  process.exitCode = main();
+  process.exitCode = await cli();
 }

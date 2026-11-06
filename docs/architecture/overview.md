@@ -63,7 +63,7 @@ flowchart LR
 | API | Business logic, authentication, and data access | Node.js, Express, TypeScript, Zod, Prisma client |
 | Database | System of record | Managed PostgreSQL with SQL migrations |
 | Design system | Shared design tokens and assets | Design tokens, SVG assets |
-| Engineering docs | This site | Docusaurus on GitHub Pages |
+| Engineering docs | This site | Docusaurus on Cloudflare Workers |
 
 ## Runtime platform
 
