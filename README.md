@@ -42,7 +42,7 @@ One Worker, `gelpy-docs`, connected to this repo with production branch `main` a
 
 - `GELPY_PACKAGES_TOKEN` (read-only packages) is the only secret of the preview settings.
 - `GELPY_RELEASE_TOKEN` and `GELPY_WIKI_TOKEN` live only in the production settings. Without them, the release or the wiki sync is skipped with a log line.
-- The release is created only when `CHANGELOG.md` has a section for the version in `package.json`; release PRs come from `release/vX.Y.Z`.
+- Feature PRs merge straight to `main`, so the release is created only when `CHANGELOG.md` has a section for the version in `package.json` (release PRs come from `release/vX.Y.Z`); otherwise the step logs a skip. An API error, an empty section, or a missing commit SHA turns the build red.
 - The wiki is a generated mirror of `docs/` (`npm run wiki:build`). The sync is idempotent, logs page names only, and removes pages that `docs/` no longer has.
 - `.github/workflows/pages.yml` is the failover: it runs only by hand, with its original triggers under `# FAILOVER`.
 

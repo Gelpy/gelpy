@@ -176,8 +176,11 @@ async function apiError(response) {
 }
 
 // Creates the release v<version> at the deployed commit, which creates the tag. A release that
-// already exists passes (a rebuild of the same version). Any API error fails the step, so a good
-// deploy whose release failed shows as a red build. The token is sent only in the Authorization
+// already exists passes (a rebuild of the same version). This repo merges features straight to
+// main, so a CHANGELOG.md with no `## [<version>]` section means the version is not released yet:
+// the step logs that and passes (Master decision of 2026-11-06, Work Items 003-025 and 003-032).
+// Everything else fails the step, so a good deploy whose release failed shows as a red build: an
+// API error, an empty section, or a missing WORKERS_CI_COMMIT_SHA. The token is sent only in the Authorization
 // header and never logged, in whole or in part.
 export async function createRelease({env, version = readVersion(), changelog = () => readFileSync('CHANGELOG.md', 'utf8'), request = globalThis.fetch, log = console.log}) {
   const token = env[RELEASE_TOKEN];
