@@ -99,6 +99,8 @@ test('detects personal data and reference project terms', () => {
 test('URL allowlist', () => {
   assert.equal(urlProblem('https://docs.gelpy.app/es/'), null);
   assert.equal(urlProblem('https://www.unicode.org/cldr/'), null);
+  assert.equal(urlProblem('https://edgardo-gutierrez.com'), null);
+  assert.equal(urlProblem('https://other.edgardo-gutierrez.com'), 'host is not on the public allowlist');
   assert.equal(urlProblem('https://github.com/Gelpy/gelpy'), null);
   assert.equal(urlProblem('https://github.com/Gelpy/gelpy/edit/main/docs'), null);
   assert.match(urlProblem('https://github.com/Gelpy/gelpy-api'), /outside Gelpy\/gelpy/);

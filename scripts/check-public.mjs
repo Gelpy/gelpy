@@ -8,6 +8,11 @@
 //
 // Usage: node scripts/check-public.mjs [path ...]
 // Without paths it scans DEFAULT_TARGETS from the current directory.
+//
+// Live check (Work Item 003-025): node scripts/check-public.mjs --live <origin>
+// fetches / and /es/ and passes when both answer 200 with HTML in their
+// language from Cloudflare, not from GitHub Pages. cf:deploy runs it after
+// every deploy; it retries while a new custom domain's certificate is issued.
 
 import {readdirSync, readFileSync, statSync, existsSync} from 'node:fs';
 import {join, relative, resolve} from 'node:path';
@@ -23,13 +28,16 @@ export const DEFAULT_TARGETS = [
 
 const SKIP_DIRS = new Set(['node_modules', '.git', '.docusaurus', 'build']);
 
-// Hosts that public content may link to: Gelpy's public hosts, plus public
-// reference sites that Docusaurus writes into its generated translation files.
+// Hosts that public content may link to: Gelpy's public hosts, the public
+// website of the person who leads Gelpy's engineering (owner request of
+// 2026-11-06), plus public reference sites that Docusaurus writes into its
+// generated translation files.
 // GitHub links must stay inside the public Gelpy/gelpy repository.
 const ALLOWED_HOSTS = new Set([
   'gelpy.app',
   'www.gelpy.app',
   'docs.gelpy.app',
+  'edgardo-gutierrez.com',
   'www.unicode.org',
 ]);
 const ALLOWED_GITHUB_PREFIX = '/gelpy/gelpy';
@@ -170,6 +178,100 @@ export function main(args = process.argv.slice(2), {root = process.cwd(), log = 
   return 0;
 }
 
+export const LIVE_PATHS = [
+  {path: '/', lang: 'en'},
+  {path: '/es/', lang: 'es'},
+];
+
+/** Returns null when one live response is the docs Worker serving the page, or the reason it is not. */
+export function liveProblem({status, headers, body}, lang) {
+  if (status !== 200) return `status ${status}`;
+  if (headers.get('x-github-request-id')) return 'served by GitHub Pages';
+  if (!(headers.get('server') ?? '').toLowerCase().includes('cloudflare')) return 'not served by Cloudflare';
+  if (!(headers.get('content-type') ?? '').includes('text/html')) return 'not HTML';
+  if (!body.includes(`<html lang="${lang}"`)) return `no <html lang="${lang}">`;
+  return null;
+}
+
+const pause = (ms) => new Promise((done) => setTimeout(done, ms));
+
+// The live check waits up to 5 minutes per path (30 x 10 s): a new custom domain needs its
+// certificate issued and the old record's TTL to run out before the Worker answers. Each request,
+// body included, is aborted after LIVE_TIMEOUT_MS, and no attempt starts after the path's
+// LIVE_WINDOW_MS deadline, so a stalled origin cannot hold the deploy past the window.
+export const LIVE_ATTEMPTS = 30;
+export const LIVE_DELAY_MS = 10_000;
+export const LIVE_TIMEOUT_MS = 10_000;
+export const LIVE_WINDOW_MS = 300_000;
+
+/** What one attempt saw, for the log: status and server, or the network or TLS error. */
+export function describeAttempt({response, failure}) {
+  if (failure) {
+    const code = failure.cause?.code ?? failure.code ?? '';
+    const tls = /CERT|TLS|SSL|VERIFY|SELF_SIGNED|HANDSHAKE/i.test(`${code} ${failure.cause?.message ?? ''}`);
+    return `${tls ? 'TLS error' : 'network error'}: ${failure.message}${code ? ` (${code})` : ''}`;
+  }
+  return `status ${response.status}, server ${response.headers.get('server') ?? 'none'}`;
+}
+
+/** Checks every live path, with retries, and returns an exit code. */
+export async function checkLive(origin, {
+  request = globalThis.fetch,
+  wait = pause,
+  attempts = LIVE_ATTEMPTS,
+  delayMs = LIVE_DELAY_MS,
+  timeoutMs = LIVE_TIMEOUT_MS,
+  windowMs = LIVE_WINDOW_MS,
+  now = Date.now,
+  log = console.log,
+  error = console.error,
+} = {}) {
+  let failed = 0;
+  for (const {path, lang} of LIVE_PATHS) {
+    const url = new URL(path, origin).href;
+    const deadline = now() + windowMs;
+    let problem = 'not checked';
+    for (let attempt = 1; attempt <= attempts; attempt += 1) {
+      let seen;
+      try {
+        const response = await request(url, {redirect: 'follow', signal: AbortSignal.timeout(timeoutMs)});
+        seen = describeAttempt({response});
+        problem = liveProblem({status: response.status, headers: response.headers, body: await response.text()}, lang);
+      } catch (failure) {
+        seen = describeAttempt({failure});
+        problem = seen;
+      }
+      if (!problem) break;
+      log(`check:public --live: ${url}: attempt ${attempt}/${attempts}: ${seen === problem ? seen : `${seen}; ${problem}`}`);
+      if (attempt === attempts) break;
+      if (now() + delayMs >= deadline) {
+        problem = `${problem} (gave up: the ${windowMs / 1000} s window ended)`;
+        break;
+      }
+      await wait(delayMs);
+    }
+    if (problem) {
+      failed += 1;
+      error(`check:public --live: ${url}: ${problem}`);
+    } else {
+      log(`check:public --live: ${url}: 200 from Cloudflare (${lang})`);
+    }
+  }
+  return failed === 0 ? 0 : 1;
+}
+
+/** The command line: --live <origin>, or the content scan. */
+export async function cli(args = process.argv.slice(2), options = {}) {
+  if (args[0] === '--live') {
+    if (!args[1]) {
+      (options.error ?? console.error)('Usage: node scripts/check-public.mjs --live <origin>');
+      return 2;
+    }
+    return checkLive(args[1], options);
+  }
+  return main(args, options);
+}
+
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
-  process.exitCode = main();
+  process.exitCode = await cli();
 }

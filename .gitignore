@@ -7,3 +7,6 @@ build/
 Thumbs.db
 .docusaurus/
 .cache-loader/
+.wrangler/
+.tools/
+ci-evidence.md

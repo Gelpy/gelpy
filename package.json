@@ -15,7 +15,15 @@
     "clear": "docusaurus clear",
     "check:public": "node scripts/check-public.mjs",
     "test": "node --test --experimental-test-coverage --test-coverage-include=scripts/** --test-coverage-lines=90 --test-coverage-branches=90 --test-coverage-functions=90 \"tests/**/*.test.mjs\"",
-    "check:brand": "node scripts/check-brand.mjs"
+    "check:brand": "node scripts/check-brand.mjs",
+    "check:public:live": "node scripts/check-public.mjs --live https://docs.gelpy.app",
+    "wiki:build": "node scripts/build-wiki.mjs",
+    "deploy:dry-run": "wrangler deploy --dry-run --config wrangler.jsonc",
+    "cf:build": "node scripts/workers-builds.mjs build",
+    "cf:deploy": "node scripts/workers-builds.mjs deploy",
+    "cf:preview": "node scripts/workers-builds.mjs preview",
+    "ci:local": "npm audit --audit-level=high && npm test && npm run check:public && npm run check:brand && node scripts/build-wiki.mjs && npm run build && npm run deploy:dry-run",
+    "ci:evidence": "node scripts/ci-evidence.mjs"
   },
   "dependencies": {
     "@docusaurus/core": "3.10.2",
@@ -46,5 +54,8 @@
   },
   "optionalDependencies": {
     "@gelpy/design-system": "0.1.0"
+  },
+  "devDependencies": {
+    "wrangler": "4.156.2"
   }
 }
