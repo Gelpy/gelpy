@@ -4,7 +4,7 @@ import {mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 
-import {buildWiki, convertAdmonitions, listDocs, main, pageName, rewriteLinks, splitFrontMatter, writePages} from '../scripts/build-wiki.mjs';
+import {admonitionStart, buildWiki, convertAdmonitions, listDocs, main, pageName, rewriteLinks, splitFrontMatter, writePages} from '../scripts/build-wiki.mjs';
 import {scanText} from '../scripts/check-public.mjs';
 
 function site(files) {
@@ -38,6 +38,10 @@ test('convertAdmonitions turns notes into block quotes', () => {
   assert.equal(convertAdmonitions('a\n:::note Status\n\nIn progress.\n\n:::\nb'), 'a\n> **Status**\n>\n> In progress.\nb');
   assert.equal(convertAdmonitions(':::warning\nCareful.\n:::'), '> **Warning**\n> Careful.');
   assert.throws(() => convertAdmonitions(':::tip\nOpen'), /not closed/);
+  assert.deepEqual(admonitionStart(':::note  Status '), {kind: 'note', title: 'Status'});
+  assert.equal(admonitionStart(':::details Title'), null);
+  assert.equal(admonitionStart('text'), null);
+  assert.equal(convertAdmonitions(':::details\nkept'), ':::details\nkept');
 });
 
 test('rewriteLinks maps relative doc links to page names and fails on a missing doc', () => {

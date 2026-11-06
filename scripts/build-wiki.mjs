@@ -48,15 +48,30 @@ export function splitFrontMatter(text) {
   };
 }
 
+const ADMONITIONS = new Set(['note', 'tip', 'info', 'warning', 'danger', 'caution']);
+
+/**
+ * Reads an admonition's opening line, `:::note` or `:::note Title`, or returns
+ * null. Plain string scanning, so it runs in linear time (SonarCloud S8786).
+ */
+export function admonitionStart(line) {
+  if (!line.startsWith(':::')) return null;
+  const rest = line.slice(3);
+  const cut = rest.indexOf(' ');
+  const kind = cut === -1 ? rest : rest.slice(0, cut);
+  if (!ADMONITIONS.has(kind)) return null;
+  return {kind, title: cut === -1 ? '' : rest.slice(cut + 1).trim()};
+}
+
 /** Turns `:::note Title` ... `:::` blocks into block quotes with a bold title. */
 export function convertAdmonitions(body) {
   const out = [];
   let open = false;
   for (const line of body.split('\n')) {
-    const start = /^:::(note|tip|info|warning|danger|caution)(?:\s+(.*))?$/.exec(line);
+    const start = admonitionStart(line);
     if (!open && start) {
       open = true;
-      out.push(`> **${start[2]?.trim() || capitalize(start[1])}**`);
+      out.push(`> **${start.title || capitalize(start.kind)}**`);
     } else if (open && line === ':::') {
       open = false;
       while (out.at(-1) === '>') out.pop();

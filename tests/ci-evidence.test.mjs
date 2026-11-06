@@ -21,6 +21,8 @@ test('the parsers read node --test, npm audit, and build-wiki output', () => {
   assert.equal(parseAudit('x\n5 low severity vulnerabilities\n'), '5 low severity vulnerabilities');
   assert.equal(parseAudit('found 0 vulnerabilities'), 'found 0 vulnerabilities');
   assert.equal(parseAudit('clean'), null);
+  assert.equal(parseAudit('Depends on vulnerable versions of x\nsome vulnerability notes\n1 vulnerability (1 low)'), '1 vulnerability (1 low)');
+  assert.equal(parseAudit(' vulnerabilities'), null);
   assert.equal(parseWiki('build-wiki: 16 pages: Home'), 16);
   assert.equal(parseWiki(''), null);
 });

@@ -49,10 +49,22 @@ export function parseCoverage(text) {
   return functions ? {lines, branches, functions} : null;
 }
 
-/** npm audit: "5 low severity vulnerabilities", or "found 0 vulnerabilities". */
+const isCount = (word) => Boolean(word) && [...word].every((char) => char >= '0' && char <= '9');
+
+/**
+ * npm audit: "5 low severity vulnerabilities", or "found 0 vulnerabilities".
+ * Plain string scanning, so it runs in linear time (SonarCloud S8786).
+ */
 export function parseAudit(text) {
-  const line = text.split('\n').map((entry) => entry.trim()).find((entry) => /\d+ (?:[a-z]+ severity )?vulnerabilit(?:y|ies)/.test(entry));
-  return line ?? null;
+  for (const raw of text.split('\n')) {
+    const line = raw.trim();
+    const at = line.indexOf(' vulnerabilit');
+    if (at === -1) continue;
+    const words = line.slice(0, at).split(' ');
+    const count = words.at(-1) === 'severity' ? words.at(-3) : words.at(-1);
+    if (isCount(count)) return line;
+  }
+  return null;
 }
 
 /** build-wiki: "build-wiki: 16 pages: Home, ...". */
