@@ -64,3 +64,14 @@ test('main runs the steps, stops at the first failure, and writes the evidence',
   assert.deepEqual(ran, ['a', 'b']);
   assert.match(writes[1].text, /\| `c` \| not run \|/);
 });
+
+test('parseAudit stays linear on long adversarial lines (SonarCloud S8786)', () => {
+  const start = performance.now();
+  const digits = '1'.repeat(200_000);
+  const long = `${digits} ${'a'.repeat(200_000)} severity vulnerabilit`;
+  assert.equal(parseAudit(long), long);
+  assert.equal(parseAudit(`x${'a'.repeat(200_000)} severity vulnerabilit`), null);
+  assert.equal(parseAudit(`${digits} ${'a '.repeat(100_000)}vulnerabilityx`), null);
+  assert.equal(parseAudit(`${digits} low severity vulnerabilities`), `${digits} low severity vulnerabilities`);
+  assert.ok(performance.now() - start < 1000, 'well under a second');
+});

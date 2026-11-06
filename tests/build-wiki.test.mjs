@@ -117,3 +117,12 @@ test('main lists the pages, writes them, and fails on a broken doc', () => {
     rmSync(broken, {recursive: true, force: true});
   }
 });
+
+test('admonitionStart stays linear on long adversarial lines (SonarCloud S8786)', () => {
+  const start = performance.now();
+  const spaces = ' '.repeat(200_000);
+  assert.deepEqual(admonitionStart(`:::note${spaces}Title${spaces}`), {kind: 'note', title: 'Title'});
+  assert.equal(admonitionStart(`:::${'n'.repeat(200_000)}`), null);
+  assert.equal(admonitionStart(`:::note${spaces}`)?.title, '');
+  assert.ok(performance.now() - start < 1000, 'well under a second');
+});
