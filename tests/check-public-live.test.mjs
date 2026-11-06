@@ -1,7 +1,9 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 
-import {LIVE_ATTEMPTS, LIVE_DELAY_MS, LIVE_PATHS, checkLive, cli, describeAttempt, liveProblem} from '../scripts/check-public.mjs';
+import {createServer} from 'node:http';
+
+import {LIVE_ATTEMPTS, LIVE_DELAY_MS, LIVE_PATHS, LIVE_TIMEOUT_MS, LIVE_WINDOW_MS, checkLive, cli, describeAttempt, liveProblem} from '../scripts/check-public.mjs';
 
 const page = (lang, headers = {}, status = 200) => ({
   status,
@@ -101,4 +103,45 @@ test('every failed attempt is logged with what it saw', async () => {
     'check:public --live: https://docs.gelpy.app/: 200 from Cloudflare (en)',
     'check:public --live: https://docs.gelpy.app/es/: 200 from Cloudflare (es)',
   ]);
+});
+
+test('a stalled body is aborted by the per-request timeout (real fetch, local server)', async () => {
+  const server = createServer((req, res) => {
+    res.writeHead(200, {'content-type': 'text/html', 'server': 'cloudflare'});
+    res.write('<html lang="en">');
+    // Never ends the body: only the timeout can finish this request.
+  });
+  await new Promise((done) => server.listen(0, '127.0.0.1', done));
+  const origin = `http://127.0.0.1:${server.address().port}`;
+  const log = [];
+  const errors = [];
+  const start = Date.now();
+  try {
+    const status = await checkLive(origin, {wait: async () => {}, attempts: 2, timeoutMs: 200, log: (line) => log.push(line), error: (line) => errors.push(line)});
+    assert.equal(status, 1);
+  } finally {
+    server.closeAllConnections();
+    server.close();
+  }
+  assert.ok(Date.now() - start < 5000, 'four 200 ms timeouts, not a hang');
+  assert.equal(log.length, 4);
+  assert.match(log[0], /attempt 1\/2: network error: .*(abort|timeout)/i);
+  assert.equal(errors.length, 2);
+});
+
+test('no attempt starts after the per-path window ends', async () => {
+  assert.equal(LIVE_TIMEOUT_MS, 10_000);
+  assert.equal(LIVE_WINDOW_MS, 300_000);
+  let clock = 0;
+  let calls = 0;
+  const errors = [];
+  const request = async () => {
+    calls += 1;
+    clock += 40_000; // A slow attempt.
+    return page('en', {}, 503);
+  };
+  const status = await checkLive('https://docs.gelpy.app', {request, now: () => clock, wait: async (ms) => { clock += ms; }, log: () => {}, error: (line) => errors.push(line)});
+  assert.equal(status, 1);
+  assert.equal(calls, 12, '6 attempts per path fit in 300 s at 50 s each');
+  assert.match(errors[0], /status 503 \(gave up: the 300 s window ended\)$/);
 });

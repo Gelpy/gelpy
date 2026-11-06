@@ -196,9 +196,13 @@ export function liveProblem({status, headers, body}, lang) {
 const pause = (ms) => new Promise((done) => setTimeout(done, ms));
 
 // The live check waits up to 5 minutes per path (30 x 10 s): a new custom domain needs its
-// certificate issued and the old record's TTL to run out before the Worker answers.
+// certificate issued and the old record's TTL to run out before the Worker answers. Each request,
+// body included, is aborted after LIVE_TIMEOUT_MS, and no attempt starts after the path's
+// LIVE_WINDOW_MS deadline, so a stalled origin cannot hold the deploy past the window.
 export const LIVE_ATTEMPTS = 30;
 export const LIVE_DELAY_MS = 10_000;
+export const LIVE_TIMEOUT_MS = 10_000;
+export const LIVE_WINDOW_MS = 300_000;
 
 /** What one attempt saw, for the log: status and server, or the network or TLS error. */
 export function describeAttempt({response, failure}) {
@@ -211,15 +215,26 @@ export function describeAttempt({response, failure}) {
 }
 
 /** Checks every live path, with retries, and returns an exit code. */
-export async function checkLive(origin, {request = globalThis.fetch, wait = pause, attempts = LIVE_ATTEMPTS, delayMs = LIVE_DELAY_MS, log = console.log, error = console.error} = {}) {
+export async function checkLive(origin, {
+  request = globalThis.fetch,
+  wait = pause,
+  attempts = LIVE_ATTEMPTS,
+  delayMs = LIVE_DELAY_MS,
+  timeoutMs = LIVE_TIMEOUT_MS,
+  windowMs = LIVE_WINDOW_MS,
+  now = Date.now,
+  log = console.log,
+  error = console.error,
+} = {}) {
   let failed = 0;
   for (const {path, lang} of LIVE_PATHS) {
     const url = new URL(path, origin).href;
+    const deadline = now() + windowMs;
     let problem = 'not checked';
     for (let attempt = 1; attempt <= attempts; attempt += 1) {
       let seen;
       try {
-        const response = await request(url, {redirect: 'follow'});
+        const response = await request(url, {redirect: 'follow', signal: AbortSignal.timeout(timeoutMs)});
         seen = describeAttempt({response});
         problem = liveProblem({status: response.status, headers: response.headers, body: await response.text()}, lang);
       } catch (failure) {
@@ -228,7 +243,12 @@ export async function checkLive(origin, {request = globalThis.fetch, wait = paus
       }
       if (!problem) break;
       log(`check:public --live: ${url}: attempt ${attempt}/${attempts}: ${seen === problem ? seen : `${seen}; ${problem}`}`);
-      if (attempt < attempts) await wait(delayMs);
+      if (attempt === attempts) break;
+      if (now() + delayMs >= deadline) {
+        problem = `${problem} (gave up: the ${windowMs / 1000} s window ended)`;
+        break;
+      }
+      await wait(delayMs);
     }
     if (problem) {
       failed += 1;
