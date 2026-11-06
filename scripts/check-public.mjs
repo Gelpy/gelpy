@@ -195,20 +195,39 @@ export function liveProblem({status, headers, body}, lang) {
 
 const pause = (ms) => new Promise((done) => setTimeout(done, ms));
 
+// The live check waits up to 5 minutes per path (30 x 10 s): a new custom domain needs its
+// certificate issued and the old record's TTL to run out before the Worker answers.
+export const LIVE_ATTEMPTS = 30;
+export const LIVE_DELAY_MS = 10_000;
+
+/** What one attempt saw, for the log: status and server, or the network or TLS error. */
+export function describeAttempt({response, failure}) {
+  if (failure) {
+    const code = failure.cause?.code ?? failure.code ?? '';
+    const tls = /CERT|TLS|SSL|VERIFY|SELF_SIGNED|HANDSHAKE/i.test(`${code} ${failure.cause?.message ?? ''}`);
+    return `${tls ? 'TLS error' : 'network error'}: ${failure.message}${code ? ` (${code})` : ''}`;
+  }
+  return `status ${response.status}, server ${response.headers.get('server') ?? 'none'}`;
+}
+
 /** Checks every live path, with retries, and returns an exit code. */
-export async function checkLive(origin, {request = globalThis.fetch, wait = pause, attempts = 6, delayMs = 10_000, log = console.log, error = console.error} = {}) {
+export async function checkLive(origin, {request = globalThis.fetch, wait = pause, attempts = LIVE_ATTEMPTS, delayMs = LIVE_DELAY_MS, log = console.log, error = console.error} = {}) {
   let failed = 0;
   for (const {path, lang} of LIVE_PATHS) {
     const url = new URL(path, origin).href;
     let problem = 'not checked';
     for (let attempt = 1; attempt <= attempts; attempt += 1) {
+      let seen;
       try {
         const response = await request(url, {redirect: 'follow'});
+        seen = describeAttempt({response});
         problem = liveProblem({status: response.status, headers: response.headers, body: await response.text()}, lang);
       } catch (failure) {
-        problem = `network error: ${failure.message}`;
+        seen = describeAttempt({failure});
+        problem = seen;
       }
       if (!problem) break;
+      log(`check:public --live: ${url}: attempt ${attempt}/${attempts}: ${seen === problem ? seen : `${seen}; ${problem}`}`);
       if (attempt < attempts) await wait(delayMs);
     }
     if (problem) {
