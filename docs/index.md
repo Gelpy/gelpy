@@ -24,3 +24,11 @@ This site holds Gelpy's public engineering documentation. It covers high-level a
 - The `docs/` folder in the [Gelpy/gelpy](https://github.com/Gelpy/gelpy) repository is the source.
 - English is the default language. Spanish pages live under `i18n/es`.
 - Every merge to `main` builds and publishes the site, and mirrors these pages into the repository's wiki. The build fails on any broken link.
+
+## Who leads this work
+
+**Edgardo Gutierrez**, Co-founder, CTO, and Forward Deployed Engineer (FDE). He leads Gelpy's engineering.
+
+Website: [edgardo-gutierrez.com](https://edgardo-gutierrez.com)
+
+Gelpy is a product of Analytic's & Code Associates S.A.C.

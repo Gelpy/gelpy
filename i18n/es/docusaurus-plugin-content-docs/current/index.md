@@ -24,3 +24,11 @@ Este sitio reúne la documentación pública de ingeniería de Gelpy. Cubre la a
 - La carpeta `docs/` del repositorio [Gelpy/gelpy](https://github.com/Gelpy/gelpy) es la fuente.
 - El inglés es el idioma por defecto. Las páginas en español viven en `i18n/es`.
 - Cada merge a `main` construye y publica el sitio, y refleja estas páginas en la wiki del repositorio. El build falla ante cualquier enlace roto.
+
+## ¿Quién está a cargo?
+
+**Edgardo Gutierrez**, Cofundador, CTO y Forward Deployed Engineer (FDE). Lidera la ingeniería de Gelpy.
+
+Sitio web: [edgardo-gutierrez.com](https://edgardo-gutierrez.com)
+
+Gelpy es un producto de Analytic's & Code Associates S.A.C.

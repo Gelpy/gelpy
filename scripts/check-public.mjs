@@ -28,13 +28,16 @@ export const DEFAULT_TARGETS = [
 
 const SKIP_DIRS = new Set(['node_modules', '.git', '.docusaurus', 'build']);
 
-// Hosts that public content may link to: Gelpy's public hosts, plus public
-// reference sites that Docusaurus writes into its generated translation files.
+// Hosts that public content may link to: Gelpy's public hosts, the public
+// website of the person who leads Gelpy's engineering (owner request of
+// 2026-11-06), plus public reference sites that Docusaurus writes into its
+// generated translation files.
 // GitHub links must stay inside the public Gelpy/gelpy repository.
 const ALLOWED_HOSTS = new Set([
   'gelpy.app',
   'www.gelpy.app',
   'docs.gelpy.app',
+  'edgardo-gutierrez.com',
   'www.unicode.org',
 ]);
 const ALLOWED_GITHUB_PREFIX = '/gelpy/gelpy';
