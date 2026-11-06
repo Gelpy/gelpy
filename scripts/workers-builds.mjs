@@ -96,15 +96,23 @@ export function productionSteps(env) {
   return [buildStep(env, 'production')];
 }
 
+// Wrangler talks to the Cloudflare API, so its steps are killed after this long and fail red
+// instead of holding the build until Workers Builds stops it.
+export const WRANGLER_TIMEOUT_MS = 300_000;
+
+// The live check bounds itself (scripts/check-public.mjs): 5 minutes per path plus one request,
+// for 2 paths. This kill limit only backs that up.
+export const LIVE_CHECK_TIMEOUT_MS = 720_000;
+
 export function deploySteps() {
   return [
-    step('Deploy (gelpy-docs)', 'npx', ['wrangler', 'deploy', '--config', WRANGLER_CONFIG]),
-    step(`Verify the live site (${ORIGIN})`, 'node', ['scripts/check-public.mjs', '--live', ORIGIN]),
+    step('Deploy (gelpy-docs)', 'npx', ['wrangler', 'deploy', '--config', WRANGLER_CONFIG], {timeoutMs: WRANGLER_TIMEOUT_MS}),
+    step(`Verify the live site (${ORIGIN})`, 'node', ['scripts/check-public.mjs', '--live', ORIGIN], {timeoutMs: LIVE_CHECK_TIMEOUT_MS}),
   ];
 }
 
 // A PR branch's Preview deployment. It refuses a build whose _headers lack noindex.
-export const PREVIEW = step('Preview deployment', 'npx', ['wrangler', 'preview', '--config', WRANGLER_CONFIG]);
+export const PREVIEW = step('Preview deployment', 'npx', ['wrangler', 'preview', '--config', WRANGLER_CONFIG], {timeoutMs: WRANGLER_TIMEOUT_MS});
 
 export function writeNoindexHeaders(root = OUTPUT_DIR) {
   writeFileSync(join(root, '_headers'), NOINDEX_HEADERS);
@@ -250,7 +258,7 @@ function defaultGit(args) {
   return {ok: result.status === 0, out: result.stdout ?? ''};
 }
 
-export function defaultRun({cmd, args, env}) {
+export function defaultRun({cmd, args, env, timeoutMs}) {
   let file;
   try {
     file = resolveCommand(cmd);
@@ -258,12 +266,13 @@ export function defaultRun({cmd, args, env}) {
     console.error(`workers-builds: ${error instanceof Error ? error.message : String(error)}`);
     return 127;
   }
-  const result = spawnSync(file, args, {stdio: 'inherit', env: childEnv(withoutSecrets(process.env), env)});
+  const result = spawnSync(file, args, {stdio: 'inherit', env: childEnv(withoutSecrets(process.env), env), timeout: timeoutMs, killSignal: 'SIGKILL'});
+  if (result.error?.code === 'ETIMEDOUT') console.error(`workers-builds: ${cmd} was killed after ${timeoutMs / 1000} s.`);
   return result.status ?? 1;
 }
 
 // Like defaultRun, but also returns what the command printed, after echoing it to the log.
-export function defaultCapture({cmd, args, env}, {stdout = process.stdout, stderr = process.stderr} = {}) {
+export function defaultCapture({cmd, args, env, timeoutMs}, {stdout = process.stdout, stderr = process.stderr} = {}) {
   let file;
   try {
     file = resolveCommand(cmd);
@@ -272,9 +281,10 @@ export function defaultCapture({cmd, args, env}, {stdout = process.stdout, stder
     stderr.write(`${message}\n`);
     return {status: 127, output: message};
   }
-  const result = spawnSync(file, args, {encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, env: childEnv(withoutSecrets(process.env), env)});
+  const result = spawnSync(file, args, {encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, env: childEnv(withoutSecrets(process.env), env), timeout: timeoutMs, killSignal: 'SIGKILL'});
   stdout.write(result.stdout ?? '');
   stderr.write(result.stderr ?? '');
+  if (result.error?.code === 'ETIMEDOUT') stderr.write(`workers-builds: ${cmd} was killed after ${timeoutMs / 1000} s.\n`);
   return {status: result.status ?? 1, output: `${result.stdout ?? ''}${result.stderr ?? ''}`};
 }
 

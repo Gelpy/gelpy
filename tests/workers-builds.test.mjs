@@ -338,3 +338,31 @@ test('createRelease sends an abort signal on both the lookup and the creation', 
   assert.ok(signals.every((signal) => signal instanceof AbortSignal && !signal.aborted));
   assert.equal(RELEASE_TIMEOUT_MS, 15_000);
 });
+
+test('wrangler and live-check steps carry a kill timeout, and a stalled step is killed red', async () => {
+  const {deploySteps, PREVIEW, WRANGLER_TIMEOUT_MS, LIVE_CHECK_TIMEOUT_MS} = await import('../scripts/workers-builds.mjs');
+  assert.equal(WRANGLER_TIMEOUT_MS, 300_000);
+  assert.equal(LIVE_CHECK_TIMEOUT_MS, 720_000);
+  assert.deepEqual(deploySteps().map((s) => s.timeoutMs), [WRANGLER_TIMEOUT_MS, LIVE_CHECK_TIMEOUT_MS]);
+  assert.equal(PREVIEW.timeoutMs, WRANGLER_TIMEOUT_MS);
+
+  const stall = {cmd: 'node', args: ['-e', 'setTimeout(() => {}, 30000)'], timeoutMs: 300};
+  const errors = [];
+  const original = console.error;
+  console.error = (line) => errors.push(line);
+  let start = Date.now();
+  try {
+    assert.equal(defaultRun(stall), 1);
+  } finally {
+    console.error = original;
+  }
+  assert.ok(Date.now() - start < 5000, 'killed at the timeout, not after 30 s');
+  assert.deepEqual(errors, ['workers-builds: node was killed after 0.3 s.']);
+
+  const err = [];
+  start = Date.now();
+  const captured = defaultCapture(stall, {stdout: {write: () => {}}, stderr: {write: (text) => err.push(text)}});
+  assert.equal(captured.status, 1);
+  assert.ok(Date.now() - start < 5000);
+  assert.deepEqual(err.filter(Boolean), ['workers-builds: node was killed after 0.3 s.\n']);
+});
