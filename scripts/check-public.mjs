@@ -237,13 +237,17 @@ export async function resolveViaDoh(host, {request = globalThis.fetch, timeoutMs
   return address;
 }
 
-/** GET url with the connection pinned to address; TLS still verifies the URL's host name. */
+/**
+ * GET url with the connection pinned to address; TLS still verifies the URL's host name. No agent
+ * (agent: false), so every call opens its own connection to that address and never reuses a
+ * keep-alive socket opened for the same host and port through another address.
+ */
 export function fetchPinned(url, address, {timeoutMs = LIVE_TIMEOUT_MS} = {}) {
   const target = new URL(url);
   const send = target.protocol === 'https:' ? httpsRequest : httpRequest;
   const lookup = (hostname, options, callback) => (options?.all ? callback(null, [{address, family: 4}]) : callback(null, address, 4));
   return new Promise((done, failed) => {
-    const req = send(target, {method: 'GET', lookup, servername: target.hostname, signal: AbortSignal.timeout(timeoutMs)}, (res) => {
+    const req = send(target, {method: 'GET', agent: false, lookup, servername: target.hostname, signal: AbortSignal.timeout(timeoutMs)}, (res) => {
       const chunks = [];
       res.on('data', (chunk) => chunks.push(chunk));
       res.on('error', failed);

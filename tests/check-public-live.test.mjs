@@ -181,6 +181,8 @@ test('fetchPinned connects to the given address for a name the resolver does not
     res.writeHead(200, {'content-type': 'text/html', 'server': 'cloudflare', 'set-cookie': ['a=1', 'b=2']});
     res.end('<html lang="es">');
   });
+  let connections = 0;
+  server.on('connection', () => connections++);
   await new Promise((done) => server.listen(0, '127.0.0.1', done));
   const port = server.address().port;
   try {
@@ -190,11 +192,14 @@ test('fetchPinned connects to the given address for a name the resolver does not
     assert.equal(response.headers.get('set-cookie'), 'a=1, b=2');
     assert.equal(await response.text(), '<html lang="es">');
     assert.deepEqual(hosts, [`docs.example.invalid:${port}`], 'the request keeps the real Host');
+    await fetchPinned(`http://docs.example.invalid:${port}/`, '127.0.0.1');
+    assert.equal(connections, 2, 'every pinned call opens its own connection (no keep-alive reuse)');
   } finally {
     await new Promise((done) => server.close(done));
   }
-  // The same pinned address with nothing listening any more: the connection error surfaces.
-  await assert.rejects(fetchPinned(`http://docs.example.invalid:${port}/`, '127.0.0.1', {timeoutMs: 1000}), /ECONNREFUSED/);
+  // The same pinned address with nothing listening any more: the connection error surfaces. Each
+  // call opens a fresh socket (agent: false), so no keep-alive reuse turns this into a reset.
+  await assert.rejects(fetchPinned(`http://docs.example.invalid:${port}/`, '127.0.0.1', {timeoutMs: 1000}), (error) => ['ECONNREFUSED', 'ECONNRESET'].includes(error.code));
 });
 
 test('viaDoh resolves, then fetches pinned; the default checkLive uses it on a DNS miss', async () => {
