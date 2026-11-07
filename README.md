@@ -36,13 +36,17 @@ One Worker, `gelpy-docs`, connected to this repo with production branch `main` a
 
 | Command | PR branch | `main` |
 |---|---|---|
-| `npm run cf:build` | gitleaks over the PR's commits, then the build with `X-Robots-Tag: noindex` | The production build |
+| `npm run cf:build` | gitleaks over the PR's commits, then the build with `X-Robots-Tag: noindex` | gitleaks over the pushed commits (`HEAD^1..HEAD`), then the production build |
 | `npm run cf:preview` | A Preview deployment, commented on the PR | Nothing |
 | `npm run cf:deploy` | Refuses | Deploy, the live check, the GitHub Release `v<version>`, then the wiki sync |
 
 - `GELPY_PACKAGES_TOKEN` (read-only packages) is the only secret of the preview settings.
-- `GELPY_RELEASE_TOKEN` and `GELPY_WIKI_TOKEN` live only in the production settings. Without them, the release or the wiki sync is skipped with a log line.
-- Feature PRs merge straight to `main`, so the release is created only when `CHANGELOG.md` has a section for the version in `package.json` (release PRs come from `release/vX.Y.Z`); otherwise the step logs a skip. An API error, an empty section, or a missing commit SHA turns the build red.
+- `GELPY_RELEASE_TOKEN` and `GELPY_WIKI_TOKEN` live only in the production settings. Every `main` deploy needs `GELPY_RELEASE_TOKEN`: without it the build is red. Without `GELPY_WIKI_TOKEN` the wiki sync is skipped with a log line.
+- Feature PRs merge straight to `main`, so the release step reads the `package.json` version at `HEAD` against `HEAD^1` (Work Item 003-037):
+  - **Version changed** (a release PR from `release/vX.Y.Z`): the tag `v<version>` must be missing or at the deployed commit, and the release is created from its `CHANGELOG.md` section, which must exist.
+  - **Version unchanged** (a feature merge): no release. A tag on an older commit is expected and only logged.
+  - **Always red:** a missing token or commit SHA, a release whose tag is missing, an unreadable parent or version, or an API error.
+- Steps that call Cloudflare run under coreutils `timeout`, which stops their whole process tree. On a first cutover, the live check falls back to DNS over HTTPS when the build's resolver still caches the old "no such name".
 - The wiki is a generated mirror of `docs/` (`npm run wiki:build`). The sync is idempotent, logs page names only, and removes pages that `docs/` no longer has.
 - `.github/workflows/pages.yml` is the failover: it runs only by hand, with its original triggers under `# FAILOVER`.
 

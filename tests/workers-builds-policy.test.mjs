@@ -53,7 +53,7 @@ test('only main deploys, and every wrangler call names wrangler.jsonc', () => {
   assert.ok(source.includes("export const DEPLOY_BRANCH = 'main';"));
   const calls = [
     ...Object.values(scripts).flatMap((script) => script.split('&&').map((part) => part.trim())),
-    ...[...prSteps({gitleaksRange: 'a..b', env: {}}), PREVIEW, ...productionSteps({}), ...deploySteps()].map(commandOf),
+    ...[...prSteps({gitleaksRange: 'a..b', env: {}}), PREVIEW, ...productionSteps({}, {gitleaksRange: 'a..b'}), ...deploySteps()].map(commandOf),
   ].filter((command) => /\bwrangler (deploy|preview|versions)\b/.test(command));
   assert.ok(calls.length >= 3);
   for (const command of calls) assert.ok(command.includes('--config wrangler.jsonc'), command);
@@ -123,4 +123,18 @@ test('the token names appear in no other script, and no child process gets them'
     assert.ok(!readFileSync('package.json', 'utf8').includes(name));
   }
   assert.equal((source.match(/childEnv\(/g) ?? []).length, (source.match(/childEnv\(withoutSecrets\(process\.env\)/g) ?? []).length);
+});
+
+test('a main build runs the pinned gitleaks once, before the site build (Work Item 003-037 AC-2)', () => {
+  const plan = productionSteps({}, {gitleaksRange: 'HEAD^1..HEAD'}).map(commandOf);
+  const scans = plan.filter((command) => command.startsWith('.tools/bin/gitleaks git --redact'));
+  assert.equal(scans.length, 1);
+  assert.ok(plan.indexOf(scans[0]) < plan.indexOf('npm run build'), 'gitleaks runs before the build');
+  assert.equal(plan[0], 'bash scripts/install-scanners.sh .tools/bin', 'the pinned, SHA-256 checked install comes first');
+  assert.ok(source.includes("'--deepen=1'"), 'the parent is fetched for HEAD^1..HEAD');
+});
+
+test('every main deploy reads the release token, and no PR path names it (Work Item 003-037 AC-1)', () => {
+  assert.ok(source.includes("if (!token) return fail(`${RELEASE_TOKEN} is not set; every main deploy needs it (Work Item 003-037)`);"));
+  assert.ok(!source.includes('release skipped: no token'), 'a missing token is never a pass');
 });

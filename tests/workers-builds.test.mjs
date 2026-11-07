@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
+import {existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 
@@ -13,11 +13,16 @@ import {
   branchOf,
   changedSinceBase,
   createRelease,
+  deployScanRange,
+  releaseIntent,
+  resolveTag,
+  timedCommand,
+  MAX_TAG_DEPTH,
+  TIMED_OUT,
   credentialPresence,
   defaultCapture,
   defaultRun,
   fallbackScope,
-  hasSection,
   main,
   previewIsNoindex,
   readVersion,
@@ -33,6 +38,14 @@ const WIKI = ['fake', 'wiki'].join('-');
 const CHANGELOG = '# Changelog\n\n## [Unreleased]\n\n## [0.2.0] - 2026-11-06\n\n### Added\n\n- Docs on Workers.\n\n## [0.1.0]\n\n- First.\n';
 
 const response = (status, body = {}) => ({status, json: async () => body});
+// A git whose HEAD and HEAD^1 carry the given package.json versions (null: unreadable).
+const versionGit = (head, parent, {hasParent = true} = {}) => (args) => {
+  const key = args.join(' ');
+  if (key === 'rev-parse --verify --quiet HEAD^1') return {ok: hasParent, out: ''};
+  if (key === 'show HEAD:package.json') return head === null ? {ok: false, out: ''} : {ok: true, out: JSON.stringify({version: head})};
+  if (key === 'show HEAD^1:package.json') return parent === null ? {ok: false, out: ''} : {ok: true, out: JSON.stringify({version: parent})};
+  return {ok: false, out: ''};
+};
 const quietGit = (outputs = {}) => (args) => {
   const key = args.join(' ');
   for (const [prefix, value] of Object.entries(outputs)) if (key.startsWith(prefix)) return value;
@@ -83,56 +96,6 @@ test('changedSinceBase finds the merge base, or says why it cannot', () => {
 test('fallbackScope says what gitleaks covers without a base', () => {
   assert.match(fallbackScope({shallow: 'true', commits: '1'}), /1 commit\(s\), down to its shallow root/);
   assert.match(fallbackScope({shallow: 'false', commits: '200'}), new RegExp(`last ${FALLBACK_COMMITS} commits only`));
-});
-
-test('hasSection finds a released version only', () => {
-  assert.equal(hasSection(CHANGELOG, '0.2.0'), true);
-  assert.equal(hasSection(CHANGELOG, '0.1.0'), true);
-  assert.equal(hasSection(CHANGELOG, '0.3.0'), false);
-  assert.equal(hasSection('## [0.10.0]', '0.1.0'), false);
-});
-
-test('createRelease creates v<version> at the deployed commit, once', async () => {
-  const calls = [];
-  const request = async (url, options = {}) => {
-    calls.push({url, options});
-    return calls.length === 1 ? response(404) : response(201);
-  };
-  const log = [];
-  const status = await createRelease({env: {GELPY_RELEASE_TOKEN: RELEASE, WORKERS_CI_COMMIT_SHA: 'c0ffee'}, version: '0.2.0', changelog: () => CHANGELOG, request, log: (line) => log.push(line)});
-  assert.equal(status, 0);
-  assert.equal(calls[0].url, `https://api.github.com/repos/${RELEASE_REPO}/releases/tags/v0.2.0`);
-  assert.equal(calls[1].options.method, 'POST');
-  assert.deepEqual(JSON.parse(calls[1].options.body), {tag_name: 'v0.2.0', target_commitish: 'c0ffee', name: 'gelpy-docs v0.2.0', body: '### Added\n\n- Docs on Workers.\n'});
-  assert.equal(calls[1].options.headers.Authorization, `Bearer ${RELEASE}`);
-  assert.deepEqual(log, ['workers-builds: released v0.2.0 at c0ffee.']);
-  for (const line of log) assert.ok(!line.includes(RELEASE));
-});
-
-test('createRelease passes when released, skips without a token or a section, and fails on API errors', async () => {
-  const env = {GELPY_RELEASE_TOKEN: RELEASE, WORKERS_CI_COMMIT_SHA: 'c0ffee'};
-  const run = async (overrides) => {
-    const log = [];
-    const status = await createRelease({env, version: '0.2.0', changelog: () => CHANGELOG, log: (line) => log.push(line), ...overrides});
-    return {status, log: log.join('\n')};
-  };
-  assert.deepEqual(await run({request: async () => response(200)}), {status: 0, log: 'workers-builds: v0.2.0 already released.'});
-  assert.deepEqual(await run({env: {}, request: () => assert.fail('no call')}), {status: 0, log: 'workers-builds: release skipped: no token.'});
-  const unreleased = await run({version: '0.3.0', request: () => assert.fail('no call')});
-  assert.equal(unreleased.status, 0);
-  assert.match(unreleased.log, /no section for 0\.3\.0 yet; the release PR from release\/v0\.3\.0 adds it/);
-  assert.match((await run({changelog: () => '## [0.2.0]\n\n## [0.1.0]\n'})).log, /release failed: CHANGELOG\.md section for 0\.2\.0 is empty/);
-  assert.match((await run({changelog: () => assert.fail('io')})).log, /release failed: io/);
-  assert.match((await run({request: async () => response(401, {message: 'Bad credentials'})})).log, /release failed: 401 Bad credentials$/);
-  assert.match((await run({request: async () => ({status: 500, json: async () => assert.fail('no json')})})).log, /release failed: 500$/);
-  let calls = 0;
-  const createFails = async () => (++calls === 1 ? response(404) : response(422, {message: 'Validation Failed'}));
-  const failed = await run({request: createFails});
-  assert.equal(failed.status, 1);
-  assert.match(failed.log, /422 Validation Failed/);
-  assert.match((await run({env: {GELPY_RELEASE_TOKEN: RELEASE}, request: async () => response(404)})).log, /WORKERS_CI_COMMIT_SHA is not set/);
-  assert.match((await run({request: async () => assert.fail('offline')})).log, /release failed: network error: offline/);
-  assert.match((await run({request: async () => Promise.reject('down')})).log, /network error: down/);
 });
 
 test('updateWiki passes the token as a value and git an environment without secrets', () => {
@@ -235,11 +198,36 @@ test('main build: a PR branch scans, builds, and writes noindex headers', async 
   assert.equal(wrote, 0, 'no headers after a failure');
 });
 
-test('main build: main builds production with the brand required', async () => {
+test('main build: main scans the pushed commits with gitleaks, then builds production with the brand required', async () => {
   const ran = [];
-  assert.equal(await main(['build'], {env: {WORKERS_CI_BRANCH: 'main', WORKERS_CI: '1'}, git: () => assert.fail('no git'), run: (s) => (ran.push(s), 0), log: () => {}}), 0);
-  assert.deepEqual(ran.map((s) => [s.name, s.cmd, ...s.args]), [['Build (production, en and es)', 'npm', 'run', 'build']]);
-  assert.deepEqual(ran[0].env, {GELPY_REQUIRE_BRAND: '1'});
+  const log = [];
+  const git = quietGit({'rev-parse --verify --quiet HEAD^1': {ok: true, out: 'abc\n'}});
+  assert.equal(await main(['build'], {env: {WORKERS_CI_BRANCH: 'main', WORKERS_CI: '1', WORKERS_CI_COMMIT_SHA: 'c0ffee'}, git, run: (s) => (ran.push(s), 0), log: (line) => log.push(line)}), 0);
+  assert.deepEqual(ran.map((s) => s.name), ['Install gitleaks (pinned, SHA-256)', 'gitleaks', 'Build (production, en and es)']);
+  assert.ok(ran[1].args.includes('--log-opts=HEAD^1..HEAD'));
+  assert.deepEqual(ran[2].env, {GELPY_REQUIRE_BRAND: '1'});
+  assert.match(log.join('\n'), /main builds production, commit c0ffee; gitleaks mode: HEAD\^1\.\.HEAD, parent in the clone\./);
+
+  const built = [];
+  assert.equal(await main(['build'], {env: {WORKERS_CI_BRANCH: 'main'}, git, run: (s) => (built.push(s.name), s.name === 'gitleaks' ? 1 : 0), log: () => {}}), 1);
+  assert.deepEqual(built, ['Install gitleaks (pinned, SHA-256)', 'gitleaks'], 'a finding stops the build before the site build');
+});
+
+test('deployScanRange fetches the parent, or falls back to the shallow root', () => {
+  const calls = [];
+  let fetched = false;
+  const fetching = (args) => {
+    calls.push(args.join(' '));
+    if (args[0] === 'fetch') fetched = true;
+    if (args[0] === 'rev-parse' && args[1] === '--verify') return {ok: fetched, out: ''};
+    return {ok: false, out: ''};
+  };
+  assert.deepEqual(deployScanRange(fetching), {range: 'HEAD^1..HEAD', mode: 'HEAD^1..HEAD, parent fetched with git fetch --deepen=1'});
+  assert.ok(calls.includes('fetch --no-tags --quiet --deepen=1 origin'));
+  const none = quietGit({'rev-parse --is-shallow-repository': {ok: true, out: 'true\n'}, 'rev-list --count': {ok: true, out: '1\n'}});
+  const fallback = deployScanRange(none);
+  assert.equal(fallback.range, `--max-count=${FALLBACK_COMMITS}`);
+  assert.match(fallback.mode, /no parent even after git fetch --deepen=1; the clone's 1 commit\(s\)/);
 });
 
 test('main deploy: main deploys, checks live, releases, and syncs the wiki', async () => {
@@ -247,22 +235,22 @@ test('main deploy: main deploys, checks live, releases, and syncs the wiki', asy
   const order = [];
   const env = {WORKERS_CI_BRANCH: 'main', WORKERS_CI_COMMIT_SHA: 'c0ffee'};
   const request = async () => assert.fail('the release gets the request');
-  const release = async (options) => (order.push(['release', options.env === env, options.request === request]), 0);
+  const release = async (options) => (order.push(['release', options.env === env, options.request === request, options.intent.kind]), 0);
   const wiki = (options) => (order.push(['wiki', options.env === env]), 0);
-  assert.equal(await main(['deploy'], {env, run: (s) => (ran.push(s), order.push(s.name), 0), log: () => {}, request, release, wiki}), 0);
+  assert.equal(await main(['deploy'], {env, git: versionGit('0.1.0', '0.1.0'), run: (s) => (ran.push(s), order.push(s.name), 0), log: () => {}, request, release, wiki}), 0);
   assert.deepEqual(ran.map((s) => [s.cmd, ...s.args].join(' ')), [
     'npx wrangler deploy --config wrangler.jsonc',
     'node scripts/check-public.mjs --live https://docs.gelpy.app',
   ]);
-  assert.deepEqual(order.slice(2), [['release', true, true], ['wiki', true]], 'release, then wiki, after the live check');
+  assert.deepEqual(order.slice(2), [['release', true, true, 'same'], ['wiki', true]], 'release, then wiki, after the live check');
 
   const both = [];
-  assert.equal(await main(['deploy'], {env, run: () => 0, log: () => {}, release: async () => (both.push('release'), 1), wiki: () => (both.push('wiki'), 0)}), 1);
+  assert.equal(await main(['deploy'], {env, git: versionGit('0.1.0', '0.1.0'), run: () => 0, log: () => {}, release: async () => (both.push('release'), 1), wiki: () => (both.push('wiki'), 0)}), 1);
   assert.deepEqual(both, ['release', 'wiki'], 'a failed release still syncs the wiki, and the build is red');
-  assert.equal(await main(['deploy'], {env, run: () => 0, log: () => {}, release: async () => 0, wiki: () => 1}), 1);
+  assert.equal(await main(['deploy'], {env, git: versionGit('0.1.0', '0.1.0'), run: () => 0, log: () => {}, release: async () => 0, wiki: () => 1}), 1);
 
   let after = 0;
-  assert.equal(await main(['deploy'], {env, run: () => 7, log: () => {}, release: async () => after++, wiki: () => after++}), 7);
+  assert.equal(await main(['deploy'], {env, git: () => assert.fail('no git after a failed deploy'), run: () => 7, log: () => {}, release: async () => after++, wiki: () => after++}), 7);
   assert.equal(after, 0, 'a failed deploy or live check releases nothing and syncs nothing');
 });
 
@@ -303,6 +291,148 @@ test('defaultCapture echoes and returns the output, and reports an unknown comma
   assert.equal(defaultCapture({cmd: 'false', args: []}, sink).status, 1);
 });
 
+
+// --- Release step (Work Items 003-032 and 003-037) ---------------------------------------------
+
+const DEPLOYED = 'c0ffee0000000000000000000000000000000000';
+const OLDER = 'beef000000000000000000000000000000000000';
+const RELEASE_ENV = {GELPY_RELEASE_TOKEN: RELEASE, WORKERS_CI_COMMIT_SHA: DEPLOYED};
+const BUMP = {kind: 'bump', from: '0.1.0', version: '0.2.0'};
+const SAME = {kind: 'same', version: '0.2.0'};
+
+// A fake GitHub API: tag resolves to `tag` (a commit sha, 'missing', an annotated chain, or an
+// HTTP status), the release lookup answers `release`, and creation answers `created`.
+function github({tag = 'missing', release = 404, created = 201, annotated = []} = {}) {
+  const calls = [];
+  const request = async (url, options = {}) => {
+    calls.push({url, options});
+    const path = url.replace(`https://api.github.com/repos/${RELEASE_REPO}/`, '');
+    if (path.startsWith('git/ref/tags/')) {
+      if (tag === 'missing') return response(404);
+      if (typeof tag === 'number') return response(tag, {message: 'Server Error'});
+      return response(200, {object: annotated.length ? {type: 'tag', sha: annotated[0]} : {type: 'commit', sha: tag}});
+    }
+    if (path.startsWith('git/tags/')) {
+      const index = annotated.indexOf(path.slice('git/tags/'.length));
+      const next = annotated[index + 1];
+      return response(200, {object: next ? {type: 'tag', sha: next} : {type: 'commit', sha: tag}});
+    }
+    if (path.startsWith('releases/tags/')) return response(release, release === 200 ? {} : {message: 'Not Found'});
+    if (path === 'releases') return response(created, created === 201 ? {} : {message: 'Validation Failed'});
+    return assert.fail(`unexpected ${path}`);
+  };
+  return {request, calls};
+}
+
+async function release(intent, api, {env = RELEASE_ENV, changelog = () => CHANGELOG} = {}) {
+  const log = [];
+  const status = await createRelease({env, intent, changelog, request: api.request, log: (line) => log.push(line)});
+  return {status, log: log.join('\n')};
+}
+
+test('releaseIntent reads the version change from HEAD^1, fetching the parent, and never guesses', () => {
+  assert.deepEqual(releaseIntent(versionGit('0.2.0', '0.1.0')), BUMP);
+  assert.deepEqual(releaseIntent(versionGit('0.2.0', '0.2.0')), SAME);
+  const fetches = [];
+  let fetched = false;
+  const shallow = (args) => {
+    if (args[0] === 'fetch') {
+      fetches.push(args.join(' '));
+      fetched = true;
+    }
+    if (args.join(' ') === 'rev-parse --verify --quiet HEAD^1') return {ok: fetched, out: ''};
+    return versionGit('0.2.0', '0.1.0')(args);
+  };
+  assert.deepEqual(releaseIntent(shallow), BUMP);
+  assert.deepEqual(fetches, ['fetch --no-tags --quiet --deepen=1 origin']);
+  assert.match(releaseIntent(versionGit('0.2.0', '0.1.0', {hasParent: false})).reason, /HEAD\^1 is not in the clone even after git fetch --deepen=1/);
+  assert.match(releaseIntent(versionGit(null, '0.1.0')).reason, /no readable version at HEAD$/);
+  assert.match(releaseIntent(versionGit('0.2.0', null)).reason, /no readable version at HEAD\^1$/);
+  const broken = (args) => (args[0] === 'show' ? {ok: true, out: '{not json'} : versionGit('1', '1')(args));
+  assert.equal(releaseIntent(broken).kind, 'error');
+  const numeric = (args) => (args[0] === 'show' ? {ok: true, out: '{"version": 1}'} : versionGit('1', '1')(args));
+  assert.equal(releaseIntent(numeric).kind, 'error');
+});
+
+test('every main deploy needs the release token and the commit, and an unreadable intent is red', async () => {
+  const api = github();
+  for (const intent of [BUMP, SAME]) {
+    const missing = await release(intent, api, {env: {WORKERS_CI_COMMIT_SHA: DEPLOYED}});
+    assert.equal(missing.status, 1);
+    assert.equal(missing.log, 'workers-builds: deployed, but the release failed: GELPY_RELEASE_TOKEN is not set; every main deploy needs it (Work Item 003-037)');
+  }
+  assert.match((await release(BUMP, api, {env: {GELPY_RELEASE_TOKEN: RELEASE}})).log, /WORKERS_CI_COMMIT_SHA is not set/);
+  const unknown = await release({kind: 'error', reason: 'HEAD^1 is not in the clone'}, api);
+  assert.deepEqual(unknown, {status: 1, log: 'workers-builds: deployed, but the release failed: HEAD^1 is not in the clone'});
+  assert.equal(api.calls.length, 0, 'no API call without a token, a commit, or an intent');
+});
+
+test('bump: creates the release at the deployed commit from the CHANGELOG section', async () => {
+  const api = github();
+  const result = await release(BUMP, api);
+  assert.deepEqual(result, {status: 0, log: `workers-builds: released v0.2.0 (from 0.1.0) at ${DEPLOYED}.`});
+  const post = api.calls.at(-1);
+  assert.equal(post.options.method, 'POST');
+  assert.deepEqual(JSON.parse(post.options.body), {tag_name: 'v0.2.0', target_commitish: DEPLOYED, name: 'gelpy-docs v0.2.0', body: '### Added\n\n- Docs on Workers.\n'});
+  assert.equal(post.options.headers.Authorization, `Bearer ${RELEASE}`);
+  assert.ok(api.calls.every((call) => call.options.signal instanceof AbortSignal), 'every request has a timeout');
+  assert.ok(!result.log.includes(RELEASE));
+});
+
+test('bump: a tag at the deployed commit passes a rebuild; a tag on another commit is red', async () => {
+  assert.deepEqual(await release(BUMP, github({tag: DEPLOYED, release: 200})), {status: 0, log: `workers-builds: v0.2.0 already released at ${DEPLOYED}.`});
+  assert.deepEqual(await release(BUMP, github({tag: DEPLOYED.toUpperCase(), release: 404})), {status: 0, log: `workers-builds: released v0.2.0 (from 0.1.0) at ${DEPLOYED}.`});
+  for (const existing of [200, 404]) {
+    const moved = await release(BUMP, github({tag: OLDER, release: existing}));
+    assert.deepEqual(moved, {status: 1, log: `workers-builds: deployed, but the release failed: main deployed ${DEPLOYED} but v0.2.0 points at ${OLDER}; bump the version`});
+  }
+});
+
+test('bump: annotated tags are dereferenced, up to MAX_TAG_DEPTH', async () => {
+  assert.equal(MAX_TAG_DEPTH, 5);
+  assert.equal((await release(BUMP, github({tag: DEPLOYED, release: 200, annotated: ['t1', 't2']}))).status, 0);
+  assert.match((await release(BUMP, github({tag: OLDER, annotated: ['t1']}))).log, new RegExp(`v0\\.2\\.0 points at ${OLDER}`));
+  const deep = await release(BUMP, github({tag: DEPLOYED, annotated: ['a', 'b', 'c', 'd', 'e', 'f']}));
+  assert.deepEqual(deep, {status: 1, log: 'workers-builds: deployed, but the release failed: tag v0.2.0 does not resolve to a commit'});
+});
+
+test('bump: a release PR with no or an empty CHANGELOG section is red', async () => {
+  assert.match((await release(BUMP, github(), {changelog: () => '## [Unreleased]\n'})).log, /release failed: CHANGELOG\.md has no section for 0\.2\.0\./);
+  assert.match((await release(BUMP, github(), {changelog: () => '## [0.2.0]\n\n## [0.1.0]\n'})).log, /release failed: CHANGELOG\.md section for 0\.2\.0 is empty/);
+  assert.match((await release(BUMP, github(), {changelog: () => assert.fail('io')})).log, /release failed: io/);
+});
+
+test('same: a feature merge creates no release; a tag on an older commit is expected and logged', async () => {
+  const api = github({tag: OLDER, release: 200});
+  assert.deepEqual(await release(SAME, api), {status: 0, log: `workers-builds: no release: this merge keeps version 0.2.0 (v0.2.0 points at ${OLDER}); a release PR from release/vX.Y.Z changes it.`});
+  assert.ok(!api.calls.some((call) => call.options.method === 'POST'), 'nothing is created');
+  assert.deepEqual(await release(SAME, github()), {status: 0, log: 'workers-builds: no release: this merge keeps version 0.2.0 (v0.2.0 is not tagged yet); a release PR from release/vX.Y.Z changes it.'});
+});
+
+test('a release whose tag is missing is red, whether or not the merge bumps the version', async () => {
+  for (const intent of [BUMP, SAME]) {
+    const orphan = await release(intent, github({tag: 'missing', release: 200}));
+    assert.deepEqual(orphan, {status: 1, log: `workers-builds: deployed, but the release failed: v0.2.0 has a release but no tag, so it cannot be checked against ${DEPLOYED}; restore the tag or delete the release`});
+  }
+});
+
+test('API errors on the tag, the annotated tag, the release lookup, or the creation are red', async () => {
+  assert.match((await release(BUMP, github({tag: 500}))).log, /release failed: reading tag v0\.2\.0: 500 Server Error$/);
+  const annotatedError = {request: async (url) => (url.includes('git/ref/') ? response(200, {object: {type: 'tag', sha: 'x'}}) : response(502, {message: 'Bad Gateway'}))};
+  assert.match((await release(BUMP, annotatedError)).log, /reading annotated tag v0\.2\.0: 502 Bad Gateway$/);
+  assert.match((await release(SAME, github({release: 500}))).log, /release failed: 500 Not Found$/);
+  assert.match((await release(BUMP, github({created: 422}))).log, /release failed: 422 Validation Failed$/);
+  const noJson = {request: async () => ({status: 503, json: async () => assert.fail('no json')})};
+  assert.match((await release(BUMP, noJson)).log, /release failed: reading tag v0\.2\.0: 503$/);
+  assert.match((await release(BUMP, {request: async () => assert.fail('offline')})).log, /release failed: network error: offline$/);
+  assert.match((await release(BUMP, {request: async () => Promise.reject('down')})).log, /network error: down$/);
+});
+
+test('resolveTag reports a ref whose object is not a commit as an error', async () => {
+  const request = async () => response(200, {object: {type: 'tree', sha: 'x'}});
+  assert.deepEqual(await resolveTag({request, headers: {}, tag: 'v1.0.0', timeoutMs: 1000}), {kind: 'error', reason: 'tag v1.0.0 does not resolve to a commit'});
+});
+
 test('createRelease times out a stalled GitHub API and fails red (real fetch, local server)', async () => {
   const {createServer} = await import('node:http');
   const server = createServer((req, res) => {
@@ -312,57 +442,73 @@ test('createRelease times out a stalled GitHub API and fails red (real fetch, lo
   });
   await new Promise((done) => server.listen(0, '127.0.0.1', done));
   const local = `http://127.0.0.1:${server.address().port}`;
-  const signals = [];
-  const request = (url, options) => (signals.push(options.signal), globalThis.fetch(local, options));
+  const request = (url, options) => globalThis.fetch(local, options);
   const log = [];
   const start = Date.now();
   try {
-    const status = await createRelease({env: {GELPY_RELEASE_TOKEN: RELEASE, WORKERS_CI_COMMIT_SHA: 'c0ffee'}, version: '0.2.0', changelog: () => CHANGELOG, request, log: (line) => log.push(line), timeoutMs: 200});
+    const status = await createRelease({env: RELEASE_ENV, intent: BUMP, changelog: () => CHANGELOG, request, log: (line) => log.push(line), timeoutMs: 200});
     assert.equal(status, 1);
   } finally {
     server.closeAllConnections();
     server.close();
   }
   assert.ok(Date.now() - start < 5000, 'a 200 ms timeout, not a hang');
-  assert.ok(signals.length >= 1 && signals.every((signal) => signal instanceof AbortSignal));
-  // The stalled error body is aborted inside apiError, which then reports the status alone.
-  assert.equal(log.at(-1), 'workers-builds: deployed, but the release failed: 404');
-});
-
-test('createRelease sends an abort signal on both the lookup and the creation', async () => {
-  const signals = [];
-  let calls = 0;
-  const request = async (url, options) => (signals.push(options.signal), ++calls === 1 ? response(404) : response(201));
-  assert.equal(await createRelease({env: {GELPY_RELEASE_TOKEN: RELEASE, WORKERS_CI_COMMIT_SHA: 'c0ffee'}, version: '0.2.0', changelog: () => CHANGELOG, request, log: () => {}}), 0);
-  assert.equal(signals.length, 2);
-  assert.ok(signals.every((signal) => signal instanceof AbortSignal && !signal.aborted));
   assert.equal(RELEASE_TIMEOUT_MS, 15_000);
+  assert.match(log.at(-1), /release failed: /);
 });
 
-test('wrangler and live-check steps carry a kill timeout, and a stalled step is killed red', async () => {
+test('main deploy: the release step gets the version-change intent from git', async () => {
+  const intents = [];
+  const env = {WORKERS_CI_BRANCH: 'main', WORKERS_CI_COMMIT_SHA: DEPLOYED};
+  const log = [];
+  for (const [head, parent] of [['0.2.0', '0.1.0'], ['0.1.0', '0.1.0'], [null, '0.1.0']]) {
+    await main(['deploy'], {env, git: versionGit(head, parent), run: () => 0, log: (line) => log.push(line), release: async ({intent}) => (intents.push(intent.kind), 0), wiki: () => 0});
+  }
+  assert.deepEqual(intents, ['bump', 'same', 'error']);
+  const text = log.join('\n');
+  assert.match(text, /release intent: version 0\.1\.0 -> 0\.2\.0\./);
+  assert.match(text, /release intent: version 0\.1\.0 unchanged\./);
+  assert.match(text, /release intent: unknown\./);
+});
+
+// --- Step timeouts (Gelpy/gelpy#22) -------------------------------------------------------------
+
+test('wrangler and live-check steps carry a time limit, run under coreutils timeout', async () => {
   const {deploySteps, PREVIEW, WRANGLER_TIMEOUT_MS, LIVE_CHECK_TIMEOUT_MS} = await import('../scripts/workers-builds.mjs');
   assert.equal(WRANGLER_TIMEOUT_MS, 300_000);
   assert.equal(LIVE_CHECK_TIMEOUT_MS, 720_000);
   assert.deepEqual(deploySteps().map((s) => s.timeoutMs), [WRANGLER_TIMEOUT_MS, LIVE_CHECK_TIMEOUT_MS]);
   assert.equal(PREVIEW.timeoutMs, WRANGLER_TIMEOUT_MS);
+  assert.deepEqual(timedCommand('/bin/x', ['a'], undefined), {file: '/bin/x', args: ['a'], backstop: undefined});
+  assert.deepEqual(timedCommand('/bin/x', ['a'], 300_000, () => '/usr/bin/timeout'), {file: '/usr/bin/timeout', args: ['--kill-after=10s', '300s', '/bin/x', 'a'], backstop: 340_000});
+  assert.deepEqual([...TIMED_OUT], [124, 137]);
+});
 
-  const stall = {cmd: 'node', args: ['-e', 'setTimeout(() => {}, 30000)'], timeoutMs: 300};
+test('a timed-out step kills its whole process tree and fails red (real processes)', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'workers-builds-tree-'));
+  const marker = join(dir, 'grandchild-survived');
+  // A parent that spawns a child which would write the marker after 2 s, then idles for 30 s.
+  const script = `require('child_process').spawn(process.execPath, ['-e', 'setTimeout(() => require("fs").writeFileSync(${JSON.stringify(marker)}, "x"), 2000)'], {stdio: 'ignore'}); setTimeout(() => {}, 30000);`;
+  const stall = {cmd: 'node', args: ['-e', script], timeoutMs: 500};
   const errors = [];
   const original = console.error;
   console.error = (line) => errors.push(line);
-  let start = Date.now();
+  const start = Date.now();
   try {
-    assert.equal(defaultRun(stall), 1);
+    assert.equal(defaultRun(stall), 124);
   } finally {
     console.error = original;
   }
-  assert.ok(Date.now() - start < 5000, 'killed at the timeout, not after 30 s');
-  assert.deepEqual(errors, ['workers-builds: node was killed after 0.3 s.']);
+  assert.ok(Date.now() - start < 5000, 'stopped at the time limit, not after 30 s');
+  assert.deepEqual(errors, ['workers-builds: node and its child processes were killed after 0.5 s.']);
 
   const err = [];
-  start = Date.now();
   const captured = defaultCapture(stall, {stdout: {write: () => {}}, stderr: {write: (text) => err.push(text)}});
-  assert.equal(captured.status, 1);
-  assert.ok(Date.now() - start < 5000);
-  assert.deepEqual(err.filter(Boolean), ['workers-builds: node was killed after 0.3 s.\n']);
+  assert.equal(captured.status, 124);
+  assert.deepEqual(err.filter(Boolean), ['workers-builds: node and its child processes were killed after 0.5 s.\n']);
+
+  // Give an orphaned grandchild time to write its marker (a 3 s sleep that does not spin the CPU).
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 3000);
+  assert.equal(existsSync(marker), false, 'the grandchild died with the group');
+  rmSync(dir, {recursive: true, force: true});
 });

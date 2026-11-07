@@ -15,6 +15,8 @@
 // every deploy; it retries while a new custom domain's certificate is issued.
 
 import {readdirSync, readFileSync, statSync, existsSync} from 'node:fs';
+import {request as httpRequest} from 'node:http';
+import {request as httpsRequest} from 'node:https';
 import {join, relative, resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 
@@ -214,6 +216,55 @@ export function describeAttempt({response, failure}) {
   return `status ${response.status}, server ${response.headers.get('server') ?? 'none'}`;
 }
 
+// A first cutover leaves "no such name" in the build resolver's negative cache for up to the
+// zone's SOA minimum (30 min for gelpy.app), longer than the window (Gelpy/gelpy#22). When the
+// system resolver says the name does not exist, the check asks DNS over HTTPS instead and fetches
+// with the connection pinned to that address, so it sees the Worker as soon as the edge serves it.
+export const DOH_URL = 'https://cloudflare-dns.com/dns-query';
+const DNS_MISS = new Set(['ENOTFOUND', 'EAI_AGAIN']);
+
+export function isDnsMiss(failure) {
+  return DNS_MISS.has(failure?.cause?.code ?? failure?.code);
+}
+
+/** The first IPv4 address of a host, from DNS over HTTPS (JSON API). */
+export async function resolveViaDoh(host, {request = globalThis.fetch, timeoutMs = LIVE_TIMEOUT_MS} = {}) {
+  const response = await request(`${DOH_URL}?name=${encodeURIComponent(host)}&type=A`, {headers: {accept: 'application/dns-json'}, signal: AbortSignal.timeout(timeoutMs)});
+  if (response.status !== 200) throw new Error(`DNS over HTTPS answered ${response.status}`);
+  const answers = (await response.json())?.Answer ?? [];
+  const address = answers.find((answer) => answer.type === 1)?.data;
+  if (!address) throw new Error(`DNS over HTTPS has no A record for ${host}`);
+  return address;
+}
+
+/** GET url with the connection pinned to address; TLS still verifies the URL's host name. */
+export function fetchPinned(url, address, {timeoutMs = LIVE_TIMEOUT_MS} = {}) {
+  const target = new URL(url);
+  const send = target.protocol === 'https:' ? httpsRequest : httpRequest;
+  const lookup = (hostname, options, callback) => (options?.all ? callback(null, [{address, family: 4}]) : callback(null, address, 4));
+  return new Promise((done, failed) => {
+    const req = send(target, {method: 'GET', lookup, servername: target.hostname, signal: AbortSignal.timeout(timeoutMs)}, (res) => {
+      const chunks = [];
+      res.on('data', (chunk) => chunks.push(chunk));
+      res.on('error', failed);
+      res.on('end', () => {
+        const headers = new Headers();
+        for (const [name, value] of Object.entries(res.headers)) headers.set(name, Array.isArray(value) ? value.join(', ') : String(value));
+        const body = Buffer.concat(chunks).toString('utf8');
+        done({status: res.statusCode, headers, text: async () => body});
+      });
+    });
+    req.on('error', failed);
+    req.end();
+  });
+}
+
+/** The DoH path of one attempt: resolve, then fetch pinned to the address. */
+export async function viaDoh(url, {request = globalThis.fetch, timeoutMs = LIVE_TIMEOUT_MS} = {}) {
+  const address = await resolveViaDoh(new URL(url).hostname, {request, timeoutMs});
+  return {address, response: await fetchPinned(url, address, {timeoutMs})};
+}
+
 /** Checks every live path, with retries, and returns an exit code. */
 export async function checkLive(origin, {
   request = globalThis.fetch,
@@ -223,6 +274,7 @@ export async function checkLive(origin, {
   timeoutMs = LIVE_TIMEOUT_MS,
   windowMs = LIVE_WINDOW_MS,
   now = Date.now,
+  doh = (url) => viaDoh(url, {request, timeoutMs}),
   log = console.log,
   error = console.error,
 } = {}) {
@@ -240,6 +292,17 @@ export async function checkLive(origin, {
       } catch (failure) {
         seen = describeAttempt({failure});
         problem = seen;
+        if (isDnsMiss(failure)) {
+          try {
+            const {address, response} = await doh(url);
+            seen = `${seen}; via DNS over HTTPS (${address}): ${describeAttempt({response})}`;
+            problem = liveProblem({status: response.status, headers: response.headers, body: await response.text()}, lang);
+          } catch (dohFailure) {
+            seen = `${seen}; DNS over HTTPS failed: ${dohFailure.message}`;
+            problem = seen;
+          }
+          if (!problem) log(`check:public --live: ${url}: attempt ${attempt}/${attempts}: ${seen}`);
+        }
       }
       if (!problem) break;
       log(`check:public --live: ${url}: attempt ${attempt}/${attempts}: ${seen === problem ? seen : `${seen}; ${problem}`}`);

@@ -145,3 +145,102 @@ test('no attempt starts after the per-path window ends', async () => {
   assert.equal(calls, 12, '6 attempts per path fit in 300 s at 50 s each');
   assert.match(errors[0], /status 503 \(gave up: the 300 s window ended\)$/);
 });
+
+// --- DNS over HTTPS fallback (Gelpy/gelpy#22) ----------------------------------------------------
+
+const dnsMiss = () => Object.assign(new Error('fetch failed'), {cause: {code: 'ENOTFOUND'}});
+
+test('isDnsMiss knows the resolver errors of a missing name', async () => {
+  const {isDnsMiss} = await import('../scripts/check-public.mjs');
+  assert.equal(isDnsMiss(dnsMiss()), true);
+  assert.equal(isDnsMiss(Object.assign(new Error('x'), {code: 'EAI_AGAIN'})), true);
+  assert.equal(isDnsMiss(Object.assign(new Error('x'), {cause: {code: 'ECONNRESET'}})), false);
+  assert.equal(isDnsMiss(undefined), false);
+});
+
+test('resolveViaDoh reads the first A record, and fails on a bad answer', async () => {
+  const {DOH_URL, resolveViaDoh} = await import('../scripts/check-public.mjs');
+  const seen = [];
+  const answer = (status, body) => async (url, options) => (seen.push({url, options}), {status, json: async () => body});
+  const ok = answer(200, {Answer: [{type: 5, data: 'alias.example.'}, {type: 1, data: '192.0.2.10'}, {type: 1, data: '192.0.2.11'}]});
+  assert.equal(await resolveViaDoh('docs.gelpy.app', {request: ok}), '192.0.2.10');
+  assert.equal(seen[0].url, `${DOH_URL}?name=docs.gelpy.app&type=A`);
+  assert.equal(seen[0].options.headers.accept, 'application/dns-json');
+  assert.ok(seen[0].options.signal instanceof AbortSignal);
+  await assert.rejects(resolveViaDoh('docs.gelpy.app', {request: answer(503, {})}), /DNS over HTTPS answered 503/);
+  await assert.rejects(resolveViaDoh('docs.gelpy.app', {request: answer(200, {Status: 3})}), /no A record for docs\.gelpy\.app/);
+  await assert.rejects(resolveViaDoh('docs.gelpy.app', {request: answer(200, null)}), /no A record/);
+});
+
+test('fetchPinned connects to the given address for a name the resolver does not know (real server)', async () => {
+  const {fetchPinned} = await import('../scripts/check-public.mjs');
+  const {createServer} = await import('node:http');
+  const hosts = [];
+  const server = createServer((req, res) => {
+    hosts.push(req.headers.host);
+    res.writeHead(200, {'content-type': 'text/html', 'server': 'cloudflare', 'set-cookie': ['a=1', 'b=2']});
+    res.end('<html lang="es">');
+  });
+  await new Promise((done) => server.listen(0, '127.0.0.1', done));
+  const port = server.address().port;
+  try {
+    const response = await fetchPinned(`http://docs.example.invalid:${port}/es/`, '127.0.0.1');
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get('server'), 'cloudflare');
+    assert.equal(response.headers.get('set-cookie'), 'a=1, b=2');
+    assert.equal(await response.text(), '<html lang="es">');
+    assert.deepEqual(hosts, [`docs.example.invalid:${port}`], 'the request keeps the real Host');
+  } finally {
+    await new Promise((done) => server.close(done));
+  }
+  // The same pinned address with nothing listening any more: the connection error surfaces.
+  await assert.rejects(fetchPinned(`http://docs.example.invalid:${port}/`, '127.0.0.1', {timeoutMs: 1000}), /ECONNREFUSED/);
+});
+
+test('viaDoh resolves, then fetches pinned; the default checkLive uses it on a DNS miss', async () => {
+  const {viaDoh} = await import('../scripts/check-public.mjs');
+  const {createServer} = await import('node:http');
+  const server = createServer((req, res) => {
+    res.writeHead(200, {'content-type': 'text/html', 'server': 'cloudflare'});
+    res.end(req.url.startsWith('/es/') ? '<html lang="es">' : '<html lang="en">');
+  });
+  await new Promise((done) => server.listen(0, '127.0.0.1', done));
+  const origin = `http://docs.example.invalid:${server.address().port}`;
+  const doh = async (url) => (url.startsWith('https://cloudflare-dns.com/') ? {status: 200, json: async () => ({Answer: [{type: 1, data: '127.0.0.1'}]})} : Promise.reject(dnsMiss()));
+  try {
+    const {address, response} = await viaDoh(`${origin}/`, {request: doh});
+    assert.equal(address, '127.0.0.1');
+    assert.equal(response.status, 200);
+    const log = [];
+    assert.equal(await checkLive(origin, {request: doh, wait: async () => {}, log: (line) => log.push(line), error: () => {}}), 0);
+    assert.match(log[0], /attempt 1\/30: network error: fetch failed \(ENOTFOUND\); via DNS over HTTPS \(127\.0\.0\.1\): status 200, server cloudflare$/);
+    assert.match(log.at(-1), /\/es\/: 200 from Cloudflare \(es\)$/);
+  } finally {
+    server.close();
+  }
+});
+
+test('checkLive on a DNS miss: a good DoH answer passes; a bad one or a DoH failure retries and logs why', async () => {
+  const log = [];
+  const errors = [];
+  const answers = [
+    () => Promise.reject(new Error('DNS over HTTPS answered 503')),
+    async () => ({address: '192.0.2.10', response: page('en', {'x-github-request-id': '1'})}),
+    async () => ({address: '192.0.2.10', response: page('en')}),
+  ];
+  let call = 0;
+  const doh = (url) => (url.endsWith('/es/') ? Promise.resolve({address: '192.0.2.10', response: page('es')}) : answers[call++]());
+  const status = await checkLive('https://docs.gelpy.app', {request: async () => Promise.reject(dnsMiss()), doh, wait: async () => {}, log: (line) => log.push(line), error: (line) => errors.push(line)});
+  assert.equal(status, 0);
+  assert.deepEqual(errors, []);
+  assert.match(log[0], /attempt 1\/30: network error: fetch failed \(ENOTFOUND\); DNS over HTTPS failed: DNS over HTTPS answered 503$/);
+  assert.match(log[1], /attempt 2\/30: .*via DNS over HTTPS \(192\.0\.2\.10\): status 200, server cloudflare; served by GitHub Pages$/);
+  assert.match(log[2], /attempt 3\/30: .*via DNS over HTTPS \(192\.0\.2\.10\): status 200, server cloudflare$/);
+  assert.equal(log[3], 'check:public --live: https://docs.gelpy.app/: 200 from Cloudflare (en)');
+
+  let dohCalls = 0;
+  const other = [];
+  const reset = Object.assign(new Error('fetch failed'), {cause: {code: 'ECONNRESET'}});
+  await checkLive('https://docs.gelpy.app', {request: async () => Promise.reject(reset), doh: async () => (dohCalls++, assert.fail('no DoH')), wait: async () => {}, attempts: 2, log: (line) => other.push(line), error: () => {}});
+  assert.equal(dohCalls, 0, 'only a DNS miss uses DoH');
+});
