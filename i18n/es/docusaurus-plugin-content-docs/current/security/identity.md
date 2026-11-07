@@ -10,7 +10,7 @@ Esta página describe cómo las personas crean una cuenta e inician sesión en G
 
 :::note Estado
 
-La identidad está en producción desde el 2026-11-07 en la web, en la app y en la consola de admins. Las funciones de Android esperan el primer build de producción de Android; hasta entonces corren en el build preview de Android. Cada sección indica dónde funciona hoy cada parte.
+La identidad está en producción desde el 2026-11-07 en la web: en la versión web de la app y en la consola de admins. La app de Android sigue en preview, así que la identidad en Android corre solo en el build preview de Android hasta el primer build de producción de Android. Cada sección indica dónde funciona hoy cada parte.
 
 :::
 

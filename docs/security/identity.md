@@ -10,7 +10,7 @@ This page describes how people create an account and sign in to Gelpy, how admin
 
 :::note Status
 
-Identity is in production since 2026-11-07 on the web, in the app and the admin console. Android features wait for the first production Android build; until then they run in the Android preview build. Each section below says where each part works today.
+Identity is in production since 2026-11-07 on the web: in the web version of the app and in the admin console. The Android app is still in preview, so identity on Android runs only in the Android preview build until the first production Android build. Each section below says where each part works today.
 
 :::
 
