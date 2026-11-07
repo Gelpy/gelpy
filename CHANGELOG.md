@@ -21,4 +21,14 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - Build and serve the docs with Cloudflare Workers Builds and the static-assets Worker `gelpy-docs` on `docs.gelpy.app` (Work Item 003-025): `npm run cf:build`, `cf:preview`, and `cf:deploy`; gitleaks and a noindex Preview URL on every PR; the deploy, a live check (`check:public --live`), and the GitHub Release `v<version>` on `main`. Feature PRs merge straight to `main`, so the release step skips with a log line while `CHANGELOG.md` has no section for the version, and turns the build red on an API error, an empty section, or a missing commit SHA.
 - Mirror `docs/` into the GitHub wiki on every deploy of `main` (Work Item 004-002): `npm run wiki:build` generates the English and Spanish pages, a sidebar, and a footer; the sync is idempotent and logs page names only.
 - Add `npm run ci:local` and `npm run ci:evidence`, the local PR gate of MVP mode.
+- Scan every `main` build with the pinned gitleaks over the pushed commits (`HEAD^1..HEAD`) before the site build (Work Item 003-037).
+
+### Changed
+
+- The release step of `main` requires `GELPY_RELEASE_TOKEN` on every deploy and checks the tag `v<version>` (Work Item 003-037):
+  - A merge that changes the `package.json` version is a release: the tag must be missing or at the deployed commit, and the `CHANGELOG.md` section must exist.
+  - A merge that keeps the version creates no release.
+  - A release whose tag is missing is always red.
+- Steps that call Cloudflare stop their whole process tree when they run out of time (Gelpy/gelpy#22).
+- The live check falls back to DNS over HTTPS when the build's resolver still caches a "no such name" from a first cutover (Gelpy/gelpy#22).
 - Add the identity and sign-in page in English and Spanish: account types, email and password with a confirmation link, Google, phone by SMS, sessions, fingerprint unlock, passkeys, the admin console, and data handling, each with its status. Update the sign-in sections of the data flow and security overview pages to match.

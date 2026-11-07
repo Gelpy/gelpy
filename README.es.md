@@ -36,13 +36,17 @@ Un Worker, `gelpy-docs`, conectado a este repo con rama de producción `main` y 
 
 | Comando | Rama de PR | `main` |
 |---|---|---|
-| `npm run cf:build` | gitleaks sobre los commits del PR y luego el build con `X-Robots-Tag: noindex` | El build de producción |
+| `npm run cf:build` | gitleaks sobre los commits del PR y luego el build con `X-Robots-Tag: noindex` | gitleaks sobre los commits empujados (`HEAD^1..HEAD`) y luego el build de producción |
 | `npm run cf:preview` | Un despliegue Preview, comentado en el PR | Nada |
 | `npm run cf:deploy` | Se niega | Despliegue, chequeo en vivo, GitHub Release `v<versión>` y luego la sincronización de la wiki |
 
 - `GELPY_PACKAGES_TOKEN` (paquetes de solo lectura) es el único secreto de los ajustes de preview.
-- `GELPY_RELEASE_TOKEN` y `GELPY_WIKI_TOKEN` viven solo en los ajustes de producción. Sin ellos, el release o la sincronización de la wiki se omiten con una línea en el log.
-- Los PR de features hacen merge directo a `main`, así que el release se crea solo cuando `CHANGELOG.md` tiene una sección para la versión de `package.json` (los PR de release salen de `release/vX.Y.Z`); si no, el paso registra que lo omite. Un error de la API, una sección vacía o un SHA faltante ponen el build en rojo.
+- `GELPY_RELEASE_TOKEN` y `GELPY_WIKI_TOKEN` viven solo en los ajustes de producción. Cada deploy de `main` necesita `GELPY_RELEASE_TOKEN`: sin él, el build queda en rojo. Sin `GELPY_WIKI_TOKEN`, la sincronización de la wiki se omite con una línea en el log.
+- Los PR de features hacen merge directo a `main`, así que el paso de release compara la versión de `package.json` en `HEAD` con la de `HEAD^1` (Work Item 003-037):
+  - **Versión cambiada** (un PR de release desde `release/vX.Y.Z`): el tag `v<versión>` debe faltar o estar en el commit desplegado, y el release se crea desde su sección de `CHANGELOG.md`, que debe existir.
+  - **Versión sin cambio** (un merge de feature): no hay release. Un tag en un commit anterior es lo esperado y solo se registra.
+  - **Siempre rojo:** falta el token o el SHA del commit, un release sin tag, un padre o una versión ilegibles, o un error de la API.
+- Los pasos que llaman a Cloudflare corren bajo `timeout` de coreutils, que detiene todo su árbol de procesos. En un primer cutover, el live check usa DNS sobre HTTPS cuando el resolvedor del build aún guarda el "no existe" anterior.
 - La wiki es un espejo generado de `docs/` (`npm run wiki:build`). La sincronización es idempotente, registra solo nombres de páginas y borra las páginas que `docs/` ya no tiene.
 - `.github/workflows/pages.yml` es el failover: corre solo a mano, con sus triggers originales bajo `# FAILOVER`.
 

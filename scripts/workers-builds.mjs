@@ -5,8 +5,9 @@
 //   Deploy command:  npm run cf:deploy
 //   Preview command: npm run cf:preview
 // The branch (WORKERS_CI_BRANCH, or --branch <name> locally) picks what each one does:
-//   main  -> production build, deploy to gelpy-docs (docs.gelpy.app), live check, then the
-//            GitHub Release v<version> (003-032) and the wiki sync (004-002)
+//   main  -> gitleaks over HEAD^1..HEAD and the production build (003-037), deploy to gelpy-docs
+//            (docs.gelpy.app), live check, then the release step (003-032, 003-037: a release
+//            only when the merge changes the version) and the wiki sync (004-002)
 //   other -> gitleaks and the build, with X-Robots-Tag: noindex, then a Preview deployment
 // Cloudflare only builds and deploys (ADR-0018, third amendment, "MVP mode"): every test runs in
 // `npm run ci:local` before a push, and `npm run ci:evidence` records it for the PR.
@@ -78,6 +79,15 @@ const step = (name, cmd, args, extra = {}) => ({name, cmd, args, ...extra});
 
 export const GITLEAKS_INSTALL = step('Install gitleaks (pinned, SHA-256)', 'bash', ['scripts/install-scanners.sh', TOOLS_DIR]);
 
+// The pinned gitleaks install (SHA-256 checked) and its scan of a git log range. Every build, PR
+// or main, runs it before the site build, so a finding stops the build before any deploy.
+export function scanSteps(gitleaksRange) {
+  return [
+    GITLEAKS_INSTALL,
+    step('gitleaks', join(TOOLS_DIR, 'gitleaks'), ['git', '--redact', '--no-banner', '--exit-code', '1', `--log-opts=${gitleaksRange}`, '.']),
+  ];
+}
+
 export function buildStep(env, label) {
   return step(`Build (${label}, en and es)`, 'npm', ['run', 'build'], {env: brandEnv(env)});
 }
@@ -85,15 +95,12 @@ export function buildStep(env, label) {
 // A PR branch's build: gitleaks over the PR's commits, then the site the Preview deployment
 // serves. The tests ran in `npm run ci:local` before the push.
 export function prSteps({gitleaksRange, env}) {
-  return [
-    GITLEAKS_INSTALL,
-    step('gitleaks', join(TOOLS_DIR, 'gitleaks'), ['git', '--redact', '--no-banner', '--exit-code', '1', `--log-opts=${gitleaksRange}`, '.']),
-    buildStep(env, 'preview'),
-  ];
+  return [...scanSteps(gitleaksRange), buildStep(env, 'preview')];
 }
 
-export function productionSteps(env) {
-  return [buildStep(env, 'production')];
+// The build of main: gitleaks over the pushed commits first (Work Item 003-037), then the site.
+export function productionSteps(env, {gitleaksRange}) {
+  return [...scanSteps(gitleaksRange), buildStep(env, 'production')];
 }
 
 // Wrangler talks to the Cloudflare API, so its steps are killed after this long and fail red
@@ -150,6 +157,26 @@ export function fallbackScope({shallow, commits}) {
     : `the last ${FALLBACK_COMMITS} commits only; older history is not scanned`;
 }
 
+// The parent of HEAD, fetched with `git fetch --deepen=1` when the clone (one commit deep in
+// Workers Builds) lacks it. Returns whether HEAD^1 is now in the clone.
+export function ensureParent(git) {
+  const hasParent = () => git(['rev-parse', '--verify', '--quiet', 'HEAD^1']).ok;
+  if (hasParent()) return {ok: true, fetched: false};
+  git(['fetch', '--no-tags', '--quiet', '--deepen=1', 'origin']);
+  return {ok: hasParent(), fetched: true};
+}
+
+// What gitleaks scans on a main build: the pushed commits, HEAD^1..HEAD (the squash merge), as in
+// gelpy-app. With still no parent, it falls back to the clone's history down to its shallow root,
+// whose diff holds every text file at HEAD.
+export function deployScanRange(git) {
+  const parent = ensureParent(git);
+  if (parent.ok) return {range: 'HEAD^1..HEAD', mode: `HEAD^1..HEAD, ${parent.fetched ? 'parent fetched with git fetch --deepen=1' : 'parent in the clone'}`};
+  const shallow = git(['rev-parse', '--is-shallow-repository']).out.trim();
+  const commits = git(['rev-list', '--count', 'HEAD']).out.trim();
+  return {range: `--max-count=${FALLBACK_COMMITS}`, mode: `no parent even after git fetch --deepen=1; ${fallbackScope({shallow, commits})}`};
+}
+
 const WHY_NO_BASE = {
   'no-base': `origin/${BASE_BRANCH} could not be fetched into this clone`,
   'no-merge-base': `origin/${BASE_BRANCH} has no merge base with HEAD in this clone`,
@@ -167,13 +194,27 @@ const GITHUB_API = 'https://api.github.com';
 // the release step instead of holding the deploy (and the wiki sync after it).
 export const RELEASE_TIMEOUT_MS = 15_000;
 
-const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-// Whether CHANGELOG.md has a section for the version. Feature PRs merge to main here (there is
-// no staging), so until a release PR from release/v<version> adds that section, the version is
-// not released yet and main's deploy creates no release.
-export function hasSection(changelog, version) {
-  return new RegExp(`^## \\[${escapeRegExp(version)}\\](?:\\s|$)`, 'm').test(changelog);
+// Whether this main deploy is a release: the version in package.json at HEAD against HEAD^1
+// (Work Item 003-037, Master decision of 2026-11-07). Feature PRs merge straight to main here and
+// keep the version; only a release PR from release/v<version> changes it. The parent is fetched
+// with `git fetch --deepen=1` when the clone lacks it; an unreadable parent or version is an error,
+// so the release step never guesses.
+export function releaseIntent(git) {
+  if (!ensureParent(git).ok) return {kind: 'error', reason: 'HEAD^1 is not in the clone even after git fetch --deepen=1, so the release step cannot tell whether this merge changes the version'};
+  const versionAt = (rev) => {
+    const shown = git(['show', `${rev}:package.json`]);
+    if (!shown.ok) return null;
+    try {
+      const version = JSON.parse(shown.out).version;
+      return typeof version === 'string' ? version : null;
+    } catch {
+      return null;
+    }
+  };
+  const head = versionAt('HEAD');
+  const parent = versionAt('HEAD^1');
+  if (!head || !parent) return {kind: 'error', reason: `package.json has no readable version at ${head ? 'HEAD^1' : 'HEAD'}`};
+  return head === parent ? {kind: 'same', version: head} : {kind: 'bump', from: parent, version: head};
 }
 
 async function apiError(response) {
@@ -186,45 +227,77 @@ async function apiError(response) {
   return `${response.status} ${message}`.trim();
 }
 
-// Creates the release v<version> at the deployed commit, which creates the tag. A release that
-// already exists passes (a rebuild of the same version). This repo merges features straight to
-// main, so a CHANGELOG.md with no `## [<version>]` section means the version is not released yet:
-// the step logs that and passes (Master decision of 2026-11-06, Work Items 003-025 and 003-032).
-// Everything else fails the step, so a good deploy whose release failed shows as a red build: an
-// API error, an empty section, or a missing WORKERS_CI_COMMIT_SHA. The token is sent only in the Authorization
-// header and never logged, in whole or in part.
-export async function createRelease({env, version = readVersion(), changelog = () => readFileSync('CHANGELOG.md', 'utf8'), request = globalThis.fetch, log = console.log, timeoutMs = RELEASE_TIMEOUT_MS}) {
-  const token = env[RELEASE_TOKEN];
-  if (!token) {
-    log('workers-builds: release skipped: no token.');
-    return 0;
+// How many annotated tags (a tag of a tag) the resolver follows before it gives up.
+export const MAX_TAG_DEPTH = 5;
+
+// The commit a tag points at, ported from gelpy-console (#40, #41): GET git/ref/tags/<tag>, then,
+// while the ref names an annotated tag, GET git/tags/<sha> to dereference it. A missing tag is
+// "missing"; anything unexpected is an error, so the caller fails rather than guess.
+export async function resolveTag({request, headers, tag, timeoutMs}) {
+  const get = (path) => request(`${GITHUB_API}/repos/${RELEASE_REPO}/${path}`, {headers, signal: AbortSignal.timeout(timeoutMs)});
+  const ref = await get(`git/ref/tags/${tag}`);
+  if (ref.status === 404) return {kind: 'missing'};
+  if (ref.status !== 200) return {kind: 'error', reason: `reading tag ${tag}: ${await apiError(ref)}`};
+  let target = (await ref.json())?.object;
+  for (let depth = 0; depth < MAX_TAG_DEPTH && target?.type === 'tag' && typeof target.sha === 'string'; depth += 1) {
+    const annotated = await get(`git/tags/${target.sha}`);
+    if (annotated.status !== 200) return {kind: 'error', reason: `reading annotated tag ${tag}: ${await apiError(annotated)}`};
+    target = (await annotated.json())?.object;
   }
-  const tag = `v${version}`;
+  if (target?.type !== 'commit' || typeof target.sha !== 'string') return {kind: 'error', reason: `tag ${tag} does not resolve to a commit`};
+  return {kind: 'commit', sha: target.sha};
+}
+
+// The release step of every main deploy (Work Items 003-032 and 003-037). Feature PRs merge straight
+// to main here, so `intent` (releaseIntent) decides whether this merge is a release:
+// - Every main deploy needs GELPY_RELEASE_TOKEN and WORKERS_CI_COMMIT_SHA, and a release of
+//   v<version> whose tag is missing fails, because nothing then ties it to a commit.
+// - "bump" (a release PR changed the version): v<version> must be missing or at the deployed
+//   commit, or the build fails, because GitHub would reuse a tag on another commit and ignore
+//   target_commitish. A release at the right tag passes (a rebuild); otherwise the release is
+//   created from the CHANGELOG.md section of the version, which must exist and not be empty.
+// - "same" (a feature merge): no release. A tag on an older commit is expected and only logged.
+// - "error" (unreadable parent or version): fails.
+// Every failure is red, after a good deploy. The token is sent only in the Authorization header
+// and never logged, in whole or in part.
+export async function createRelease({env, intent, changelog = () => readFileSync('CHANGELOG.md', 'utf8'), request = globalThis.fetch, log = console.log, timeoutMs = RELEASE_TIMEOUT_MS}) {
   const fail = (reason) => {
     log(`workers-builds: deployed, but the release failed: ${reason}`);
     return 1;
   };
-  let notes;
-  try {
-    const text = changelog();
-    if (!hasSection(text, version)) {
-      log(`workers-builds: no release: CHANGELOG.md has no section for ${version} yet; the release PR from release/${tag} adds it.`);
-      return 0;
-    }
-    notes = extractReleaseNotes(text, version);
-  } catch (error) {
-    return fail(error instanceof Error ? error.message : String(error));
-  }
+  const token = env[RELEASE_TOKEN];
+  if (!token) return fail(`${RELEASE_TOKEN} is not set; every main deploy needs it (Work Item 003-037)`);
+  const commit = env.WORKERS_CI_COMMIT_SHA;
+  if (!commit) return fail('WORKERS_CI_COMMIT_SHA is not set, so the release cannot be checked against a commit');
+  if (intent.kind === 'error') return fail(intent.reason);
+  const tag = `v${intent.version}`;
   const headers = {'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28'};
   try {
+    const target = await resolveTag({request, headers, tag, timeoutMs});
+    if (target.kind === 'error') return fail(target.reason);
     const existing = await request(`${GITHUB_API}/repos/${RELEASE_REPO}/releases/tags/${tag}`, {headers, signal: AbortSignal.timeout(timeoutMs)});
-    if (existing.status === 200) {
-      log(`workers-builds: ${tag} already released.`);
+    if (existing.status !== 200 && existing.status !== 404) return fail(await apiError(existing));
+    if (existing.status === 200 && target.kind === 'missing') {
+      return fail(`${tag} has a release but no tag, so it cannot be checked against ${commit}; restore the tag or delete the release`);
+    }
+    if (intent.kind === 'same') {
+      const where = target.kind === 'commit' ? `${tag} points at ${target.sha}` : `${tag} is not tagged yet`;
+      log(`workers-builds: no release: this merge keeps version ${intent.version} (${where}); a release PR from release/vX.Y.Z changes it.`);
       return 0;
     }
-    if (existing.status !== 404) return fail(await apiError(existing));
-    const commit = env.WORKERS_CI_COMMIT_SHA;
-    if (!commit) return fail('WORKERS_CI_COMMIT_SHA is not set, so the tag would have no commit');
+    if (target.kind === 'commit' && target.sha.toLowerCase() !== commit.toLowerCase()) {
+      return fail(`main deployed ${commit} but ${tag} points at ${target.sha}; bump the version`);
+    }
+    if (existing.status === 200) {
+      log(`workers-builds: ${tag} already released at ${commit}.`);
+      return 0;
+    }
+    let notes;
+    try {
+      notes = extractReleaseNotes(changelog(), intent.version);
+    } catch (error) {
+      return fail(error instanceof Error ? error.message : String(error));
+    }
     const created = await request(`${GITHUB_API}/repos/${RELEASE_REPO}/releases`, {
       method: 'POST',
       signal: AbortSignal.timeout(timeoutMs),
@@ -232,7 +305,7 @@ export async function createRelease({env, version = readVersion(), changelog = (
       body: JSON.stringify({tag_name: tag, target_commitish: commit, name: `gelpy-docs ${tag}`, body: notes}),
     });
     if (created.status !== 201) return fail(await apiError(created));
-    log(`workers-builds: released ${tag} at ${commit}.`);
+    log(`workers-builds: released ${tag} (from ${intent.from}) at ${commit}.`);
     return 0;
   } catch (error) {
     return fail(`network error: ${error instanceof Error ? error.message : String(error)}`);
@@ -258,33 +331,50 @@ function defaultGit(args) {
   return {ok: result.status === 0, out: result.stdout ?? ''};
 }
 
+// A step with a time limit runs under coreutils `timeout`, which starts it in its own process
+// group and signals the whole group: npx, wrangler, and the node process wrangler spawns all stop
+// together, so nothing keeps deploying after the step is reported red (Gelpy/gelpy#22). TERM
+// first, KILL after KILL_GRACE. spawnSync's own timeout stays as a backstop.
+export const KILL_GRACE_S = 10;
+const BACKSTOP_MS = 30_000;
+// Exit codes of `timeout` when it stopped the command: 124 after TERM, 137 after KILL.
+export const TIMED_OUT = new Set([124, 137]);
+
+export function timedCommand(file, args, timeoutMs, resolve = resolveCommand) {
+  if (!timeoutMs) return {file, args, backstop: undefined};
+  return {file: resolve('timeout'), args: [`--kill-after=${KILL_GRACE_S}s`, `${timeoutMs / 1000}s`, file, ...args], backstop: timeoutMs + KILL_GRACE_S * 1000 + BACKSTOP_MS};
+}
+
+const killedMessage = (cmd, timeoutMs) => `workers-builds: ${cmd} and its child processes were killed after ${timeoutMs / 1000} s.`;
+const timedOut = (result, timeoutMs) => Boolean(timeoutMs) && (TIMED_OUT.has(result.status) || result.error?.code === 'ETIMEDOUT');
+
 export function defaultRun({cmd, args, env, timeoutMs}) {
-  let file;
+  let timed;
   try {
-    file = resolveCommand(cmd);
+    timed = timedCommand(resolveCommand(cmd), args, timeoutMs);
   } catch (error) {
     console.error(`workers-builds: ${error instanceof Error ? error.message : String(error)}`);
     return 127;
   }
-  const result = spawnSync(file, args, {stdio: 'inherit', env: childEnv(withoutSecrets(process.env), env), timeout: timeoutMs, killSignal: 'SIGKILL'});
-  if (result.error?.code === 'ETIMEDOUT') console.error(`workers-builds: ${cmd} was killed after ${timeoutMs / 1000} s.`);
+  const result = spawnSync(timed.file, timed.args, {stdio: 'inherit', env: childEnv(withoutSecrets(process.env), env), timeout: timed.backstop, killSignal: 'SIGKILL'});
+  if (timedOut(result, timeoutMs)) console.error(killedMessage(cmd, timeoutMs));
   return result.status ?? 1;
 }
 
 // Like defaultRun, but also returns what the command printed, after echoing it to the log.
 export function defaultCapture({cmd, args, env, timeoutMs}, {stdout = process.stdout, stderr = process.stderr} = {}) {
-  let file;
+  let timed;
   try {
-    file = resolveCommand(cmd);
+    timed = timedCommand(resolveCommand(cmd), args, timeoutMs);
   } catch (error) {
     const message = `workers-builds: ${error instanceof Error ? error.message : String(error)}`;
     stderr.write(`${message}\n`);
     return {status: 127, output: message};
   }
-  const result = spawnSync(file, args, {encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, env: childEnv(withoutSecrets(process.env), env), timeout: timeoutMs, killSignal: 'SIGKILL'});
+  const result = spawnSync(timed.file, timed.args, {encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, env: childEnv(withoutSecrets(process.env), env), timeout: timed.backstop, killSignal: 'SIGKILL'});
   stdout.write(result.stdout ?? '');
   stderr.write(result.stderr ?? '');
-  if (result.error?.code === 'ETIMEDOUT') stderr.write(`workers-builds: ${cmd} was killed after ${timeoutMs / 1000} s.\n`);
+  if (timedOut(result, timeoutMs)) stderr.write(`${killedMessage(cmd, timeoutMs)}\n`);
   return {status: result.status ?? 1, output: `${result.stdout ?? ''}${result.stderr ?? ''}`};
 }
 
@@ -306,8 +396,9 @@ export function runSteps(steps, {run = defaultRun, log = console.log, now = Date
 function build(branch, {env, git, run, log, headers}) {
   log(credentialPresence(env));
   if (branch === DEPLOY_BRANCH) {
-    log(`workers-builds: ${branch} builds production.`);
-    return runSteps(productionSteps(env), {run, log});
+    const scan = deployScanRange(git);
+    log(`workers-builds: ${branch} builds production, commit ${env.WORKERS_CI_COMMIT_SHA ?? 'unknown'}; gitleaks mode: ${scan.mode}.`);
+    return runSteps(productionSteps(env, {gitleaksRange: scan.range}), {run, log});
   }
   const shallow = git(['rev-parse', '--is-shallow-repository']).out.trim();
   const commits = git(['rev-list', '--count', 'HEAD']).out.trim();
@@ -325,7 +416,7 @@ function build(branch, {env, git, run, log, headers}) {
 
 // The release and the wiki run on main only, after the deploy and its live check pass. Both run
 // even if the other fails, and the build is red if either does.
-async function deploy(branch, {env, run, log, request, release, wiki}) {
+async function deploy(branch, {env, git, run, log, request, release, wiki}) {
   if (branch !== DEPLOY_BRANCH) {
     log(`workers-builds: only ${DEPLOY_BRANCH} deploys; ${branch} does not.`);
     return 1;
@@ -334,7 +425,9 @@ async function deploy(branch, {env, run, log, request, release, wiki}) {
   const status = runSteps(deploySteps(), {run, log});
   if (status !== 0) return status;
   log('\n▶ GitHub Release');
-  const released = await release({env, request, log});
+  const intent = releaseIntent(git);
+  log(`workers-builds: release intent: ${intent.kind === 'bump' ? `version ${intent.from} -> ${intent.version}` : intent.kind === 'same' ? `version ${intent.version} unchanged` : 'unknown'}.`);
+  const released = await release({env, intent, request, log});
   log('\n▶ Wiki sync');
   const synced = wiki({env, log});
   return released || synced;
