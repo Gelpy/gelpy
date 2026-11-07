@@ -25,6 +25,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Changed
 
+- Mark identity as in production on the web on the identity page in English and Spanish (Work Item 007-008): in the web version of the app and in the admin console, email and password, Google, phone by SMS, and passkeys run in production since 2026-11-07. Google on Android, fingerprint unlock, and passkeys on Android stay in the Android preview build until the first production Android build.
 - The release step of `main` requires `GELPY_RELEASE_TOKEN` on every deploy and checks the tag `v<version>` (Work Item 003-037):
   - A merge that changes the `package.json` version is a release: the tag must be missing or at the deployed commit, and the `CHANGELOG.md` section must exist.
   - A merge that keeps the version creates no release.

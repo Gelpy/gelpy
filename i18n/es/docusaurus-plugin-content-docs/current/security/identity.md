@@ -10,19 +10,19 @@ Esta página describe cómo las personas crean una cuenta e inician sesión en G
 
 :::note Estado
 
-La identidad corre en el entorno de test. Todavía no está en producción. Cada sección indica qué funciona hoy y qué falta.
+La identidad está en producción desde el 2026-11-07 en la web: en la versión web de la app y en la consola de admins. La app de Android sigue en preview, así que la identidad en Android corre solo en el build preview de Android hasta el primer build de producción de Android. Cada sección indica dónde funciona hoy cada parte.
 
 :::
 
 | Capacidad | Estado |
 |-----------|--------|
-| Correo y contraseña, con link de confirmación por correo | Entorno de test |
-| Inicio de sesión con Google en la web | Entorno de test |
-| Inicio de sesión con Google en Android | Próximamente, con el siguiente build de Android |
-| Verificación del teléfono por SMS | Entorno de test |
-| Desbloqueo con huella en Android | Entorno de test, build preview de Android |
-| Passkeys | Lado del servidor en el entorno de test; pantallas de la app próximamente |
-| Consola de admins solo con cuentas Google de `gelpy.app` | Entorno de test |
+| Correo y contraseña, con link de confirmación por correo | Producción |
+| Inicio de sesión con Google en la web | Producción |
+| Inicio de sesión con Google en Android | Build preview de Android; producción con el primer build de producción de Android |
+| Verificación del teléfono por SMS | Producción |
+| Desbloqueo con huella en Android | Build preview de Android; producción con el primer build de producción de Android |
+| Passkeys | Producción en la web; build preview de Android |
+| Consola de admins solo con cuentas Google de `gelpy.app` | Producción |
 
 ## Tipos de cuenta
 
@@ -77,7 +77,7 @@ Nada revela si un correo ya tiene cuenta:
 - Google prueba el correo, así que una cuenta de Google empieza con el correo confirmado.
 - La API revisa cada token de Google: quién lo emitió, para qué app se emitió, que no haya vencido y que el correo esté verificado. Un token emitido para otra app se rechaza.
 - En la web, la app recibe el token de Google directamente en el navegador.
-- En Android, la app usará el Credential Manager del sistema. Llega con el siguiente build de Android.
+- En Android, la app usa el Credential Manager del sistema. Corre en el build preview de Android y llega a producción con el primer build de producción de Android.
 - No se usa ni se guarda ningún secreto de cliente de Google.
 
 Si alguien se registró con un correo y una contraseña pero nunca lo confirmó, y el dueño real de ese correo inicia sesión después con Google, la API primero elimina la contraseña sin confirmar y cierra sus sesiones. Así se bloquea la toma de cuentas antes de su creación.
@@ -102,14 +102,14 @@ Si alguien se registró con un correo y una contraseña pero nunca lo confirmó,
 - En Android se puede activar el desbloqueo con huella. Así, la app la pide antes de restaurar una sesión guardada.
 - Solo se aceptan biometrías fuertes.
 - Si se cancela, la sesión guardada se borra y hay que iniciar sesión otra vez.
-- Está en el build preview de Android y todavía se está probando en teléfonos físicos.
+- Corre en el build preview de Android, probado en un teléfono físico, y llega a producción con el primer build de producción de Android.
 
 ## Passkeys
 
-- El lado del servidor de las passkeys ya está listo: las registra, las verifica y las revoca.
+- Las personas pueden crear, usar y revocar passkeys. El servidor las registra, las verifica y las revoca.
 - Cada desafío vence y sirve una sola vez, y solo se aceptan los orígenes del propio entorno.
 - Ninguna clave privada llega a Gelpy: la guarda el dispositivo.
-- Las pantallas de passkeys en la app, para Android y la web, llegan **próximamente**.
+- Las passkeys funcionan en producción en la web. En Android corren en el build preview de Android y llegan a producción con el primer build de producción de Android.
 
 ## Consola de admins
 

@@ -10,19 +10,19 @@ This page describes how people create an account and sign in to Gelpy, how admin
 
 :::note Status
 
-Identity runs in the test environment. It is not in production yet. Each section below says what works today and what is still coming.
+Identity is in production since 2026-11-07 on the web: in the web version of the app and in the admin console. The Android app is still in preview, so identity on Android runs only in the Android preview build until the first production Android build. Each section below says where each part works today.
 
 :::
 
 | Capability | Status |
 |------------|--------|
-| Email and password, with an email confirmation link | Test environment |
-| Google sign-in on the web | Test environment |
-| Google sign-in on Android | Coming soon, with the next Android build |
-| Phone verification by SMS | Test environment |
-| Fingerprint unlock on Android | Test environment, Android preview build |
-| Passkeys | Server side in the test environment; app screens coming soon |
-| Admin console with Google accounts of `gelpy.app` only | Test environment |
+| Email and password, with an email confirmation link | Production |
+| Google sign-in on the web | Production |
+| Google sign-in on Android | Android preview build; production with the first production Android build |
+| Phone verification by SMS | Production |
+| Fingerprint unlock on Android | Android preview build; production with the first production Android build |
+| Passkeys | Production on the web; Android preview build |
+| Admin console with Google accounts of `gelpy.app` only | Production |
 
 ## Account types
 
@@ -77,7 +77,7 @@ Nothing reveals whether an email already has an account:
 - Google proves the email, so a Google account starts with the email confirmed.
 - The API checks every Google token: who issued it, which app it was issued for, that it has not expired, and that the email is verified. A token issued for any other app is rejected.
 - On the web, the app gets the Google token directly in the browser.
-- On Android, the app will use the system's Credential Manager. This arrives with the next Android build.
+- On Android, the app uses the system's Credential Manager. It runs in the Android preview build and reaches production with the first production Android build.
 - No Google client secret is used or stored.
 
 If someone registered with an email and password but never confirmed it, and the real owner of that email later signs in with Google, the API removes the unconfirmed password and ends its sessions first. This blocks pre-account takeover.
@@ -102,14 +102,14 @@ If someone registered with an email and password but never confirmed it, and the
 - People can turn on fingerprint unlock on Android. Then the app asks for it before it restores a saved session.
 - Only strong biometrics are accepted.
 - Cancelling the prompt clears the saved session, so the person signs in again.
-- It is in the Android preview build and is still being checked on physical phones.
+- It runs in the Android preview build, checked on a physical phone, and reaches production with the first production Android build.
 
 ## Passkeys
 
-- The server side of passkeys is in place: it registers, verifies, and revokes passkeys.
+- People can create, use, and revoke passkeys. The server registers, verifies, and revokes them.
 - Each challenge expires and works once, and only the environment's own origins are accepted.
 - No private key ever reaches Gelpy: the device keeps it.
-- The app screens for passkeys on Android and the web are **coming soon**.
+- Passkeys work in production on the web. On Android they run in the Android preview build and reach production with the first production Android build.
 
 ## Admin console
 
