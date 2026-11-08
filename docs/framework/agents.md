@@ -60,12 +60,12 @@ sequenceDiagram
   Owner->>Master: Request
   Master->>Owner: Verdict per point
   Owner->>Master: Decision
-  Master->>Master: Work Item and issue
+  Note over Master: Work Item and issue
   Master->>Agent: DELEGATE
   Agent->>Master: STATUS ACCEPTED
-  Agent->>Agent: Branch, code, local CI evidence, PR
+  Note over Agent: Branch, code,<br/>local CI evidence, PR
   Agent->>Master: REQUEST_REVIEW
-  Master->>Master: Audit, then merge to staging
+  Note over Master: Audit, then<br/>merge to staging
   Master->>Owner: Test link
   Agent->>Master: NOTIFY_COMPLETE
 ```

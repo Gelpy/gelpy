@@ -62,7 +62,7 @@ Cada entorno tiene su propia base de datos y sus propios secretos.
 ## De la rama a producción
 
 ```mermaid
-flowchart LR
+flowchart TB
   branch[Rama] --> pr[PR<br/>gates y vista previa]
   pr --> audit[Auditoría del Master]
   audit --> staging[Merge a staging]

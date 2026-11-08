@@ -62,7 +62,7 @@ Each environment has its own database and its own secrets.
 ## From branch to production
 
 ```mermaid
-flowchart LR
+flowchart TB
   branch[Branch] --> pr[PR<br/>gates and preview]
   pr --> audit[Master audit]
   audit --> staging[Merge to staging]

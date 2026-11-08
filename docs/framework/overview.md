@@ -30,7 +30,7 @@ Each principle comes from a rule that the agents follow.
 ## System map
 
 ```mermaid
-flowchart TB
+flowchart LR
   owner([Owner])
   master[Master Agent]
   coach[Business Coach]
