@@ -14,6 +14,13 @@ Cada spec de producto termina con un Work Item de documentación en este reposit
 - Cada cambio actualiza la página en inglés de `docs/` y su página en español de `i18n/es/` en el mismo pull request.
 - Los comandos, rutas, nombres de archivo y claves de configuración no se traducen.
 
+## Regla del framework
+
+La sección [Framework agéntico](../framework/overview.md) describe el método de trabajo que construye Gelpy: roles, flujos y reglas. Nunca describe datos operativos, como nombres de secretos, IDs de builds o de sesiones, costos o riesgos abiertos.
+
+- Cada cambio del framework actualiza esta sección en el mismo ciclo.
+- La sección describe un método que ya está en uso, así que la regla de "previsto hasta producción" no se aplica.
+
 ## Qué se puede publicar
 
 Se publica:
@@ -21,6 +28,7 @@ Se publica:
 - Diagramas de arquitectura y de flujo de datos de alto nivel
 - La postura de seguridad y las reglas de manejo de datos
 - Los límites del producto y el roadmap público
+- El método de ingeniería (el framework agéntico), al nivel de roles, flujos y reglas
 
 Nunca se publica:
 

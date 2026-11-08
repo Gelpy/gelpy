@@ -21,7 +21,7 @@ Gelpy conecta a profesionales de servicios generales con personas que necesitan 
 ## Reglas del repo
 
 - Eres el único agente que edita este repo. Los demás piden al Agente Master.
-- Publica arquitectura de alto nivel, flujo de datos y postura de seguridad.
+- Publica arquitectura de alto nivel, flujo de datos, postura de seguridad y el método de ingeniería (el framework agéntico), al nivel de roles, flujos y reglas.
 - Nunca publiques secretos, tokens, URLs o IPs internas, datos personales ni vulnerabilidades abiertas.
 - Nunca agregues el manual de marca, archivos editables ni fuentes.
 - `docs/` es la fuente; la wiki es un espejo generado.

@@ -14,6 +14,13 @@ Every product spec ends with a documentation Work Item in this repository. That 
 - Each change updates the English page in `docs/` and its Spanish page in `i18n/es/` in the same pull request.
 - Commands, paths, file names, and configuration keys stay untranslated.
 
+## Framework rule
+
+The [Agentic framework](../framework/overview.md) section describes the working method that builds Gelpy: roles, flows, and rules. It never describes operational data, such as secret names, build or session IDs, costs, or open risks.
+
+- Every framework change updates this section in the same cycle.
+- The section describes a method that is already in use, so the "planned until production" rule does not apply to it.
+
 ## What may be published
 
 Publish:
@@ -21,6 +28,7 @@ Publish:
 - High-level architecture and data-flow diagrams
 - Security posture and data-handling rules
 - Product boundaries and the public roadmap
+- The engineering method (the agentic framework), at the level of roles, flows, and rules
 
 Never publish:
 
