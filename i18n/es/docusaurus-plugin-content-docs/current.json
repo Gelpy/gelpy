@@ -11,6 +11,10 @@
     "message": "Seguridad",
     "description": "The label for category 'Security' in sidebar 'docs'"
   },
+  "sidebar.docs.category.Agentic framework": {
+    "message": "Framework agéntico",
+    "description": "The label for category 'Agentic framework' in sidebar 'docs'"
+  },
   "sidebar.docs.category.Contributing": {
     "message": "Contribuir",
     "description": "The label for category 'Contributing' in sidebar 'docs'"

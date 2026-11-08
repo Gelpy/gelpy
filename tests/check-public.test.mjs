@@ -7,7 +7,9 @@ import {join} from 'node:path';
 import {
   DEFAULT_TARGETS,
   collectFiles,
+  TERM_EXCEPTIONS,
   formatFinding,
+  isExcepted,
   main,
   redact,
   scanFiles,
@@ -96,7 +98,30 @@ test('detects personal data and reference project terms', () => {
   assert.ok(rulesFor(FAKE.referenceTerm).includes('reference-project-term'));
 });
 
+test('the origin page may name the base project, and no other page may (Work Item 001-021)', () => {
+  const origin = ['docs/framework/evolution.md', 'i18n/es/docusaurus-plugin-content-docs/current/framework/evolution.md'];
+  assert.deepEqual(TERM_EXCEPTIONS.map(({files}) => files).flat(), origin);
+  const text = `${FAKE.referenceTerm} Tracker: https://docs.${FAKE.referenceTerm.toLowerCase()}-tracker.us/`;
+  for (const file of origin) assert.deepEqual(scanText(text, file), [], file);
+  assert.deepEqual(scanText(text, origin[1].replaceAll('/', '\\')), [], 'Windows separators');
+  for (const file of ['docs/framework/overview.md', 'docs/evolution.md', 'i18n/es/docusaurus-plugin-content-docs/current/framework/overview.md', '<text>']) {
+    assert.deepEqual(scanText(text, file).map((f) => f.rule), ['reference-project-term', 'reference-project-term'], file);
+  }
+});
+
+test('the origin page exception covers only that term of that rule', () => {
+  const file = 'docs/framework/evolution.md';
+  for (const term of [j('edjo', 'sephgr'), j('profile-', 'professional')]) {
+    assert.deepEqual(scanText(term, file).map((f) => f.rule), ['reference-project-term'], term);
+  }
+  assert.ok(scanText(FAKE.email, file).some((f) => f.rule === 'email'));
+  assert.ok(scanText('see https://example.com/x', file).some((f) => f.rule === 'url-not-allowed'));
+  assert.equal(isExcepted('email', FAKE.referenceTerm, file), false);
+  assert.equal(isExcepted('reference-project-term', FAKE.referenceTerm, file), true);
+});
+
 test('URL allowlist', () => {
+  assert.equal(urlProblem('https://docs.portfolio-tracker.us/'), null);
   assert.equal(urlProblem('https://docs.gelpy.app/es/'), null);
   assert.equal(urlProblem('https://www.unicode.org/cldr/'), null);
   assert.equal(urlProblem('https://edgardo-gutierrez.com'), null);

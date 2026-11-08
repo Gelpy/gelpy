@@ -21,7 +21,7 @@ Gelpy connects general-services professionals with people who need help, with sa
 ## Repo Rules
 
 - You are the only agent that edits this repo. Others ask the Master Agent.
-- Publish high-level architecture, data flow, and security posture.
+- Publish high-level architecture, data flow, security posture, and the engineering method (the agentic framework), at the level of roles, flows, and rules.
 - Never publish secrets, tokens, internal URLs or IPs, personal data, or open vulnerabilities.
 - Never add the brand manual, editable files, or font files.
 - `docs/` is the source; the wiki is a generated mirror.

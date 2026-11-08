@@ -10,7 +10,8 @@
 // Without paths it scans DEFAULT_TARGETS from the current directory.
 //
 // Live check (Work Item 003-025): node scripts/check-public.mjs --live <origin>
-// fetches / and /es/ and passes when both answer 200 with HTML in their
+// fetches every LIVE_PATHS entry (/, /es/, and the framework overview in both languages) and
+// passes when each answers 200 with HTML in its
 // language from Cloudflare, not from GitHub Pages. cf:deploy runs it after
 // every deploy; it retries while a new custom domain's certificate is issued.
 
@@ -41,6 +42,9 @@ const ALLOWED_HOSTS = new Set([
   'docs.gelpy.app',
   'edgardo-gutierrez.com',
   'www.unicode.org',
+  // The public docs of the project the framework came from, linked only from its origin page
+  // (Work Item 001-021); the term exception below keeps the name off every other page.
+  'docs.portfolio-tracker.us',
 ]);
 const ALLOWED_GITHUB_PREFIX = '/gelpy/gelpy';
 
@@ -77,6 +81,21 @@ export const RULES = [
   // Private reference project
   {id: 'reference-project-term', category: 'reference-project', re: /portfolio|edjosephgr|profile-professional/gi},
 ];
+
+// Path-scoped exceptions (Work Item 001-021, owner decision 2026-11-08). The framework's origin
+// page, in English and Spanish, may name the project the method came from. Only the term
+// "portfolio" is exempt, and only on those two files: every other term of the rule, and every
+// other rule, still applies there.
+export const TERM_EXCEPTIONS = [
+  {rule: 'reference-project-term', term: 'portfolio', files: ['docs/framework/evolution.md', 'i18n/es/docusaurus-plugin-content-docs/current/framework/evolution.md']},
+];
+
+/** True when a match is covered by a path-scoped exception. */
+export function isExcepted(rule, match, file) {
+  const path = file.replaceAll('\\', '/');
+  const term = match.toLowerCase();
+  return TERM_EXCEPTIONS.some((exception) => exception.rule === rule && exception.term === term && exception.files.includes(path));
+}
 
 const URL_RE = /\bhttps?:\/\/[^\s)'"`<>\]}]+/gi;
 
@@ -117,6 +136,7 @@ export function scanText(text, file = '<text>') {
   for (const rule of RULES) {
     rule.re.lastIndex = 0;
     for (const match of text.matchAll(rule.re)) {
+      if (isExcepted(rule.id, match[0], file)) continue;
       findings.push({file, ...position(text, match.index), rule: rule.id, category: rule.category, excerpt: redact(match[0])});
     }
   }
@@ -180,9 +200,13 @@ export function main(args = process.argv.slice(2), {root = process.cwd(), log = 
   return 0;
 }
 
+// The framework overview has no trailing slash: with trailingSlash: false, the Worker redirects
+// /framework/overview/ to it, and the pinned DNS-over-HTTPS fetch does not follow redirects.
 export const LIVE_PATHS = [
   {path: '/', lang: 'en'},
   {path: '/es/', lang: 'es'},
+  {path: '/framework/overview', lang: 'en'},
+  {path: '/es/framework/overview', lang: 'es'},
 ];
 
 /** Returns null when one live response is the docs Worker serving the page, or the reason it is not. */

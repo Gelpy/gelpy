@@ -22,6 +22,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - Mirror `docs/` into the GitHub wiki on every deploy of `main` (Work Item 004-002): `npm run wiki:build` generates the English and Spanish pages, a sidebar, and a footer; the sync is idempotent and logs page names only.
 - Add `npm run ci:local` and `npm run ci:evidence`, the local PR gate of MVP mode.
 - Scan every `main` build with the pinned gitleaks over the pushed commits (`HEAD^1..HEAD`) before the site build (Work Item 003-037).
+- Add the "Agentic framework" section in English and Spanish (Work Item 001-021): 8 pages on the working method that builds Gelpy, covering the overview, the agent team, skills, Work Items and sprints, delivery, owner rules and safety, the Business Coach, and the framework's origin and evolution, with Mermaid diagrams. The section sits at position 4 and Contributing moves to 5. The home page links it, the documentation rules and `AGENTS.md` add the engineering method to the publishable scope, and `check:public --live` also checks the framework overview in both languages. `check:public` lets the origin page alone name the base project and link its public docs.
 
 ### Changed
 

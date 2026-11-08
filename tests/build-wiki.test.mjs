@@ -91,11 +91,20 @@ test('the real docs build into a public-safe wiki', () => {
   const pages = buildWiki();
   assert.ok(pages.has('Home') && pages.has('es-Home'));
   assert.equal(listDocs('docs').length * 2 + 2, pages.size, 'every English page has a Spanish page');
+  // Each wiki page is scanned as the doc it mirrors, so a path-scoped check:public exception
+  // (Work Item 001-021: the framework's origin page) covers that page's mirror and no other page.
+  const sources = new Map([
+    ...listDocs('docs').map((doc) => [pageName(doc), `docs/${doc}`]),
+    ...listDocs(ES).map((doc) => [pageName(doc, 'es-'), `${ES}/${doc}`]),
+  ]);
   for (const [name, text] of pages) {
-    assert.deepEqual(scanText(text, name), [], name);
+    assert.deepEqual(scanText(text, sources.get(name) ?? name), [], name);
     assert.doesNotMatch(text, /^:::/m, name);
     assert.doesNotMatch(text, /\]\(\.{1,2}\//, `${name} keeps no relative doc link`);
   }
+  assert.equal(sources.get('Framework-Evolution'), 'docs/framework/evolution.md');
+  assert.equal(sources.get('es-Framework-Evolution'), `${ES}/framework/evolution.md`);
+  assert.notDeepEqual(scanText(pages.get('Framework-Evolution'), 'Framework-Evolution'), [], 'outside its source path the origin page still fails');
 });
 
 test('main lists the pages, writes them, and fails on a broken doc', () => {

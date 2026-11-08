@@ -8,7 +8,7 @@ title: Introduction
 
 Gelpy connects general-services professionals with people who need help, with safety and trust.
 
-This site holds Gelpy's public engineering documentation. It covers high-level architecture, data flow, and security posture. Phase 1 builds the application base only.
+This site holds Gelpy's public engineering documentation. It covers high-level architecture, data flow, security posture, and the engineering method. Phase 1 builds the application base only.
 
 ## Start here
 
@@ -17,6 +17,7 @@ This site holds Gelpy's public engineering documentation. It covers high-level a
 - [App shell](./architecture/app-shell.md): navigation, onboarding, languages, and themes in the app.
 - [Security overview](./security/overview.md): security posture and data-handling rules.
 - [Identity and sign-in](./security/identity.md): registration, sign-in, the admin console, and identity data.
+- [Agentic framework](./framework/overview.md): the working method that builds Gelpy, with one human owner and a team of AI agents.
 - [Documentation rules](./contributing/documentation-rules.md): how these docs grow and what may be published.
 
 ## How this site works

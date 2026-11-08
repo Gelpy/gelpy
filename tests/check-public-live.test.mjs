@@ -5,6 +5,9 @@ import {createServer} from 'node:http';
 
 import {LIVE_ATTEMPTS, LIVE_DELAY_MS, LIVE_PATHS, LIVE_TIMEOUT_MS, LIVE_WINDOW_MS, checkLive, cli, describeAttempt, liveProblem} from '../scripts/check-public.mjs';
 
+// The language a live path is in: every path under /es/ is Spanish.
+const langOf = (url) => (new URL(url).pathname.startsWith('/es/') ? 'es' : 'en');
+
 const page = (lang, headers = {}, status = 200) => ({
   status,
   headers: new Headers({'server': 'cloudflare', 'content-type': 'text/html; charset=utf-8', ...headers}),
@@ -22,13 +25,27 @@ test('liveProblem accepts the Worker and rejects GitHub Pages or a wrong page', 
   assert.equal(liveProblem(ok('en'), 'es'), 'no <html lang="es">');
 });
 
-test('checkLive passes when / and /es/ come from the Worker', async () => {
+test('checkLive passes when every live path comes from the Worker', async () => {
   const urls = [];
   const log = [];
-  const request = async (url) => (urls.push(url), page(url.endsWith('/es/') ? 'es' : 'en'));
+  const request = async (url) => (urls.push(url), page(langOf(url)));
   assert.equal(await checkLive('https://docs.gelpy.app', {request, log: (line) => log.push(line)}), 0);
   assert.deepEqual(urls, LIVE_PATHS.map(({path}) => `https://docs.gelpy.app${path}`));
-  assert.deepEqual(log, ['check:public --live: https://docs.gelpy.app/: 200 from Cloudflare (en)', 'check:public --live: https://docs.gelpy.app/es/: 200 from Cloudflare (es)']);
+  assert.deepEqual(log, [
+    'check:public --live: https://docs.gelpy.app/: 200 from Cloudflare (en)',
+    'check:public --live: https://docs.gelpy.app/es/: 200 from Cloudflare (es)',
+    'check:public --live: https://docs.gelpy.app/framework/overview: 200 from Cloudflare (en)',
+    'check:public --live: https://docs.gelpy.app/es/framework/overview: 200 from Cloudflare (es)',
+  ]);
+});
+
+test('the live paths include the framework overview in both languages, without a trailing slash (Work Item 001-021)', () => {
+  assert.deepEqual(LIVE_PATHS, [
+    {path: '/', lang: 'en'},
+    {path: '/es/', lang: 'es'},
+    {path: '/framework/overview', lang: 'en'},
+    {path: '/es/framework/overview', lang: 'es'},
+  ]);
 });
 
 test('checkLive retries, then fails with the reason', async () => {
@@ -38,11 +55,12 @@ test('checkLive retries, then fails with the reason', async () => {
   const request = async (url) => {
     calls += 1;
     if (calls === 1) throw new Error('certificate pending');
-    return url.endsWith('/es/') ? page('es', {'x-github-request-id': '1'}) : page('en');
+    if (new URL(url).pathname === '/es/') return page('es', {'x-github-request-id': '1'});
+    return page(langOf(url));
   };
   const status = await checkLive('https://docs.gelpy.app', {request, wait: async (ms) => waits.push(ms), attempts: 3, delayMs: 5, log: () => {}, error: (line) => errors.push(line)});
   assert.equal(status, 1);
-  assert.equal(calls, 5, '2 for / (one retry), 3 for /es/');
+  assert.equal(calls, 7, '2 for / (one retry), 3 for /es/, 1 for each framework overview');
   assert.deepEqual(waits, [5, 5, 5]);
   assert.deepEqual(errors, ['check:public --live: https://docs.gelpy.app/es/: served by GitHub Pages']);
 });
@@ -51,7 +69,7 @@ test('cli runs the live check, needs an origin, and falls back to the content sc
   const errors = [];
   assert.equal(await cli(['--live'], {error: (line) => errors.push(line)}), 2);
   assert.match(errors[0], /^Usage/);
-  assert.equal(await cli(['--live', 'https://docs.gelpy.app'], {request: async (url) => page(url.endsWith('/es/') ? 'es' : 'en'), log: () => {}}), 0);
+  assert.equal(await cli(['--live', 'https://docs.gelpy.app'], {request: async (url) => page(langOf(url)), log: () => {}}), 0);
   assert.equal(await cli(['docs'], {log: () => {}}), 0);
   const saved = console.error;
   console.error = (line) => errors.push(line);
@@ -69,8 +87,8 @@ test('the live window is 5 minutes per path: 30 attempts, 10 s apart', async () 
   const waits = [];
   const status = await checkLive('https://docs.gelpy.app', {request: async () => (calls++, page('en', {}, 503)), wait: async (ms) => waits.push(ms), log: () => {}, error: () => {}});
   assert.equal(status, 1);
-  assert.equal(calls, 2 * LIVE_ATTEMPTS);
-  assert.equal(waits.length, 2 * (LIVE_ATTEMPTS - 1));
+  assert.equal(calls, LIVE_PATHS.length * LIVE_ATTEMPTS);
+  assert.equal(waits.length, LIVE_PATHS.length * (LIVE_ATTEMPTS - 1));
   assert.ok(waits.every((ms) => ms === LIVE_DELAY_MS));
 });
 
@@ -94,7 +112,7 @@ test('every failed attempt is logged with what it saw', async () => {
     calls += 1;
     if (calls === 1) throw tls;
     if (calls === 2) return page('en', {'server': 'GitHub.com', 'x-github-request-id': '1'});
-    return page(url.endsWith('/es/') ? 'es' : 'en');
+    return page(langOf(url));
   };
   assert.equal(await checkLive('https://docs.gelpy.app', {request, wait: async () => {}, attempts: 5, log: (line) => log.push(line), error: () => {}}), 0);
   assert.deepEqual(log, [
@@ -102,6 +120,8 @@ test('every failed attempt is logged with what it saw', async () => {
     'check:public --live: https://docs.gelpy.app/: attempt 2/5: status 200, server GitHub.com; served by GitHub Pages',
     'check:public --live: https://docs.gelpy.app/: 200 from Cloudflare (en)',
     'check:public --live: https://docs.gelpy.app/es/: 200 from Cloudflare (es)',
+    'check:public --live: https://docs.gelpy.app/framework/overview: 200 from Cloudflare (en)',
+    'check:public --live: https://docs.gelpy.app/es/framework/overview: 200 from Cloudflare (es)',
   ]);
 });
 
@@ -123,10 +143,10 @@ test('a stalled body is aborted by the per-request timeout (real fetch, local se
     server.closeAllConnections();
     server.close();
   }
-  assert.ok(Date.now() - start < 5000, 'four 200 ms timeouts, not a hang');
-  assert.equal(log.length, 4);
+  assert.ok(Date.now() - start < 5000, 'eight 200 ms timeouts, not a hang');
+  assert.equal(log.length, 2 * LIVE_PATHS.length);
   assert.match(log[0], /attempt 1\/2: network error: .*(abort|timeout)/i);
-  assert.equal(errors.length, 2);
+  assert.equal(errors.length, LIVE_PATHS.length);
 });
 
 test('no attempt starts after the per-path window ends', async () => {
@@ -142,7 +162,7 @@ test('no attempt starts after the per-path window ends', async () => {
   };
   const status = await checkLive('https://docs.gelpy.app', {request, now: () => clock, wait: async (ms) => { clock += ms; }, log: () => {}, error: (line) => errors.push(line)});
   assert.equal(status, 1);
-  assert.equal(calls, 12, '6 attempts per path fit in 300 s at 50 s each');
+  assert.equal(calls, 6 * LIVE_PATHS.length, '6 attempts per path fit in 300 s at 50 s each');
   assert.match(errors[0], /status 503 \(gave up: the 300 s window ended\)$/);
 });
 
@@ -219,7 +239,7 @@ test('viaDoh resolves, then fetches pinned; the default checkLive uses it on a D
     const log = [];
     assert.equal(await checkLive(origin, {request: doh, wait: async () => {}, log: (line) => log.push(line), error: () => {}}), 0);
     assert.match(log[0], /attempt 1\/30: network error: fetch failed \(ENOTFOUND\); via DNS over HTTPS \(127\.0\.0\.1\): status 200, server cloudflare$/);
-    assert.match(log.at(-1), /\/es\/: 200 from Cloudflare \(es\)$/);
+    assert.match(log.at(-1), /\/es\/framework\/overview: 200 from Cloudflare \(es\)$/);
   } finally {
     server.close();
   }
@@ -234,7 +254,7 @@ test('checkLive on a DNS miss: a good DoH answer passes; a bad one or a DoH fail
     async () => ({address: '192.0.2.10', response: page('en')}),
   ];
   let call = 0;
-  const doh = (url) => (url.endsWith('/es/') ? Promise.resolve({address: '192.0.2.10', response: page('es')}) : answers[call++]());
+  const doh = (url) => (new URL(url).pathname === '/' ? answers[call++]() : Promise.resolve({address: '192.0.2.10', response: page(langOf(url))}));
   const status = await checkLive('https://docs.gelpy.app', {request: async () => Promise.reject(dnsMiss()), doh, wait: async () => {}, log: (line) => log.push(line), error: (line) => errors.push(line)});
   assert.equal(status, 0);
   assert.deepEqual(errors, []);
