@@ -59,7 +59,7 @@ En Expo, un build preview es la app de QA interno y un build development es el c
 
 - Las actualizaciones por aire usan EAS Update con un runtime de tipo fingerprint, así un cambio solo de JS llega a los teléfonos sin un build nuevo.
 - Un build nativo necesita la aprobación de su costo por parte del dueño.
-- **Las vistas previas de PR** se publican solo a pedido del Master. Un token de Expo nunca entra en un build de PR.
+- **Los builds de desarrollo de un PR** se publican solo a pedido del Master. Un token de Expo nunca entra en un build de PR.
 
 ## De la rama a producción
 
