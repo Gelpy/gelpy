@@ -109,7 +109,7 @@ Epic → one Feature per spec → Work Items, linked as native GitHub sub-issues
 
 - Progress is weighted by points.
 - Only Done counts; Deferred is excluded.
-- `progress-report` prints one table per repo plus a total.
+- `progress-report` prints one table, with a row per repo and a total row.
 
 ## Governance scripts
 

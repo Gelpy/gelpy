@@ -80,11 +80,11 @@ See [Documentation rules](../contributing/documentation-rules.md) for the full l
 | 0009 | Database schema source of truth |
 | 0010 | Brand and design system |
 | 0011 | Quality and security gates |
-| 0012 | Codex review on release PRs |
+| 0012 | Automatic Codex review (amended: release PRs only) |
 | 0013 | Website stack: Nuxt SSG, web motion, and HyperFrames media |
 | 0014 | Migration credentials in GitHub Environments |
 | 0015 | Coverage gate: 90% minimum, 95% target |
-| 0016 | API connects to Postgres through the provider pooler |
+| 0016 | API connects to Postgres through the provider pooler, without Hyperdrive |
 | 0017 | CI/CD pipeline policy: validate once, deploy on merge, no deploy secrets in PRs |
 | 0018 | CI/CD on Cloudflare Workers Builds |
 

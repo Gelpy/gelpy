@@ -109,7 +109,7 @@ Epic → un Feature por spec → Work Items, enlazados como sub-issues nativos d
 
 - El progreso se pondera por puntos.
 - Solo cuenta Done; Deferred queda fuera.
-- `progress-report` imprime una tabla por repo más un total.
+- `progress-report` imprime una sola tabla, con una fila por repo y una fila de total.
 
 ## Scripts de gobierno
 

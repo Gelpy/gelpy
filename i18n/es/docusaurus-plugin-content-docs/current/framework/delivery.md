@@ -8,7 +8,7 @@ description: Ramas, gates de pull request, entornos, trenes de release y actuali
 
 ## Ramas
 
-Estas reglas vienen del ADR-0005.
+Estas reglas vienen del ADR-0005 y del ADR-0008.
 
 - `claude/NNN-MMM-slug` para los agentes de Claude Code, y `codex/NNN-MMM-slug` para Codex.
 - Los repos desplegables crean sus ramas desde `staging`. Los repos de arquitectura, docs y design system las crean desde `main`.

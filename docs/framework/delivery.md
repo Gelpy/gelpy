@@ -8,7 +8,7 @@ description: Branches, pull request gates, environments, release trains, and mob
 
 ## Branches
 
-These rules come from ADR-0005.
+These rules come from ADR-0005 and ADR-0008.
 
 - `claude/NNN-MMM-slug` for Claude Code agents, and `codex/NNN-MMM-slug` for Codex.
 - Deployable repos branch from `staging`. The architecture, docs, and design-system repos branch from `main`.
