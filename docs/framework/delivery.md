@@ -51,9 +51,11 @@ Each environment has its own database and its own secrets.
 
 | EAS channel | Branch | Use |
 |-------------|--------|-----|
-| `production` | `main` | Production |
-| `preview` | `staging` | The internal test build |
-| `development` | PR | PR previews, on demand |
+| `production` | `main` | What is live on `main` (api.gelpy.app) |
+| `preview` | `staging` | What is live on `staging` (test environment): the internal test app, which receives every staging update by itself |
+| `development` | PR | Development client: opens a PR's code before its merge, on demand |
+
+In Expo, a preview build is the internal QA app and a development build is the development client; the names are Expo's, not ours.
 
 - Over-the-air updates use EAS Update with a fingerprint runtime, so a JS-only change reaches phones without a new build.
 - A native build needs the owner's approval of its cost.

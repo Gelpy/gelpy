@@ -51,9 +51,11 @@ Cada entorno tiene su propia base de datos y sus propios secretos.
 
 | Canal de EAS | Rama | Uso |
 |--------------|------|-----|
-| `production` | `main` | Producción |
-| `preview` | `staging` | El build interno de prueba |
-| `development` | PR | Vistas previas de PR, a pedido |
+| `production` | `main` | Lo desplegado en `main` (api.gelpy.app) |
+| `preview` | `staging` | Lo desplegado en `staging` (entorno de test): la app interna de prueba, que recibe sola cada actualización de staging |
+| `development` | PR | Cliente de desarrollo: abre el código de un PR antes del merge, a pedido |
+
+En Expo, un build preview es la app de QA interno y un build development es el cliente de desarrollo; los nombres son de Expo, no nuestros.
 
 - Las actualizaciones por aire usan EAS Update con un runtime de tipo fingerprint, así un cambio solo de JS llega a los teléfonos sin un build nuevo.
 - Un build nativo necesita la aprobación de su costo por parte del dueño.
