@@ -10,7 +10,7 @@ Gelpy handles accounts and personal data, so security is part of every change fr
 
 :::note Status
 
-Phase 1 is in development. The rules on this page already apply to every Gelpy repository. Product capabilities marked as planned are not live yet.
+The Phase 1 base is in production; Phase 1 closes on 2026-11-29. The rules on this page already apply to every Gelpy repository. Product capabilities marked as planned are not live yet.
 
 :::
 
@@ -42,7 +42,7 @@ These guide the design. They are not a certification.
 - Refresh tokens rotate on every use and stop working after sign-out.
 - The admin console accepts only admins, with separate console sessions.
 
-See [Identity and sign-in](./identity.md) for the flows and the status of each one.
+See [Identity and sign-in](./identity.md) for the flows and the status of each one, and [Fingerprint unlock and passkeys](./biometrics-passkeys.md) for those two methods.
 
 ## Secrets management
 

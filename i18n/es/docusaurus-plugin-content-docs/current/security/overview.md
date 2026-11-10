@@ -10,7 +10,7 @@ Gelpy maneja cuentas y datos personales, así que la seguridad forma parte de ca
 
 :::note Estado
 
-La Fase 1 está en desarrollo. Las reglas de esta página ya se aplican en todos los repositorios de Gelpy. Las capacidades del producto marcadas como previstas todavía no están en funcionamiento.
+La base de la Fase 1 está en producción; la Fase 1 cierra el 2026-11-29. Las reglas de esta página ya se aplican en todos los repositorios de Gelpy. Las capacidades del producto marcadas como previstas todavía no están en funcionamiento.
 
 :::
 
@@ -42,7 +42,7 @@ Estos marcos guían el diseño. No son una certificación.
 - Los tokens de refresco rotan en cada uso y dejan de funcionar al cerrar sesión.
 - La consola de admins solo acepta admins, con sesiones de consola separadas.
 
-Consulta [Identidad e inicio de sesión](./identity.md) para ver los flujos y el estado de cada uno.
+Consulta [Identidad e inicio de sesión](./identity.md) para ver los flujos y el estado de cada uno, y [Desbloqueo con huella y passkeys](./biometrics-passkeys.md) para esos dos métodos.
 
 ## Manejo de secretos
 

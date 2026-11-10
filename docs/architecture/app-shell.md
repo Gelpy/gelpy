@@ -6,11 +6,11 @@ description: "How the Gelpy app is organized: navigation, onboarding, languages,
 
 # App shell
 
-The app shell is the base of the Gelpy app. It holds navigation, first-launch onboarding, the language and theme settings, and the layout for phones and browsers. Later features, such as sign-in and requests, are built inside it.
+The app shell is the base of the Gelpy app. It holds navigation, first-launch onboarding, the language and theme settings, and the layout for phones and browsers. Sign-in, in production since 2026-11-07, is built inside it, and later features, such as requests, will be too.
 
 :::note Status
 
-The app shell runs in production on the web, since app release 0.2.0 (2026-11-03). The Android version is in preview: it is not published on Google Play yet.
+The app shell runs in production on the web, since app release 0.2.0 (2026-11-03). On Android, it is in the production Android build since 2026-11-08. That build is installed as an APK; the app is not on Google Play.
 
 :::
 
@@ -22,11 +22,11 @@ The app has three main tabs, in this order:
 
 | Tab | Spanish label | Today |
 |-----|---------------|-------|
-| Home | Inicio | The starting screen. Its content arrives with later features. |
-| Tasks | Tareas | Reserved for later features. |
-| Profile | Perfil | The language and theme settings. |
+| Home | Inicio | The starting screen. It shows a "coming soon" view. |
+| Tasks | Tareas | It shows a "coming soon" view. |
+| Profile | Perfil | Account (photo or a silhouette, name, email, a phone row, and Passkeys), the language and theme settings, Preferencias › Notificaciones on Android, and a footer with the app and API versions. |
 
-The tabs stay at the bottom of the screen on Android and in the browser. On the web, each tab has its own address, so links and the browser's back button work.
+On Android and on phones, the tabs stay at the bottom of the screen. On the web, tablets (768 to 1023 px) use an 88 px side rail, and desktops (1024 px and wider) use a 240 px sidebar. On the web, each tab has its own address, so links and the browser's back button work.
 
 ## Onboarding
 
@@ -41,7 +41,7 @@ flowchart LR
 - On first launch, the app shows a short set of onboarding screens before the tabs.
 - People can skip onboarding at any time.
 - Once onboarding is finished or skipped, the app remembers it on the device and goes straight to the tabs from then on.
-- On Android, one screen explains why notifications help and asks whether to turn them on. People can say "Not now", and onboarding does not ask again. The web skips this step.
+- On Android, one screen asks for Android's notification permission. People can say "Not now", and onboarding does not ask again. The permission alone turns on no notification: "Novedades de Gelpy" turns on only with its switch in Profile. The web skips this step.
 
 ## Languages
 
@@ -61,7 +61,7 @@ flowchart LR
 
 ## Screen sizes
 
-The web app adapts to phones, tablets, and desktops. Tests check widths of 375, 768, and 1440 pixels, and no screen scrolls sideways at any of them.
+The web app adapts to phones, tablets, and desktops. Tests check three width classes at 9 viewports.
 
 ## Local preferences
 
@@ -71,3 +71,4 @@ Language, theme, and onboarding progress are stored only on the device, as local
 
 - [Architecture overview](./overview.md)
 - [Data flow](./data-flow.md)
+- [Push notifications](./push.md)

@@ -10,7 +10,8 @@
 // Without paths it scans DEFAULT_TARGETS from the current directory.
 //
 // Live check (Work Item 003-025): node scripts/check-public.mjs --live <origin>
-// fetches every LIVE_PATHS entry (/, /es/, and the framework overview in both languages) and
+// fetches every LIVE_PATHS entry (/, /es/, and the framework overview, push, fingerprint and
+// passkeys, and website pages in both languages) and
 // passes when each answers 200 with HTML in its
 // language from Cloudflare, not from GitHub Pages. cf:deploy runs it after
 // every deploy; it retries while a new custom domain's certificate is issued.
@@ -200,13 +201,20 @@ export function main(args = process.argv.slice(2), {root = process.cwd(), log = 
   return 0;
 }
 
-// The framework overview has no trailing slash: with trailingSlash: false, the Worker redirects
-// /framework/overview/ to it, and the pinned DNS-over-HTTPS fetch does not follow redirects.
+// The doc pages have no trailing slash: with trailingSlash: false, the Worker redirects
+// /framework/overview/ to /framework/overview, and the pinned DNS-over-HTTPS fetch does not follow redirects.
 export const LIVE_PATHS = [
   {path: '/', lang: 'en'},
   {path: '/es/', lang: 'es'},
   {path: '/framework/overview', lang: 'en'},
   {path: '/es/framework/overview', lang: 'es'},
+  // Work Items 009-005, 008-006, and 010-025: the push, fingerprint and passkeys, and website pages.
+  {path: '/architecture/push', lang: 'en'},
+  {path: '/es/architecture/push', lang: 'es'},
+  {path: '/security/biometrics-passkeys', lang: 'en'},
+  {path: '/es/security/biometrics-passkeys', lang: 'es'},
+  {path: '/architecture/website', lang: 'en'},
+  {path: '/es/architecture/website', lang: 'es'},
 ];
 
 /** Returns null when one live response is the docs Worker serving the page, or the reason it is not. */
