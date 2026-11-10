@@ -1,14 +1,16 @@
 ---
 sidebar_position: 3
 title: Skills
-description: Las 21 skills del Framework agéntico de Gelpy, qué hace cada una y cuáles son obligatorias.
+description: Las 23 skills del Framework agéntico de Gelpy, qué hace cada una y cuáles son obligatorias.
 ---
 
 # Skills
 
 Una skill es un archivo `SKILL.md` con instrucciones empaquetadas para un trabajo repetible. El mismo archivo sirve para Claude Code y para Codex: cada skill tiene además un pequeño archivo de metadatos para Codex. Los repos apuntan al catálogo central en lugar de copiarlo.
 
-## Las 21 skills
+## Las skills
+
+El catálogo tiene 23 skills.
 
 | Grupo | Skill | Propósito |
 |-------|-------|-----------|
@@ -27,12 +29,14 @@ Una skill es un archivo `SKILL.md` con instrucciones empaquetadas para un trabaj
 | | `gelpy-validate-environment` | Revisar herramientas y accesos antes de trabajos de configuración o de CI |
 | Release | `gelpy-release-version` | Obligatoria al inicio de cada proceso: decisión de versión, changelog, tags, Releases, manifiesto de versiones |
 | Marca y diseño | `gelpy-apply-brand` | Checklist de marca para cualquier superficie visual |
-| | `gelpy-design-web-experience` | Base de UX, luego tableros de diseño aprobados por el dueño y una spec de motion, todo antes del código |
+| | `gelpy-design-product-experience` | Diseñar una pantalla o un flujo nuevo de la app o de la consola antes de cualquier código: brief, flujo, inventario de estados, wireframe de 360 px, frames de alta fidelidad, heurísticas, la aprobación escrita del dueño y la entrega al agente de repo |
+| | `gelpy-design-web-experience` | Base de UX, luego tableros de diseño aprobados por el dueño y una spec de motion, todo antes del código; sus pasos de diseño pasan al Product Designer |
 | | `gelpy-produce-motion-video` | Video HyperFrames con la voz IA del dueño; el guion, el gasto y la vista previa necesitan aprobación cada uno |
 | Progreso | `gelpy-progress-status` | Progreso en porcentaje por repo y en total, ponderado por puntos |
-| Negocio | `gelpy-business-coach` | Activar el Business Coach y sus especialistas |
+| Negocio | `gelpy-business-coach` | Activar al Gerente de Estrategia y su equipo |
 | Plataforma | `gelpy-setup-infrastructure` | Trabajo en la plataforma Cloudflare |
 | | `gelpy-init-api` | Bases de la API: Clean Architecture y el patrón Result |
+| | `gelpy-db-table-standards` | Diseñar y revisar cada tabla de Postgres según la convención de tablas: identidad, un código en los catálogos, un indicador de activo separado del borrado, un borrado lógico solo donde la política de privacidad lo permite, quién y cuándo en cada fila, un índice por cada clave foránea y relaciones explícitas |
 
 ## Skills obligatorias
 
@@ -42,8 +46,10 @@ Una skill es un archivo `SKILL.md` con instrucciones empaquetadas para un trabaj
 | `gelpy-release-version` | El inicio de cada proceso |
 | `gelpy-verify-work-item` | Antes de Done |
 | `gelpy-apply-brand` | Cualquier cambio visual |
+| `gelpy-design-product-experience` | Cada pantalla o flujo nuevo de la app o de la consola, antes del código |
 | `gelpy-codex-review` | PRs de release |
 | `gelpy-update-docs` | Después de cada cambio |
+| `gelpy-db-table-standards` | Cada migración que crea o modifica una tabla, y cada auditoría del esquema |
 
 ## Páginas relacionadas
 

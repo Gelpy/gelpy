@@ -29,24 +29,32 @@ From the base's public framework page:
 
 | Dimension | Base | Gelpy |
 |-----------|------|-------|
-| Executors | One AI executor | A Master Agent, Agent Infra, 7 repo agents, and a business team, in parallel cloud sessions, with Codex as second executor and release reviewer |
+| Executors | One AI executor | A startup office of 13 agents in two areas, Product and Engineering and Business, each led by a head, in parallel cloud sessions, with Codex as release code reviewer |
 | Coordination | — | A message protocol, `STATUS` replies, and verified transfers between sessions |
-| Skills | 10 | 21; adds orchestrate, challenge-request, verify, codex-review, apply-brand, design-web-experience, produce-motion-video, audit-public-claims, progress-status, business-coach, and self-improve |
+| Skills | 10 | 23; adds orchestrate, challenge-request, verify, codex-review, apply-brand, design-web-experience, design-product-experience, produce-motion-video, audit-public-claims, progress-status, business-coach, self-improve, and db-table-standards |
 | Owner review | — | A strict verdict per point on every request and every delegation |
 | Issues | References only | Status mirrored in labels and closing, Epic → Feature → Work Item sub-issues, and milestones |
 | Planning | Work Items | 1-week sprints, points, and percent progress per repo |
 | Verification | Validation evidence | Measure, Check, and Verified by per criterion, a lint for vague words, and PASS/FAIL/HUMAN PENDING before Done |
 | Delivery | Local infrastructure and CI | Cloud only: Cloudflare Workers Builds, `staging`/`main` release trains, preview deploys with `noindex`, and mobile channels with OTA updates |
 | Review | Local code-quality server | SonarCloud on every PR, gitleaks, 90% coverage, and Codex on release PRs |
-| Design | — | Design first: written owner approval of design boards before code, and a versioned design-system package |
-| Business | — | Business Coach with Legal Peru, Marketing, and a case memory |
+| Design | — | Design first: a Product Designer designs every new screen or flow with all its states, the owner approves it in writing before code, and a versioned design-system package |
+| Business | — | A Business area led by the Strategy Manager, with the Legal Analyst, the Growth Marketer, on-demand roles, and a case memory |
 | Branches | `codex/` | `claude/` and `codex/` |
+
+## Timeline
+
+| Date | Change |
+|------|--------|
+| 2026-10-31 | Gelpy adopts the base framework's gates |
+| 2026-11-08 | Version 1.0 documented on this site |
+| 2026-11-09 | The agents are organized as a startup office: two heads, office roles, teams without a lead, and a Product Designer |
 
 ## Lessons learned
 
 1. **Preview builds never hold deploy tokens.** Any branch can run code in a preview build, so a token there could publish to production. PR previews are published on demand instead.
 2. **Verify the tree in every transfer.** A checksum manifest plus the git tree hash make a hand-off between sessions exact.
-3. **Read the evidence, not the report.** The Master audits diffs, logs, and live responses before it merges or reports.
+3. **Read the evidence, not the report.** The Technical Product Manager audits diffs, logs, and live responses before it merges or reports.
 4. **Status lines age.** Before reporting progress, check each Work Item against git, Releases, and live checks. A review on 2026-11-08 found 2 items already done.
 5. **One PR in flight per repo** avoids conflicts and makes every merge auditable.
 6. **Design approved before code** avoids rework on screens.

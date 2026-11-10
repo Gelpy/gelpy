@@ -59,14 +59,14 @@ In Expo, a preview build is the internal QA app and a development build is the d
 
 - Over-the-air updates use EAS Update with a fingerprint runtime, so a JS-only change reaches phones without a new build.
 - A native build needs the owner's approval of its cost.
-- **Development builds of a PR** are published only on demand by the Master. An Expo token never enters a PR build.
+- **Development builds of a PR** are published only on demand by the Technical Product Manager. An Expo token never enters a PR build.
 
 ## From branch to production
 
 ```mermaid
 flowchart TB
   branch[Branch] --> pr[PR<br/>gates and preview]
-  pr --> audit[Master audit]
+  pr --> audit[Technical Product Manager audit]
   audit --> staging[Merge to staging]
   staging --> test[Test environment<br/>the owner tests]
   test --> release[Release PR<br/>with Codex]

@@ -26,6 +26,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Changed
 
+- Show the startup organization in the "Agentic framework" section in English and Spanish (Work Item 001-025): two heads, the Technical Product Manager and the Strategy Manager, office roles, teams without a lead, the Product Designer, the organization rules, the `gelpy-design-product-experience` skill, the new counts, and a 2026-11-09 timeline entry. The Business Coach page is titled Strategy Manager and keeps its URL.
 - Mark identity as in production on the web on the identity page in English and Spanish (Work Item 007-008): in the web version of the app and in the admin console, email and password, Google, phone by SMS, and passkeys run in production since 2026-11-07. Google on Android, fingerprint unlock, and passkeys on Android stay in the Android preview build until the first production Android build.
 - The release step of `main` requires `GELPY_RELEASE_TOKEN` on every deploy and checks the tag `v<version>` (Work Item 003-037):
   - A merge that changes the `package.json` version is a release: the tag must be missing or at the deployed commit, and the `CHANGELOG.md` section must exist.
