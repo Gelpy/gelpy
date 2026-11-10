@@ -10,7 +10,7 @@ This page describes how people create an account and sign in to Gelpy, how admin
 
 :::note Status
 
-Identity is in production since 2026-11-07 on the web: in the web version of the app and in the admin console. The Android app is still in preview, so identity on Android runs only in the Android preview build until the first production Android build. Each section below says where each part works today.
+Identity is in production since 2026-11-07 on the web: in the web version of the app and in the admin console. The first production Android build shipped on 2026-11-08. It is installed as an APK; the app is not on Google Play. Each section below says where each part works today.
 
 :::
 
@@ -18,10 +18,11 @@ Identity is in production since 2026-11-07 on the web: in the web version of the
 |------------|--------|
 | Email and password, with an email confirmation link | Production |
 | Google sign-in on the web | Production |
-| Google sign-in on Android | Android preview build; production with the first production Android build |
+| Google sign-in on Android | In the production Android build since 2026-11-08 |
 | Phone verification by SMS | Production |
-| Fingerprint unlock on Android | Android preview build; production with the first production Android build |
-| Passkeys | Production on the web; Android preview build |
+| Fingerprint unlock on Android | In the production Android build since 2026-11-08 |
+| Passkeys | Available on the web; Android planned until the Digital Asset Links file is served on `gelpy.app` |
+| Required acceptance of the terms and the privacy policy at sign-up | Production since 2026-11-08 |
 | Admin console with Google accounts of `gelpy.app` only | Production |
 
 ## Account types
@@ -33,6 +34,8 @@ When people register, by any method, they choose how they use Gelpy:
 - **Both**.
 
 The account is not created until a type is chosen, including on a first Google sign-in. People can add the other type later from Profile.
+
+Since 2026-11-08, signing up also requires checking a box that accepts the terms and the privacy policy. The account keeps a record of that acceptance, with the versions of the texts.
 
 Accounts also carry an internal admin flag. It is off by default, and no public part of the API can turn it on.
 
@@ -77,7 +80,7 @@ Nothing reveals whether an email already has an account:
 - Google proves the email, so a Google account starts with the email confirmed.
 - The API checks every Google token: who issued it, which app it was issued for, that it has not expired, and that the email is verified. A token issued for any other app is rejected.
 - On the web, the app gets the Google token directly in the browser.
-- On Android, the app uses the system's Credential Manager. It runs in the Android preview build and reaches production with the first production Android build.
+- On Android, the app uses the system's Credential Manager. It is in the production Android build since 2026-11-08.
 - No Google client secret is used or stored.
 
 If someone registered with an email and password but never confirmed it, and the real owner of that email later signs in with Google, the API removes the unconfirmed password and ends its sessions first. This blocks pre-account takeover.
@@ -102,14 +105,16 @@ If someone registered with an email and password but never confirmed it, and the
 - People can turn on fingerprint unlock on Android. Then the app asks for it before it restores a saved session.
 - Only strong biometrics are accepted.
 - Cancelling the prompt clears the saved session, so the person signs in again.
-- It runs in the Android preview build, checked on a physical phone, and reaches production with the first production Android build.
+- It is in the production Android build since 2026-11-08.
+- See [Fingerprint unlock and passkeys](./biometrics-passkeys.md) for the flow and the planned changes.
 
 ## Passkeys
 
 - People can create, use, and revoke passkeys. The server registers, verifies, and revokes them.
 - Each challenge expires and works once, and only the environment's own origins are accepted.
 - No private key ever reaches Gelpy: the device keeps it.
-- Passkeys work in production on the web. On Android they run in the Android preview build and reach production with the first production Android build.
+- Passkeys are available on the web. On Android they are planned until the Digital Asset Links file is served on `gelpy.app`.
+- See [Fingerprint unlock and passkeys](./biometrics-passkeys.md) for the flow and what is never stored.
 
 ## Admin console
 
@@ -120,7 +125,7 @@ The admin console is for Gelpy operators only. It signs in only with Google acco
 - Console sessions are separate from app sessions and last less. Admin actions accept only console sessions, so an admin's app session cannot perform them.
 - Everyone else sees a no-access page, and no session is kept.
 
-Admin roles per console module come in Phase 2.
+Phase 2 opened on 2026-11-08. Console roles per feature are planned; today every admin holds every console permission.
 
 ## Data handling
 
@@ -140,5 +145,6 @@ Admin roles per console module come in Phase 2.
 ## Related pages
 
 - [Security overview](./overview.md)
+- [Fingerprint unlock and passkeys](./biometrics-passkeys.md)
 - [Data flow](../architecture/data-flow.md)
 - [App shell](../architecture/app-shell.md)

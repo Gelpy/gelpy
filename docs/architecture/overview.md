@@ -6,11 +6,11 @@ description: High-level view of the Gelpy system, its components, and how it is 
 
 # Architecture overview
 
-Gelpy connects general-services professionals with people who need help, with safety and trust. Phase 1 builds the application base: accounts, sign-in, app navigation, and notifications. Marketplace features come in Phase 2.
+Gelpy connects general-services professionals with people who need help, with safety and trust. Phase 1 builds the application base: accounts, sign-in, app navigation, and notifications. Phase 2, the controlled marketplace pilot, opened on 2026-11-08; in production it stays off behind the pilot invitation gate.
 
 :::note Status
 
-Phase 1 is in development. This page describes the planned design. A capability is documented as available only after it reaches production.
+The app on the web (since 2026-11-03), identity (since 2026-11-07), and push notifications and the legal pages (since 2026-11-08) are in production. A capability is documented as available only after it reaches production; the rest is marked as planned.
 
 :::
 
@@ -69,7 +69,7 @@ flowchart LR
 
 - The API runs as a container on Cloudflare Containers, behind a Cloudflare Worker that receives every request.
 - The app, the website, and the admin console are served as static assets from Cloudflare.
-- The database is managed PostgreSQL, reached through Cloudflare Hyperdrive.
+- The database is managed PostgreSQL. The API container connects to it through the database provider's connection pooler.
 - There is no self-managed server.
 
 ## Environments
@@ -89,7 +89,8 @@ flowchart LR
 
 - Work starts on a branch and merges into `staging` after the quality gates pass. `staging` deploys to the test environment.
 - A release pull request promotes `staging` to `main`, which deploys to production. It needs explicit owner approval.
-- Production runs the same API image that was tested on `staging`. The image is not rebuilt.
+- While the API builds on Cloudflare Workers Builds (November 2026), production rebuilds the same source tree that was tested on `staging`.
+- CI/CD runs on Cloudflare Workers Builds, and each production build creates a GitHub Release.
 - Releases follow Semantic Versioning. Each release gets a Git tag and release notes from the changelog.
 
 ## Data model ownership
@@ -100,4 +101,6 @@ SQL migrations are the only source of the database schema. The API generates its
 
 - [Data flow](./data-flow.md)
 - [App shell](./app-shell.md)
+- [Push notifications](./push.md)
+- [Commercial website](./website.md)
 - [Security overview](../security/overview.md)

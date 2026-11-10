@@ -10,7 +10,7 @@ Esta página describe cómo las personas crean una cuenta e inician sesión en G
 
 :::note Estado
 
-La identidad está en producción desde el 2026-11-07 en la web: en la versión web de la app y en la consola de admins. La app de Android sigue en preview, así que la identidad en Android corre solo en el build preview de Android hasta el primer build de producción de Android. Cada sección indica dónde funciona hoy cada parte.
+La identidad está en producción desde el 2026-11-07 en la web: en la versión web de la app y en la consola de admins. El primer build de producción de Android salió el 2026-11-08. Se instala como APK; la app no está en Google Play. Cada sección indica dónde funciona hoy cada parte.
 
 :::
 
@@ -18,10 +18,11 @@ La identidad está en producción desde el 2026-11-07 en la web: en la versión 
 |-----------|--------|
 | Correo y contraseña, con link de confirmación por correo | Producción |
 | Inicio de sesión con Google en la web | Producción |
-| Inicio de sesión con Google en Android | Build preview de Android; producción con el primer build de producción de Android |
+| Inicio de sesión con Google en Android | En el build de producción de Android desde el 2026-11-08 |
 | Verificación del teléfono por SMS | Producción |
-| Desbloqueo con huella en Android | Build preview de Android; producción con el primer build de producción de Android |
-| Passkeys | Producción en la web; build preview de Android |
+| Desbloqueo con huella en Android | En el build de producción de Android desde el 2026-11-08 |
+| Passkeys | Disponibles en la web; en Android, previstas hasta que `gelpy.app` publique el archivo Digital Asset Links |
+| Aceptación obligatoria de los términos y la política de privacidad al registrarse | Producción desde el 2026-11-08 |
 | Consola de admins solo con cuentas Google de `gelpy.app` | Producción |
 
 ## Tipos de cuenta
@@ -33,6 +34,8 @@ Al registrarse, con cualquier método, cada persona elige cómo usa Gelpy:
 - **Ambos**.
 
 La cuenta no se crea hasta que se elige un tipo, también en el primer inicio de sesión con Google. Después se puede agregar el otro tipo desde Perfil.
+
+Desde el 2026-11-08, registrarse también requiere marcar una casilla que acepta los términos y la política de privacidad. La cuenta guarda un registro de esa aceptación, con las versiones de los textos.
 
 Las cuentas también tienen una marca interna de admin. Está apagada por defecto, y ninguna parte pública de la API puede activarla.
 
@@ -77,7 +80,7 @@ Nada revela si un correo ya tiene cuenta:
 - Google prueba el correo, así que una cuenta de Google empieza con el correo confirmado.
 - La API revisa cada token de Google: quién lo emitió, para qué app se emitió, que no haya vencido y que el correo esté verificado. Un token emitido para otra app se rechaza.
 - En la web, la app recibe el token de Google directamente en el navegador.
-- En Android, la app usa el Credential Manager del sistema. Corre en el build preview de Android y llega a producción con el primer build de producción de Android.
+- En Android, la app usa el Credential Manager del sistema. Está en el build de producción de Android desde el 2026-11-08.
 - No se usa ni se guarda ningún secreto de cliente de Google.
 
 Si alguien se registró con un correo y una contraseña pero nunca lo confirmó, y el dueño real de ese correo inicia sesión después con Google, la API primero elimina la contraseña sin confirmar y cierra sus sesiones. Así se bloquea la toma de cuentas antes de su creación.
@@ -102,14 +105,16 @@ Si alguien se registró con un correo y una contraseña pero nunca lo confirmó,
 - En Android se puede activar el desbloqueo con huella. Así, la app la pide antes de restaurar una sesión guardada.
 - Solo se aceptan biometrías fuertes.
 - Si se cancela, la sesión guardada se borra y hay que iniciar sesión otra vez.
-- Corre en el build preview de Android, probado en un teléfono físico, y llega a producción con el primer build de producción de Android.
+- Está en el build de producción de Android desde el 2026-11-08.
+- Consulta [Desbloqueo con huella y passkeys](./biometrics-passkeys.md) para ver el flujo y los cambios previstos.
 
 ## Passkeys
 
 - Las personas pueden crear, usar y revocar passkeys. El servidor las registra, las verifica y las revoca.
 - Cada desafío vence y sirve una sola vez, y solo se aceptan los orígenes del propio entorno.
 - Ninguna clave privada llega a Gelpy: la guarda el dispositivo.
-- Las passkeys funcionan en producción en la web. En Android corren en el build preview de Android y llegan a producción con el primer build de producción de Android.
+- Las passkeys están disponibles en la web. En Android están previstas hasta que `gelpy.app` publique el archivo Digital Asset Links.
+- Consulta [Desbloqueo con huella y passkeys](./biometrics-passkeys.md) para ver el flujo y lo que nunca se guarda.
 
 ## Consola de admins
 
@@ -120,7 +125,7 @@ La consola de admins es solo para los operadores de Gelpy. Solo se entra con cue
 - Las sesiones de la consola están separadas de las de la app y duran menos. Las acciones de admin solo aceptan sesiones de la consola, así que la sesión de la app de un admin no puede hacerlas.
 - Cualquier otra persona ve una página sin acceso, y no se guarda ninguna sesión.
 
-Los roles de admin por módulo de la consola llegan en la Fase 2.
+La Fase 2 empezó el 2026-11-08. Los roles de la consola por función están previstos; hoy cada admin tiene todos los permisos de la consola.
 
 ## Manejo de datos
 
@@ -140,5 +145,6 @@ Los roles de admin por módulo de la consola llegan en la Fase 2.
 ## Páginas relacionadas
 
 - [Visión general de seguridad](./overview.md)
+- [Desbloqueo con huella y passkeys](./biometrics-passkeys.md)
 - [Flujo de datos](../architecture/data-flow.md)
 - [Base de la app](../architecture/app-shell.md)

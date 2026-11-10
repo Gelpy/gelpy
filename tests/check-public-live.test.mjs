@@ -36,15 +36,27 @@ test('checkLive passes when every live path comes from the Worker', async () => 
     'check:public --live: https://docs.gelpy.app/es/: 200 from Cloudflare (es)',
     'check:public --live: https://docs.gelpy.app/framework/overview: 200 from Cloudflare (en)',
     'check:public --live: https://docs.gelpy.app/es/framework/overview: 200 from Cloudflare (es)',
+    'check:public --live: https://docs.gelpy.app/architecture/push: 200 from Cloudflare (en)',
+    'check:public --live: https://docs.gelpy.app/es/architecture/push: 200 from Cloudflare (es)',
+    'check:public --live: https://docs.gelpy.app/security/biometrics-passkeys: 200 from Cloudflare (en)',
+    'check:public --live: https://docs.gelpy.app/es/security/biometrics-passkeys: 200 from Cloudflare (es)',
+    'check:public --live: https://docs.gelpy.app/architecture/website: 200 from Cloudflare (en)',
+    'check:public --live: https://docs.gelpy.app/es/architecture/website: 200 from Cloudflare (es)',
   ]);
 });
 
-test('the live paths include the framework overview in both languages, without a trailing slash (Work Item 001-021)', () => {
+test('the live paths include the framework overview (Work Item 001-021) and the push, fingerprint and passkeys, and website pages (Work Items 009-005, 008-006, 010-025) in both languages, without a trailing slash', () => {
   assert.deepEqual(LIVE_PATHS, [
     {path: '/', lang: 'en'},
     {path: '/es/', lang: 'es'},
     {path: '/framework/overview', lang: 'en'},
     {path: '/es/framework/overview', lang: 'es'},
+    {path: '/architecture/push', lang: 'en'},
+    {path: '/es/architecture/push', lang: 'es'},
+    {path: '/security/biometrics-passkeys', lang: 'en'},
+    {path: '/es/security/biometrics-passkeys', lang: 'es'},
+    {path: '/architecture/website', lang: 'en'},
+    {path: '/es/architecture/website', lang: 'es'},
   ]);
 });
 
@@ -60,7 +72,8 @@ test('checkLive retries, then fails with the reason', async () => {
   };
   const status = await checkLive('https://docs.gelpy.app', {request, wait: async (ms) => waits.push(ms), attempts: 3, delayMs: 5, log: () => {}, error: (line) => errors.push(line)});
   assert.equal(status, 1);
-  assert.equal(calls, 7, '2 for / (one retry), 3 for /es/, 1 for each framework overview');
+  assert.equal(calls, 2 + 3 + (LIVE_PATHS.length - 2), '2 for / (one retry), 3 for /es/, 1 for each other page');
+  assert.equal(calls, 13);
   assert.deepEqual(waits, [5, 5, 5]);
   assert.deepEqual(errors, ['check:public --live: https://docs.gelpy.app/es/: served by GitHub Pages']);
 });
@@ -122,6 +135,12 @@ test('every failed attempt is logged with what it saw', async () => {
     'check:public --live: https://docs.gelpy.app/es/: 200 from Cloudflare (es)',
     'check:public --live: https://docs.gelpy.app/framework/overview: 200 from Cloudflare (en)',
     'check:public --live: https://docs.gelpy.app/es/framework/overview: 200 from Cloudflare (es)',
+    'check:public --live: https://docs.gelpy.app/architecture/push: 200 from Cloudflare (en)',
+    'check:public --live: https://docs.gelpy.app/es/architecture/push: 200 from Cloudflare (es)',
+    'check:public --live: https://docs.gelpy.app/security/biometrics-passkeys: 200 from Cloudflare (en)',
+    'check:public --live: https://docs.gelpy.app/es/security/biometrics-passkeys: 200 from Cloudflare (es)',
+    'check:public --live: https://docs.gelpy.app/architecture/website: 200 from Cloudflare (en)',
+    'check:public --live: https://docs.gelpy.app/es/architecture/website: 200 from Cloudflare (es)',
   ]);
 });
 
@@ -143,7 +162,7 @@ test('a stalled body is aborted by the per-request timeout (real fetch, local se
     server.closeAllConnections();
     server.close();
   }
-  assert.ok(Date.now() - start < 5000, 'eight 200 ms timeouts, not a hang');
+  assert.ok(Date.now() - start < LIVE_PATHS.length * 2 * 200 + 3000, 'two 200 ms timeouts per path, not a hang');
   assert.equal(log.length, 2 * LIVE_PATHS.length);
   assert.match(log[0], /attempt 1\/2: network error: .*(abort|timeout)/i);
   assert.equal(errors.length, LIVE_PATHS.length);
@@ -239,7 +258,7 @@ test('viaDoh resolves, then fetches pinned; the default checkLive uses it on a D
     const log = [];
     assert.equal(await checkLive(origin, {request: doh, wait: async () => {}, log: (line) => log.push(line), error: () => {}}), 0);
     assert.match(log[0], /attempt 1\/30: network error: fetch failed \(ENOTFOUND\); via DNS over HTTPS \(127\.0\.0\.1\): status 200, server cloudflare$/);
-    assert.match(log.at(-1), /\/es\/framework\/overview: 200 from Cloudflare \(es\)$/);
+    assert.match(log.at(-1), /\/es\/architecture\/website: 200 from Cloudflare \(es\)$/);
   } finally {
     server.close();
   }
