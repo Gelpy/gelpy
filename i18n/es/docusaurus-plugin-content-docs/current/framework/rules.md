@@ -16,6 +16,17 @@ Cada pedido del dueño recibe un veredicto experto y estricto por punto, cada un
 
 El dueño decide. Los agentes de repo aplican la misma revisión a cada `DELEGATE`.
 
+## Reglas de la organización
+
+La organización de startup del 2026-11-09 (una enmienda al ADR-0008) agrega estas reglas.
+
+1. **Cada jefe reporta solo al dueño.** Ningún jefe aprueba el trabajo del otro ni cambia sus prioridades.
+2. **El trabajo viene del jefe.** Un especialista o agente de repo toma trabajo solo de su jefe. El trabajo entre las áreas va de jefe a jefe: el Gerente de Estrategia envía un `REQUEST_CHANGE` al Technical Product Manager, y el Technical Product Manager envía un `REQUEST_REVIEW` o un `REQUEST_INFO` al Gerente de Estrategia en lugar de llamar él mismo a Legal o a Marketing.
+3. **Los conflictos van al dueño.** Un conflicto de prioridad, alcance o presupuesto entre las áreas lo decide el dueño. Cada jefe presenta su posición como una revisión crítica con un veredicto por punto.
+4. **La información de campo se registra.** Lo que el dueño trae del campo (profesionales, clientes, el piloto) se registra como información aportada por el dueño, con su fecha.
+5. **Los equipos no agregan una capa.** Los equipos no tienen jefe. El Technical Product Manager delega directamente en cada agente de repo.
+6. **El Product Designer diseña antes del código.** Cada pantalla o flujo nuevo se diseña en el canvas de diseño, con todos sus estados (vacío, cargando, error, éxito, retomar, función apagada, sin permiso, sin conexión), en claro y oscuro, en español e inglés, antes de cualquier código. El Product Designer no cambia tokens (lo hace el Ingeniero de Design Systems), no aprueba nada (lo hace el dueño) y no escribe código de producto. Un cambio visual pequeño queda en manos del agente de repo, que actualiza el canvas en el mismo PR.
+
 ## Qué aprueba siempre el dueño
 
 - El diseño de cada pantalla y página, por escrito, antes del código.
@@ -52,7 +63,7 @@ Un agente se detiene y consulta al dueño cuando:
 - Las credenciales de deploy viven solo en la configuración de los builds de producción, ingresadas por el dueño.
 - Los builds de PR y de vista previa nunca reciben tokens de deploy.
 - Los agentes nunca ven los valores de los secretos.
-- Las credenciales de solo lectura del Master las inyecta el proxy de red de la plataforma; nunca se pegan.
+- Las credenciales de solo lectura del Technical Product Manager las inyecta el proxy de red de la plataforma; nunca se pegan.
 - Un secreto encontrado en cualquier lugar detiene el trabajo.
 
 ## Qué nunca publica este sitio
@@ -76,7 +87,7 @@ Consulta las [Reglas de documentación](../contributing/documentation-rules.md) 
 | 0005 | Environments and branching |
 | 0006 | Cloudflare cloud platform |
 | 0007 | Documentation language strategy |
-| 0008 | Agent orchestration governance |
+| 0008 | Agent orchestration governance (amended: startup organization) |
 | 0009 | Database schema source of truth |
 | 0010 | Brand and design system |
 | 0011 | Quality and security gates |
@@ -96,3 +107,4 @@ Los títulos de los ADRs se mantienen en inglés, que es su idioma canónico.
 - [Entrega: gates, entornos y releases](./delivery.md)
 - [Visión general de seguridad](../security/overview.md)
 - [Reglas de documentación](../contributing/documentation-rules.md)
+- [El equipo de agentes](./agents.md)

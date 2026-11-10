@@ -1,24 +1,29 @@
 ---
 sidebar_position: 7
-title: Business Coach
-description: The owner's advisor on startup strategy in Peru, its specialist team, its evidence rules, and its limits.
+title: Strategy Manager
+description: The head of the Business area, the owner's advisor on startup strategy in Peru, its team, its evidence rules, and its limits.
 ---
 
-# Business Coach
+# Strategy Manager
 
-The Business Coach is the owner's advisor on startup strategy in Peru: validation, marketplace economics, growth, and financing.
+The Strategy Manager (the Business Coach) leads the Business area and reports only to the owner. It is the owner's advisor on startup strategy in Peru: validation, marketplace economics, growth, and financing.
 
 ## How to call it
 
-The owner asks for "Business Coach" explicitly, or the Master delegates a business question. The Master stays the default for technical work.
+The owner asks for the Strategy Manager ("Business Coach") explicitly, or the Technical Product Manager sends it a business question as a `REQUEST_REVIEW` or `REQUEST_INFO`. The Technical Product Manager stays the default for technical work.
 
 ## Team
 
-- Legal Peru
-- Marketing
-- Temporary specialists, with one discipline and one question each
+| Office role | Agent | Kind |
+|-------------|-------|------|
+| Legal Analyst | Legal Peru | Permanent; a research role, not a lawyer |
+| Growth Marketer | Marketing | Permanent |
+| Financial Analyst | On demand | Temporary, one question |
+| Operations Coordinator | On demand | Temporary, one question |
+| UX Researcher | On demand | Temporary, one question |
+| Partnerships Executive | On demand | Temporary, one question |
 
-At most 3 run in parallel. Specialists never delegate further. Real subagent runs are recorded with their IDs. Without tools, the Coach says the review was sequential.
+At most 3 on-demand roles run at a time. They take work only from the Strategy Manager and never delegate further. Real subagent runs are recorded with their IDs. Without tools, the Strategy Manager says the review was sequential.
 
 ## Evidence rules
 
@@ -36,7 +41,8 @@ Each case has a brief, an analysis, and a decision, in Spanish. The decision is 
 
 - Advice never authorizes implementation, spending, publication, or production.
 - A legal text is a draft until a lawyer approves it in writing.
-- Engineering needs go to the Master as a `REQUEST_CHANGE`.
+- Engineering needs go to the Technical Product Manager as a `REQUEST_CHANGE`.
+- The Strategy Manager never approves engineering work or changes engineering priorities, and the Technical Product Manager never does that for the Business area. A conflict between the areas is the owner's decision.
 
 ## A real example
 
@@ -46,12 +52,12 @@ Legal Peru drafted Gelpy's privacy, cookies, and terms texts from primary Peruvi
 
 ```mermaid
 flowchart TB
-  question([Owner question]) --> verdict[Coach: verdict per point]
-  verdict --> specialists[Specialists, in parallel]
-  specialists --> consolidate[Coach consolidates]
+  question([Owner question]) --> verdict[Strategy Manager: verdict per point]
+  verdict --> specialists[Team, in parallel]
+  specialists --> consolidate[Strategy Manager consolidates]
   consolidate --> decide{Owner decides}
   decide --> record[Decision recorded]
-  record -.->|if engineering is needed| change[REQUEST_CHANGE to the Master]
+  record -.->|if engineering is needed| change[REQUEST_CHANGE to the<br/>Technical Product Manager]
 ```
 
 ## Related pages

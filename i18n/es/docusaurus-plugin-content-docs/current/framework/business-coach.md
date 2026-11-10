@@ -1,24 +1,29 @@
 ---
 sidebar_position: 7
-title: Business Coach
-description: El asesor del dueño en estrategia de startups en Perú, su equipo de especialistas, sus reglas de evidencia y sus límites.
+title: Gerente de Estrategia
+description: El jefe del área de Negocio, asesor del dueño en estrategia de startups en Perú, su equipo, sus reglas de evidencia y sus límites.
 ---
 
-# Business Coach
+# Gerente de Estrategia
 
-El Business Coach es el asesor del dueño en estrategia de startups en Perú: validación, economía del marketplace, crecimiento y financiamiento.
+El Gerente de Estrategia (el Business Coach) está a cargo del área de Negocio y reporta solo al dueño. Es el asesor del dueño en estrategia de startups en Perú: validación, economía del marketplace, crecimiento y financiamiento.
 
 ## Cómo se activa
 
-El dueño pide "Business Coach" de forma explícita, o el Master le delega una pregunta de negocio. El Master sigue siendo el agente por defecto para el trabajo técnico.
+El dueño pide al Gerente de Estrategia ("Business Coach") de forma explícita, o el Technical Product Manager le envía una pregunta de negocio como un `REQUEST_REVIEW` o un `REQUEST_INFO`. El Technical Product Manager sigue siendo el agente por defecto para el trabajo técnico.
 
 ## Equipo
 
-- Legal Peru
-- Marketing
-- Especialistas temporales, con una disciplina y una pregunta cada uno
+| Cargo | Agente | Tipo |
+|-------|--------|------|
+| Analista Legal | Legal Peru | Permanente; un rol de investigación, no un abogado |
+| Growth Marketer | Marketing | Permanente |
+| Analista Financiero | A pedido | Temporal, una pregunta |
+| Coordinador de Operaciones | A pedido | Temporal, una pregunta |
+| UX Researcher | A pedido | Temporal, una pregunta |
+| Ejecutivo de Alianzas | A pedido | Temporal, una pregunta |
 
-Corren como máximo 3 en paralelo. Los especialistas nunca delegan a otros. Las corridas reales de subagentes se registran con sus IDs. Sin herramientas, el Coach dice que la revisión fue secuencial.
+Corren como máximo 3 roles a pedido a la vez. Toman trabajo solo del Gerente de Estrategia y nunca delegan a otros. Las corridas reales de subagentes se registran con sus IDs. Sin herramientas, el Gerente de Estrategia dice que la revisión fue secuencial.
 
 ## Reglas de evidencia
 
@@ -36,7 +41,8 @@ Cada caso tiene un brief, un análisis y una decisión, en español. La decisió
 
 - Un consejo nunca autoriza implementación, gastos, publicación ni producción.
 - Un texto legal es un borrador hasta que un abogado lo apruebe por escrito.
-- Las necesidades de ingeniería van al Master como un `REQUEST_CHANGE`.
+- Las necesidades de ingeniería van al Technical Product Manager como un `REQUEST_CHANGE`.
+- El Gerente de Estrategia nunca aprueba el trabajo de ingeniería ni cambia sus prioridades, y el Technical Product Manager tampoco lo hace con el área de Negocio. Un conflicto entre las áreas lo decide el dueño.
 
 ## Un ejemplo real
 
@@ -46,12 +52,12 @@ Legal Peru redactó los textos de privacidad, cookies y términos de Gelpy desde
 
 ```mermaid
 flowchart TB
-  question([Pregunta del dueño]) --> verdict[Coach: veredicto por punto]
-  verdict --> specialists[Especialistas, en paralelo]
-  specialists --> consolidate[El Coach consolida]
+  question([Pregunta del dueño]) --> verdict[Gerente de Estrategia: veredicto por punto]
+  verdict --> specialists[Equipo, en paralelo]
+  specialists --> consolidate[El Gerente de Estrategia consolida]
   consolidate --> decide{El dueño decide}
   decide --> record[Decisión registrada]
-  record -.->|si se necesita ingeniería| change[REQUEST_CHANGE al Master]
+  record -.->|si se necesita ingeniería| change[REQUEST_CHANGE al<br/>Technical Product Manager]
 ```
 
 ## Páginas relacionadas
