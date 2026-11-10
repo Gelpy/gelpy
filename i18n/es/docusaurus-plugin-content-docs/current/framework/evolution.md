@@ -31,7 +31,7 @@ Según la página pública del framework de la base:
 |-----------|------|-------|
 | Ejecutores | Un ejecutor de IA | Una oficina de startup de 13 agentes en dos áreas, Producto e Ingeniería y Negocio, cada una a cargo de un jefe, en sesiones paralelas en la nube, con Codex como revisor de código de releases |
 | Coordinación | — | Un protocolo de mensajes, respuestas `STATUS` y transferencias verificadas entre sesiones |
-| Skills | 10 | 23; agrega orchestrate, challenge-request, verify, codex-review, apply-brand, design-web-experience, design-product-experience, produce-motion-video, audit-public-claims, progress-status, business-coach y self-improve, entre otras |
+| Skills | 10 | 23; agrega orchestrate, challenge-request, verify, codex-review, apply-brand, design-web-experience, design-product-experience, produce-motion-video, audit-public-claims, progress-status, business-coach, self-improve y db-table-standards |
 | Revisión del dueño | — | Un veredicto estricto por punto en cada pedido y en cada delegación |
 | Issues | Solo referencias | Estado reflejado en etiquetas y en el cierre, sub-issues Epic → Feature → Work Item, y milestones |
 | Planificación | Work Items | Sprints de 1 semana, puntos y progreso en porcentaje por repo |

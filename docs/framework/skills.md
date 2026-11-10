@@ -36,6 +36,7 @@ The catalog has 23 skills.
 | Business | `gelpy-business-coach` | Activate the Strategy Manager and its team |
 | Platform | `gelpy-setup-infrastructure` | Cloudflare platform work |
 | | `gelpy-init-api` | API foundations: Clean Architecture and the Result pattern |
+| | `gelpy-db-table-standards` | Design and review every Postgres table against the table convention: identity, a code on catalogs, an active flag apart from deletion, a logical delete only where the privacy policy allows it, who and when on every row, an index for every foreign key, and explicit relationships |
 
 ## Mandatory skills
 
@@ -48,6 +49,7 @@ The catalog has 23 skills.
 | `gelpy-design-product-experience` | Every new app or console screen or flow, before code |
 | `gelpy-codex-review` | Release PRs |
 | `gelpy-update-docs` | After every change |
+| `gelpy-db-table-standards` | Every migration that creates or alters a table, and every schema audit |
 
 ## Related pages
 

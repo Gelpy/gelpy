@@ -36,6 +36,7 @@ El catálogo tiene 23 skills.
 | Negocio | `gelpy-business-coach` | Activar al Gerente de Estrategia y su equipo |
 | Plataforma | `gelpy-setup-infrastructure` | Trabajo en la plataforma Cloudflare |
 | | `gelpy-init-api` | Bases de la API: Clean Architecture y el patrón Result |
+| | `gelpy-db-table-standards` | Diseñar y revisar cada tabla de Postgres según la convención de tablas: identidad, un código en los catálogos, un indicador de activo separado del borrado, un borrado lógico solo donde la política de privacidad lo permite, quién y cuándo en cada fila, un índice por cada clave foránea y relaciones explícitas |
 
 ## Skills obligatorias
 
@@ -48,6 +49,7 @@ El catálogo tiene 23 skills.
 | `gelpy-design-product-experience` | Cada pantalla o flujo nuevo de la app o de la consola, antes del código |
 | `gelpy-codex-review` | PRs de release |
 | `gelpy-update-docs` | Después de cada cambio |
+| `gelpy-db-table-standards` | Cada migración que crea o modifica una tabla, y cada auditoría del esquema |
 
 ## Páginas relacionadas
 

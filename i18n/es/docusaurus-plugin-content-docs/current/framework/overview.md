@@ -38,19 +38,19 @@ flowchart TB
   subgraph product[Producto e Ingeniería]
     tpm[Technical Product Manager<br/>el Master]
     subgraph platform[Plataforma]
-      infra[Ingeniero de Plataforma, DevOps<br/>Agent Infra]
-      db[Ingeniero de Base de Datos<br/>Agent DB]
-      api[Desarrollador Backend<br/>Agent API]
+      infra[Platform Engineer, DevOps<br/>Agent Infra]
+      db[Database Engineer<br/>Agent DB]
+      api[Backend Developer<br/>Agent API]
     end
     subgraph apps[Apps]
-      app[Desarrollador Mobile<br/>Agent App]
-      web[Desarrollador Frontend, web<br/>Agent Web]
-      console[Desarrollador Frontend, back office<br/>Agent Console]
+      app[Mobile Developer<br/>Agent App]
+      web[Frontend Developer web<br/>Agent Web]
+      console[Frontend Developer backoffice<br/>Agent Console]
     end
     subgraph designdocs[Diseño y Docs]
       ux[Product Designer, UX/UI]
-      design[Ingeniero de Design Systems<br/>Agent Design]
-      docs[Redactor Técnico<br/>Agent Docs]
+      design[Design Systems Engineer<br/>Agent Design]
+      docs[Technical Writer<br/>Agent Docs]
     end
   end
 

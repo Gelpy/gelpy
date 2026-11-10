@@ -15,15 +15,15 @@ A cargo del **Technical Product Manager** (el Master). Tres equipos sin jefe.
 | Equipo | Cargo | Agente | Es dueño de | Nunca hace |
 |--------|-------|--------|-------------|------------|
 | Jefe | Technical Product Manager | El Master | El backlog, las specs, los Work Items, las prioridades propuestas, el gobierno, el plan entre repos, la delegación, el estado y la coordinación de la entrega, incluidas las auditorías y los merges de PRs | Escribir código de producto, ni fijar la dirección del producto (lo hace el dueño) |
-| Plataforma | Ingeniero de Plataforma (DevOps) | Agent Infra | Plataforma Cloudflare, DNS, entornos, el inventario de secretos (solo nombres), observabilidad, herramientas de calidad (`infrastructure/`) | Editar repos de producto |
-| Plataforma | Ingeniero de Base de Datos | Agent DB | `gelpy-db`: migraciones SQL, la única fuente del esquema (ADR-0009) | Tocar producción fuera de un release aprobado |
-| Plataforma | Desarrollador Backend | Agent API | `gelpy-api`: Express, TypeScript, Prisma, Clean Architecture, Cloudflare Containers | Cambiar el esquema (eso es trabajo de Agent DB) |
-| Apps | Desarrollador Mobile | Agent App | `gelpy-app`: app Expo para Android, iOS y web | Programar una pantalla nueva sin un diseño aprobado |
-| Apps | Desarrollador Frontend (web) | Agent Web | `gelpy-web`: sitio web comercial en Nuxt, motion web, videos HyperFrames | Publicar textos que no cumplen las reglas de afirmaciones públicas |
-| Apps | Desarrollador Frontend (back office) | Agent Console | `gelpy-console`: consola de admins en Next.js | Entregar una pantalla nueva sin un diseño aprobado |
+| Plataforma | Platform Engineer (DevOps) | Agent Infra | Plataforma Cloudflare, DNS, entornos, el inventario de secretos (solo nombres), observabilidad, herramientas de calidad (`infrastructure/`) | Editar repos de producto |
+| Plataforma | Database Engineer | Agent DB | `gelpy-db`: migraciones SQL, la única fuente del esquema (ADR-0009) | Tocar producción fuera de un release aprobado |
+| Plataforma | Backend Developer | Agent API | `gelpy-api`: Express, TypeScript, Prisma, Clean Architecture, Cloudflare Containers | Cambiar el esquema (eso es trabajo de Agent DB) |
+| Apps | Mobile Developer | Agent App | `gelpy-app`: app Expo para Android, iOS y web | Programar una pantalla nueva sin un diseño aprobado |
+| Apps | Frontend Developer web | Agent Web | `gelpy-web`: sitio web comercial en Nuxt, motion web, videos HyperFrames | Publicar textos que no cumplen las reglas de afirmaciones públicas |
+| Apps | Frontend Developer backoffice | Agent Console | `gelpy-console`: consola de admins en Next.js | Entregar una pantalla nueva sin un diseño aprobado |
 | Diseño y Docs | Product Designer (UX/UI) | `gelpy-ux-ui` | El diseño de cada pantalla o flujo nuevo en el canvas de diseño, con todos sus estados, antes de cualquier código | Cambiar tokens, aprobar un diseño o escribir código de producto |
-| Diseño y Docs | Ingeniero de Design Systems | Agent Design | `gelpy-design-system`: tokens, assets, `BRAND.md`; el único agente que cambia los assets de marca y los tokens | Dejar que otros repos escriban valores de marca a mano |
-| Diseño y Docs | Redactor Técnico | Agent Docs | `Gelpy/gelpy`: este sitio público y su espejo en la wiki | Publicar secretos, hosts internos, datos personales o vulnerabilidades abiertas |
+| Diseño y Docs | Design Systems Engineer | Agent Design | `gelpy-design-system`: tokens, assets, `BRAND.md`; el único agente que cambia los assets de marca y los tokens | Dejar que otros repos escriban valores de marca a mano |
+| Diseño y Docs | Technical Writer | Agent Docs | `Gelpy/gelpy`: este sitio público y su espejo en la wiki | Publicar secretos, hosts internos, datos personales o vulnerabilidades abiertas |
 | Externo | Revisor de código de releases | Codex | La revisión de los PRs de release, solo de esos | Aprobar por silencio: no responder no es aprobar |
 
 ## Negocio
@@ -48,7 +48,7 @@ El Product Designer diseña cada pantalla o flujo nuevo en el canvas de diseño 
 - función apagada y sin permiso;
 - sin conexión.
 
-No cambia tokens (lo hace el Ingeniero de Design Systems), no aprueba nada (lo hace el dueño) y no escribe código de producto. Un cambio visual pequeño queda en manos del agente de repo, que actualiza el canvas en el mismo PR. La skill `gelpy-design-product-experience` define sus pasos.
+No cambia tokens (lo hace el Design Systems Engineer), no aprueba nada (lo hace el dueño) y no escribe código de producto. Un cambio visual pequeño queda en manos del agente de repo, que actualiza el canvas en el mismo PR. La skill `gelpy-design-product-experience` define sus pasos.
 
 ## Cómo trabajan
 

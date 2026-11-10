@@ -25,7 +25,7 @@ La organización de startup del 2026-11-09 (una enmienda al ADR-0008) agrega est
 3. **Los conflictos van al dueño.** Un conflicto de prioridad, alcance o presupuesto entre las áreas lo decide el dueño. Cada jefe presenta su posición como una revisión crítica con un veredicto por punto.
 4. **La información de campo se registra.** Lo que el dueño trae del campo (profesionales, clientes, el piloto) se registra como información aportada por el dueño, con su fecha.
 5. **Los equipos no agregan una capa.** Los equipos no tienen jefe. El Technical Product Manager delega directamente en cada agente de repo.
-6. **El Product Designer diseña antes del código.** Cada pantalla o flujo nuevo se diseña en el canvas de diseño, con todos sus estados (vacío, cargando, error, éxito, retomar, función apagada, sin permiso, sin conexión), en claro y oscuro, en español e inglés, antes de cualquier código. El Product Designer no cambia tokens (lo hace el Ingeniero de Design Systems), no aprueba nada (lo hace el dueño) y no escribe código de producto. Un cambio visual pequeño queda en manos del agente de repo, que actualiza el canvas en el mismo PR.
+6. **El Product Designer diseña antes del código.** Cada pantalla o flujo nuevo se diseña en el canvas de diseño, con todos sus estados (vacío, cargando, error, éxito, retomar, función apagada, sin permiso, sin conexión), en claro y oscuro, en español e inglés, antes de cualquier código. El Product Designer no cambia tokens (lo hace el Design Systems Engineer), no aprueba nada (lo hace el dueño) y no escribe código de producto. Un cambio visual pequeño queda en manos del agente de repo, que actualiza el canvas en el mismo PR.
 
 ## Qué aprueba siempre el dueño
 
@@ -98,6 +98,7 @@ Consulta las [Reglas de documentación](../contributing/documentation-rules.md) 
 | 0016 | API connects to Postgres through the provider pooler, without Hyperdrive |
 | 0017 | CI/CD pipeline policy: validate once, deploy on merge, no deploy secrets in PRs |
 | 0018 | CI/CD on Cloudflare Workers Builds |
+| 0019 | La Fase 2 se abre con el piloto controlado del marketplace |
 
 Los títulos de los ADRs se mantienen en inglés, que es su idioma canónico.
 

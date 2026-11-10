@@ -31,7 +31,7 @@ From the base's public framework page:
 |-----------|------|-------|
 | Executors | One AI executor | A startup office of 13 agents in two areas, Product and Engineering and Business, each led by a head, in parallel cloud sessions, with Codex as release code reviewer |
 | Coordination | — | A message protocol, `STATUS` replies, and verified transfers between sessions |
-| Skills | 10 | 23; adds orchestrate, challenge-request, verify, codex-review, apply-brand, design-web-experience, design-product-experience, produce-motion-video, audit-public-claims, progress-status, business-coach, and self-improve, among others |
+| Skills | 10 | 23; adds orchestrate, challenge-request, verify, codex-review, apply-brand, design-web-experience, design-product-experience, produce-motion-video, audit-public-claims, progress-status, business-coach, self-improve, and db-table-standards |
 | Owner review | — | A strict verdict per point on every request and every delegation |
 | Issues | References only | Status mirrored in labels and closing, Epic → Feature → Work Item sub-issues, and milestones |
 | Planning | Work Items | 1-week sprints, points, and percent progress per repo |

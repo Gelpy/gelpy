@@ -98,6 +98,7 @@ See [Documentation rules](../contributing/documentation-rules.md) for the full l
 | 0016 | API connects to Postgres through the provider pooler, without Hyperdrive |
 | 0017 | CI/CD pipeline policy: validate once, deploy on merge, no deploy secrets in PRs |
 | 0018 | CI/CD on Cloudflare Workers Builds |
+| 0019 | Phase 2 opens with the controlled marketplace pilot |
 
 ## Related pages
 
