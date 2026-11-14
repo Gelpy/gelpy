@@ -33,16 +33,18 @@ State on 2026-11-14. Only what runs in production is described as available. Eve
 
 ## What people can do today
 
-| What | Who | Where |
-|------|-----|-------|
-| Create an account with email and password or with Google, as a Gelpie, a Gelper, or both | Anyone | App, web and Android |
-| Sign in with email and password or with Google | Gelpies and Gelpers | App, web and Android |
-| Sign in with a passkey, and create, list, and revoke passkeys | Gelpies and Gelpers | App, web |
-| Add a phone number and verify it by SMS | Gelpies and Gelpers | App, web and Android |
-| Unlock the app with a fingerprint or the face | Gelpies and Gelpers | App, Android |
-| Turn on the "Novedades de Gelpy" notifications | Gelpies and Gelpers | App, Android |
-| Read the public pages and the privacy, cookies, and terms pages | Anyone | Website |
-| Send a push notification and follow its delivery | The team | Admin console |
+In the app:
+
+| What | Where |
+|------|-------|
+| Create an account with email and password, confirmed by an email link, or with Google, as a Gelpie, a Gelper, or both | Web and Android |
+| Sign in with email and password or with Google | Web and Android |
+| Sign in with a passkey, and create, list, and revoke passkeys | Web |
+| Add a phone number and verify it by SMS | Web and Android |
+| Unlock the app with a fingerprint or the face | Android |
+| Turn on the "Novedades de Gelpy" notifications | Android |
+
+On the website, anyone can read the public pages and the privacy, cookies, and terms pages. In the admin console, the Gelpy team sends push notifications and follows their delivery.
 
 Inside the app, Inicio and Tareas show that these sections are being built. The marketplace itself, where a Gelpie finds and books a Gelper, is not open yet.
 

@@ -10,27 +10,26 @@ Una persona crea una cuenta de Gelpy e inicia sesión en la app, en Android y en
 
 :::note Estado
 
-En producción en la web desde el 2026-11-07, y en el build de producción de Android desde el 2026-11-08. Hoy el registro está abierto para todos. Los cambios previstos están al final de esta página.
+En producción en la web desde el 2026-11-07, y en el build de producción de Android desde el 2026-11-08. Los cambios previstos están al final de esta página.
 
 :::
 
 ## Quién puede hacer qué
 
-| Acción | Visitante | Gelpie o Gelper |
-|--------|-----------|-----------------|
-| Crear una cuenta | Sí | — |
-| Iniciar sesión con correo y contraseña, o con Google | — | Sí |
-| Iniciar sesión con una passkey | — | Sí, en la web |
-| Crear, ver y revocar passkeys | — | Sí, en la web |
-| Agregar y verificar un teléfono | — | Sí |
-| Encender el desbloqueo con la huella o el rostro | — | Sí, en Android |
-| Cerrar sesión | — | Sí |
+| Acción | Gelpie o Gelper |
+|--------|-----------------|
+| Iniciar sesión con correo y contraseña, o con Google | Sí |
+| Iniciar sesión con una passkey | Sí, en la web |
+| Crear, ver y revocar passkeys | Sí, en la web |
+| Agregar y verificar un teléfono | Sí |
+| Encender el desbloqueo con la huella o el rostro | Sí, en Android |
+| Cerrar sesión | Sí |
 
 ## Crear una cuenta
 
 ```mermaid
 flowchart TD
-  A[Un visitante abre la app] --> B{Método}
+  A[Crear una cuenta en la app] --> B{Método}
   B -- Correo y contraseña --> T[Elige Gelpie, Gelper o ambos]
   T --> E[Nombres, correo, contraseña y la casilla legal]
   E --> H[Cuenta creada, correo todavía sin confirmar]

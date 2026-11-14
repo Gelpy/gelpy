@@ -33,7 +33,7 @@ When people register, by any method, they choose how they use Gelpy:
 - **Gelper**: a professional who offers services.
 - **Both**.
 
-The account is not created until a type is chosen, including on a first Google sign-in. People can add the other type later from Profile.
+The account is not created until a type is chosen, including on a first Google sign-in. The app cannot add the other type to an existing account yet.
 
 Since 2026-11-08, signing up also requires checking a box that accepts the terms and the privacy policy. The account keeps a record of that acceptance, with the versions of the texts.
 

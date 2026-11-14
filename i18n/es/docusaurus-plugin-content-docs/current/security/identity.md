@@ -33,7 +33,7 @@ Al registrarse, con cualquier método, cada persona elige cómo usa Gelpy:
 - **Gelper**: un profesional que ofrece servicios.
 - **Ambos**.
 
-La cuenta no se crea hasta que se elige un tipo, también en el primer inicio de sesión con Google. Después se puede agregar el otro tipo desde Perfil.
+La cuenta no se crea hasta que se elige un tipo, también en el primer inicio de sesión con Google. La app todavía no puede agregar el otro tipo a una cuenta existente.
 
 Desde el 2026-11-08, registrarse también requiere marcar una casilla que acepta los términos y la política de privacidad. La cuenta guarda un registro de esa aceptación, con las versiones de los textos.
 

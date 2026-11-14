@@ -10,27 +10,26 @@ A person creates a Gelpy account and signs in to the app, on Android and on the 
 
 :::note Status
 
-In production on the web since 2026-11-07, and in the production Android build since 2026-11-08. Sign-up is open to everyone today. The planned changes are at the end of this page.
+In production on the web since 2026-11-07, and in the production Android build since 2026-11-08. The planned changes are at the end of this page.
 
 :::
 
 ## Who can do what
 
-| Action | Visitor | Gelpie or Gelper |
-|--------|---------|------------------|
-| Create an account | Yes | — |
-| Sign in with email and password, or with Google | — | Yes |
-| Sign in with a passkey | — | Yes, on the web |
-| Create, list, and revoke passkeys | — | Yes, on the web |
-| Add and verify a phone | — | Yes |
-| Turn on unlock with a fingerprint or the face | — | Yes, on Android |
-| Sign out | — | Yes |
+| Action | Gelpie or Gelper |
+|--------|------------------|
+| Sign in with email and password, or with Google | Yes |
+| Sign in with a passkey | Yes, on the web |
+| Create, list, and revoke passkeys | Yes, on the web |
+| Add and verify a phone | Yes |
+| Turn on unlock with a fingerprint or the face | Yes, on Android |
+| Sign out | Yes |
 
 ## Creating an account
 
 ```mermaid
 flowchart TD
-  A[Visitor opens the app] --> B{Method}
+  A[Create an account in the app] --> B{Method}
   B -- Email and password --> T[Choose Gelpie, Gelper, or both]
   T --> E[Names, email, password, and the legal checkbox]
   E --> H[Account created, email not confirmed yet]

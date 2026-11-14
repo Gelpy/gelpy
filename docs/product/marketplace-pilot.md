@@ -47,7 +47,6 @@ flowchart TD
 - **What clients see.** The display name is the first name and the last initial. The public profile shows the trades, the services, the description, the districts, and, only when set, the optional details. It never shows a phone, an email, an address, or the full name.
 - **The photo.** A Gelper can show the account's Google photo only by checking a box, and can uncheck it at any time. Gelpy keeps no copy.
 - **No reviews yet.** Profiles read "Nuevo" until reviews exist. No stars, averages, or job counts are invented.
-- **No payments.** Gelpy charges and processes no payment.
 - **Addresses.** A Gelpie's addresses are never public. On Android, the Gelpie can confirm an address with the phone's location: the phone compares it with the address, and Gelpy only receives that they match and the date, never the location.
 - **Assisted search.** The app sends only the text of the search. Gelpy removes emails and long numbers from it, and an AI service suggests a trade from the active catalog, with no data that identifies the person. The text is never stored. A notice under the box says so before anything is sent.
 - **Statistics.** A Gelper sees counts only, never who viewed the profile.

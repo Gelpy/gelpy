@@ -47,7 +47,6 @@ flowchart TD
 - **Lo que ven los clientes.** El nombre visible es el primer nombre y la inicial del apellido. El perfil público muestra los oficios, los servicios, la descripción, los distritos y, solo si están puestos, los detalles opcionales. Nunca muestra un teléfono, un correo, una dirección ni el nombre completo.
 - **La foto.** Un Gelper puede mostrar la foto de Google de su cuenta solo si marca una casilla, y puede desmarcarla en cualquier momento. Gelpy no guarda una copia.
 - **Todavía sin opiniones.** Los perfiles dicen "Nuevo" hasta que existan opiniones. No se inventan estrellas, promedios ni conteos de trabajos.
-- **Sin pagos.** Gelpy no cobra ni procesa ningún pago.
 - **Direcciones.** Las direcciones de un Gelpie nunca son públicas. En Android, el Gelpie puede confirmar una dirección con la ubicación del teléfono: el teléfono la compara con la dirección, y Gelpy solo recibe que coinciden y la fecha, nunca la ubicación.
 - **Búsqueda asistida.** La app envía solo el texto de la búsqueda. Gelpy le quita correos y números largos, y un servicio de inteligencia artificial sugiere un oficio del catálogo activo, sin datos que identifiquen a la persona. El texto nunca se guarda. Un aviso debajo de la caja lo dice antes de enviar nada.
 - **Estadísticas.** Un Gelper ve solo conteos, nunca quién vio su perfil.
