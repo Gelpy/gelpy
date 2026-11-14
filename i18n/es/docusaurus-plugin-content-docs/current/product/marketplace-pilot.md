@@ -10,7 +10,7 @@ El marketplace es donde un Gelpie encuentra al Gelper adecuado cerca de casa. Ge
 
 :::note Estado
 
-Previsto. El marketplace funciona en el entorno de test y está apagado en producción. Abre solo después de las aprobaciones legales del piloto, y entonces solo para personas invitadas. Hasta entonces, la app muestra en su lugar una pantalla de "muy pronto".
+Previsto. El marketplace funciona en el entorno de test y está apagado en producción. Abre solo después de las aprobaciones legales del piloto, y entonces solo para personas invitadas. Hasta entonces, la app muestra en su lugar una pantalla que anuncia que llega pronto.
 
 :::
 
