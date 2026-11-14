@@ -3,6 +3,10 @@
     "message": "Siguiente",
     "description": "The label for version current"
   },
+  "sidebar.docs.category.Product": {
+    "message": "Producto",
+    "description": "The label for category 'Product' in sidebar 'docs'"
+  },
   "sidebar.docs.category.Architecture": {
     "message": "Arquitectura",
     "description": "The label for category 'Architecture' in sidebar 'docs'"
@@ -10,6 +14,10 @@
   "sidebar.docs.category.Security": {
     "message": "Seguridad",
     "description": "The label for category 'Security' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Quality": {
+    "message": "Calidad",
+    "description": "The label for category 'Quality' in sidebar 'docs'"
   },
   "sidebar.docs.category.Agentic framework": {
     "message": "Framework agéntico",

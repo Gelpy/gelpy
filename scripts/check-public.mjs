@@ -11,7 +11,7 @@
 //
 // Live check (Work Item 003-025): node scripts/check-public.mjs --live <origin>
 // fetches every LIVE_PATHS entry (/, /es/, and the framework overview, push, fingerprint and
-// passkeys, and website pages in both languages) and
+// passkeys, website, product overview, and quality overview pages in both languages) and
 // passes when each answers 200 with HTML in its
 // language from Cloudflare, not from GitHub Pages. cf:deploy runs it after
 // every deploy; it retries while a new custom domain's certificate is issued.
@@ -215,6 +215,11 @@ export const LIVE_PATHS = [
   {path: '/es/security/biometrics-passkeys', lang: 'es'},
   {path: '/architecture/website', lang: 'en'},
   {path: '/es/architecture/website', lang: 'es'},
+  // Work Item 001-059: the Product and Quality sections.
+  {path: '/product/overview', lang: 'en'},
+  {path: '/es/product/overview', lang: 'es'},
+  {path: '/quality/overview', lang: 'en'},
+  {path: '/es/quality/overview', lang: 'es'},
 ];
 
 /** Returns null when one live response is the docs Worker serving the page, or the reason it is not. */
