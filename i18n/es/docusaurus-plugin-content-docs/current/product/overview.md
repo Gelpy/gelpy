@@ -26,7 +26,7 @@ Estado al 2026-11-14. Solo lo que funciona en producción se describe como dispo
 
 | Superficie | Quién la usa | En producción |
 |------------|--------------|---------------|
-| La app Gelpy en la web | Gelpies y Gelpers | Desde el 2026-11-03 |
+| La app Gelpy en la web | Gelpies y Gelpers | La base de la app desde el 2026-11-03; las cuentas y el inicio de sesión desde el 2026-11-07 |
 | La app Gelpy en Android | Gelpies y Gelpers | Desde el primer build de producción del 2026-11-08, instalado como APK; la app no está en Google Play |
 | El sitio web | Cualquier persona | Desde la versión 0.6.0 del 2026-11-08, con sus páginas legales |
 | La consola de administración | El equipo de Gelpy | Desde el 2026-11-07 |
@@ -53,12 +53,12 @@ Dentro de la app, Inicio y Tareas muestran que esas secciones se están construy
 Estas capacidades todavía no están en producción:
 
 - **Reglas de cuenta:** registro solo por invitación, una pausa de mantenimiento del inicio de sesión de la app, la desactivación de cuentas por el equipo, aceptar otra vez una nueva versión mayor de los textos legales, vincular Google desde Perfil y agregar el otro tipo de cuenta desde Perfil.
-- **Más opciones de acceso:** passkeys en Android y la eliminación de la cuenta.
-- **Notificaciones:** el consentimiento registrado con la versión de su texto, un envío repetido que sale una sola vez y avisos sobre las reservas.
+- **Más opciones de acceso:** recuperar la contraseña, passkeys en Android y la eliminación de la cuenta.
+- **Notificaciones:** un envío repetido que sale una sola vez y avisos sobre las reservas.
 - **Consola de administración:** roles y permisos, cuentas de la app, invitaciones de registro, configuración de la plataforma y categorías.
 - **El Libro de Reclamaciones** que exige la ley peruana.
 - **El piloto del marketplace:** perfiles de Gelper, el directorio, las direcciones de los clientes, la búsqueda asistida, estadísticas para los Gelpers y, más adelante, las reservas.
-- **La medición** del uso del producto, solo con consentimiento.
+- **La analítica de uso** de la app con Google Analytics y Microsoft Clarity, que solo se enciende con el permiso de la persona. Otros datos técnicos y de funcionamiento se tratan sin ese permiso, como explica la [política de privacidad](https://gelpy.app/privacidad/).
 
 ## En esta sección
 

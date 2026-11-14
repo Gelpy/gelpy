@@ -44,10 +44,10 @@ flowchart TD
 
 - **Tipo de cuenta.** Cada cuenta dice cómo usa Gelpy la persona: Gelpie, Gelper o ambos. La cuenta no existe sin un tipo. La app todavía no puede agregar el otro tipo después.
 - **Contraseña.** Tiene de 8 a 64 caracteres, sin reglas de composición.
-- **Link de confirmación.** Una cuenta con correo y contraseña empieza sin confirmar. El link del correo sirve una sola vez y dura 24 horas, y ninguna sesión empieza antes de usarlo. La pantalla "Revisa tu correo" puede enviar el link otra vez tras una breve espera.
+- **Link de confirmación.** Una cuenta con correo y contraseña empieza sin confirmar. El link del correo sirve una sola vez y dura 24 horas, y ninguna sesión empieza antes de usarlo. La pantalla que pide revisar el correo puede enviar el link otra vez tras una breve espera.
 - **Google.** Google prueba el correo, así que una cuenta de Google empieza confirmada.
 - **Textos legales.** El registro necesita la casilla "Acepto los Términos y condiciones y leí la Política de privacidad de Gelpy.", sin marcar por defecto. Sin ella no se crea nada. Cada aceptación se registra con la versión de cada texto.
-- **Sin enumeración de cuentas.** Registrarse con un correo que ya tiene cuenta recibe la misma respuesta que uno nuevo, y solo el dueño de ese correo recibe un aviso.
+- **La app no revela si un correo tiene cuenta.** Registrarse con un correo que ya tiene cuenta recibe la misma respuesta que uno nuevo, y solo el dueño de ese correo recibe un aviso.
 
 ## Iniciar sesión
 
@@ -59,7 +59,7 @@ flowchart TD
 
 ## Teléfono
 
-- Después de un inicio de sesión sin teléfono verificado, la app ofrece agregar uno. "Ahora no" lo omite.
+- Después de un inicio de sesión sin teléfono verificado, la app ofrece agregar uno. La persona puede omitirlo.
 - El teléfono se agrega desde Perfil. Debe ser un celular peruano, y se verifica con un código enviado por SMS.
 - La app muestra el número enmascarado.
 
@@ -77,20 +77,19 @@ Perfil muestra la cuenta: la foto de Google cuando la hay, el nombre, el correo 
 |-----------|----------------------|-----------|
 | Correo sin confirmar | Un pedido de confirmar el correo, con un botón para reenviar el link | Abrir el link del correo |
 | Link usado o vencido | El link se rechaza | Pedir un link nuevo |
-| Contraseña incorrecta o correo desconocido | "El correo o la contraseña no son correctos." | Intentar otra vez |
-| Demasiados intentos | "Demasiados intentos", con el tiempo que hay que esperar | Esperar la cuenta regresiva |
-| Falla una passkey | "No pudimos usar tu passkey" | Intentar otra vez, o usar otro método |
-| El teléfono ya está en otra cuenta | "Este número ya está en otra cuenta" | Usar otro número |
+| Contraseña incorrecta o correo desconocido | Un mensaje de que el correo o la contraseña no son correctos | Intentar otra vez |
+| Demasiados intentos | Un mensaje de que hubo demasiados intentos, con el tiempo que hay que esperar | Esperar la cuenta regresiva |
+| Falla una passkey | Un mensaje de que no se pudo usar la passkey | Intentar otra vez, o usar otro método |
 
 ## Previsto
 
 - Registro solo por invitación, con invitaciones que el equipo envía desde la consola.
-- Una pausa de mantenimiento del inicio de sesión de la app, con una pantalla de "estamos haciendo mantenimiento".
+- Una pausa de mantenimiento del inicio de sesión de la app, con una pantalla de mantenimiento.
 - La desactivación de cuentas por el equipo, con un motivo, que cierra todas las sesiones y conserva los datos.
 - Aceptar otra vez una nueva versión mayor de los términos o de la política de privacidad.
 - Vincular Google desde Perfil.
 - Agregar el otro tipo de cuenta desde Perfil.
-- Passkeys en Android y la eliminación de la cuenta.
+- Recuperar la contraseña, passkeys en Android y la eliminación de la cuenta.
 
 ## Páginas relacionadas
 

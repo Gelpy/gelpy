@@ -26,7 +26,7 @@ State on 2026-11-14. Only what runs in production is described as available. Eve
 
 | Surface | Who uses it | In production |
 |---------|-------------|---------------|
-| The Gelpy app on the web | Gelpies and Gelpers | Since 2026-11-03 |
+| The Gelpy app on the web | Gelpies and Gelpers | The app shell since 2026-11-03; accounts and sign-in since 2026-11-07 |
 | The Gelpy app on Android | Gelpies and Gelpers | Since the first production build of 2026-11-08, installed as an APK; the app is not on Google Play |
 | The website | Anyone | Since version 0.6.0 of 2026-11-08, with its legal pages |
 | The admin console | The Gelpy team | Since 2026-11-07 |
@@ -53,12 +53,12 @@ Inside the app, Inicio and Tareas show that these sections are being built. The 
 These capabilities are not in production yet:
 
 - **Account rules:** sign-up by invitation only, a maintenance pause of the app's sign-in, account deactivation by the team, accepting a new major version of the legal texts again, linking Google from Perfil, and adding the other account type from Perfil.
-- **More sign-in options:** passkeys on Android, and account deletion.
-- **Notifications:** the consent recorded with the version of its text, a repeated send that goes out only once, and notices about bookings.
+- **More sign-in options:** password recovery, passkeys on Android, and account deletion.
+- **Notifications:** a repeated send that goes out only once, and notices about bookings.
 - **Admin console:** roles and permissions, app accounts, sign-up invitations, platform settings, and categories.
 - **The complaints book**, the Libro de Reclamaciones that Peruvian law requires.
 - **The marketplace pilot:** Gelper profiles, the directory, client addresses, assisted search, statistics for Gelpers, and later, booking.
-- **Measurement** of product use, only with consent.
+- **Usage analytics** of the app with Google Analytics and Microsoft Clarity, which turn on only with the person's permission. Other technical and operating data are handled without that permission, as the [privacy policy](https://gelpy.app/en/privacy/) explains.
 
 ## In this section
 

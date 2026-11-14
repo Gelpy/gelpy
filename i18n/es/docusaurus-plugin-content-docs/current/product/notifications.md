@@ -27,7 +27,7 @@ Las push están en producción desde el 2026-11-08: en el build de producción d
 ## Push en la app
 
 - Hoy hay un solo tipo de push: "Novedades de Gelpy", noticias sobre Gelpy. Es publicitaria, así que se activa por elección y empieza apagada.
-- Su interruptor está en Perfil, en Notificaciones. Dice "Te contamos las funciones nuevas de Gelpy. Es publicidad: la recibes solo si lo enciendes, y puedes apagarlo cuando quieras."
+- Su interruptor está en Perfil, en Notificaciones, con la línea "Funciones nuevas y avisos importantes."
 - Android pide el permiso de notificaciones cuando hace falta: en el paso de la bienvenida en Android 13 o más nuevo, y cuando la persona enciende el interruptor.
 - Las push funcionan solo en la app de Android. La versión web de la app no tiene la fila de notificaciones. Las push en el navegador y en iOS están fuera del alcance.
 - "Cerrar sesión" también detiene las push a ese dispositivo.
@@ -63,13 +63,12 @@ sequenceDiagram
 
 | Situación | Lo que ve la persona | Qué hacer |
 |-----------|----------------------|-----------|
-| El permiso de Android está bloqueado | El interruptor bloqueado, con "Abrir ajustes" | Permitir las notificaciones en los ajustes del teléfono |
+| El permiso de Android está bloqueado | El interruptor bloqueado, con un botón para abrir los ajustes del teléfono | Permitir las notificaciones en los ajustes del teléfono |
 | El interruptor no puede guardar | El interruptor vuelve atrás, con un mensaje para revisar la conexión | Intentar otra vez con conexión |
 | Se usa la app web | No hay fila de notificaciones | Usar la app de Android |
 
 ## Previsto
 
-- Registrar el consentimiento a "Novedades de Gelpy" con la versión de su texto.
 - Un envío repetido por error sale una sola vez.
 - Avisos sobre las reservas, un segundo tipo de push encendido por defecto que se puede apagar, para el piloto del marketplace.
 - Correos de las invitaciones de registro y del Libro de Reclamaciones.

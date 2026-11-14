@@ -1,12 +1,12 @@
 ---
 sidebar_position: 5
 title: Libro de Reclamaciones (previsto)
-description: El Libro de Reclamaciones que Gelpy prepara, como exige la ley peruana.
+description: El Libro de Reclamaciones virtual que Gelpy prepara, como pide la ley peruana.
 ---
 
 # Libro de Reclamaciones (previsto)
 
-La ley peruana exige que todo proveedor tenga un Libro de Reclamaciones. El de Gelpy será virtual: un formulario en el sitio web que cualquier persona puede usar, y un módulo en la consola de administración donde el equipo responde.
+Como atiende a consumidores también por internet, Gelpy tiene un Libro de Reclamaciones virtual, como pide la ley peruana. Es un formulario en el sitio web que cualquier persona puede usar, y un módulo en la consola de administración donde el equipo responde.
 
 :::note Estado
 
@@ -19,7 +19,7 @@ Previsto. El Libro de Reclamaciones funciona en el entorno de test y todavía no
 | Acción | Cualquier persona | Equipo |
 |--------|-------------------|--------|
 | Presentar un reclamo o una queja, sin cuenta | Sí | — |
-| Recibir una constancia con un número y una copia por correo | Sí | — |
+| Recibir una constancia con un número y una copia por correo. Si la copia no se puede enviar, la constancia en pantalla lo dice y pide imprimirla o guardarla | Sí | — |
 | Leer, responder, exportar e imprimir los reclamos | — | Sí, con el permiso |
 
 ## El flujo

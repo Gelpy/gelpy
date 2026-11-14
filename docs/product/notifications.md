@@ -27,7 +27,7 @@ Push is in production since 2026-11-08: in the production Android build and in t
 ## Push in the app
 
 - Today there is one type of push: "Novedades de Gelpy", news about Gelpy. It is promotional, so it is opt-in and starts off.
-- Its switch is in Perfil, under Notificaciones. It reads "Te contamos las funciones nuevas de Gelpy. Es publicidad: la recibes solo si lo enciendes, y puedes apagarlo cuando quieras."
+- Its switch is in Perfil, under Notificaciones, with the line "Funciones nuevas y avisos importantes."
 - Android asks for the notifications permission when it is needed: on the onboarding step of Android 13 or newer, and when the person turns the switch on.
 - Push works in the Android app only. The web version of the app has no notifications row. Push in the browser and on iOS are out of scope.
 - "Cerrar sesión" also stops push to that device.
@@ -63,13 +63,12 @@ sequenceDiagram
 
 | Situation | What the person sees | What to do |
 |-----------|----------------------|------------|
-| The Android permission is blocked | The switch is locked, with "Abrir ajustes" | Allow notifications in the phone's settings |
+| The Android permission is blocked | The switch is locked, with a button to open the phone's settings | Allow notifications in the phone's settings |
 | The switch cannot save | The switch goes back, with a message to check the connection | Try again with a connection |
 | Using the web app | No notifications row | Use the Android app |
 
 ## Planned
 
-- Recording the consent to "Novedades de Gelpy" with the version of its text.
 - A send repeated by mistake goes out only once.
 - Notices about bookings, a second push type that is on by default and can be turned off, for the marketplace pilot.
 - Emails for sign-up invitations and for the complaints book.

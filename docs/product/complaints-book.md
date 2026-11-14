@@ -1,12 +1,12 @@
 ---
 sidebar_position: 5
 title: Complaints book (planned)
-description: The Libro de Reclamaciones that Gelpy is preparing, as Peruvian law requires.
+description: The virtual Libro de Reclamaciones that Gelpy is preparing, as Peruvian law asks.
 ---
 
 # Complaints book (planned)
 
-Peruvian law requires every provider to keep a complaints book, the Libro de Reclamaciones. Gelpy's will be virtual: a form on the website that anyone can use, and a module in the admin console where the team answers.
+Because it serves consumers online too, Gelpy has a virtual Libro de Reclamaciones, as Peruvian law asks. It is a form on the website that anyone can use, and a module in the admin console where the team answers.
 
 :::note Status
 
@@ -19,7 +19,7 @@ Planned. The complaints book runs in the test environment and is not in producti
 | Action | Anyone | Team |
 |--------|--------|------|
 | File a claim (a reclamo or a queja), without an account | Yes | — |
-| Get a receipt with a number, and a copy by email | Yes | — |
+| Get a receipt with a number, and a copy by email. If the copy cannot be sent, the receipt on screen says so and asks the person to print or save it | Yes | — |
 | Read, answer, export, and print the claims | — | Yes, with the permission |
 
 ## The flow

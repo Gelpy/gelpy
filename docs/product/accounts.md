@@ -44,10 +44,10 @@ flowchart TD
 
 - **Account type.** Every account says how the person uses Gelpy: Gelpie, Gelper, or both. The account does not exist without a type. The app cannot add the other type later yet.
 - **Password.** It has 8 to 64 characters, with no composition rules.
-- **Confirmation link.** An email-and-password account starts unconfirmed. The link in the email works once and lasts 24 hours, and no session starts before it is used. The "Revisa tu correo" screen can send the link again after a short wait.
+- **Confirmation link.** An email-and-password account starts unconfirmed. The link in the email works once and lasts 24 hours, and no session starts before it is used. The check-your-email screen can send the link again after a short wait.
 - **Google.** Google proves the email, so a Google account starts confirmed.
 - **Legal texts.** Sign-up needs the checkbox "Acepto los Términos y condiciones y leí la Política de privacidad de Gelpy.", unchecked by default. Without it, nothing is created. Each acceptance is recorded with the version of each text.
-- **No account enumeration.** Signing up with an email that already has an account gets the same answer as a new one, and only the owner of that email gets a notice.
+- **The app does not reveal whether an email has an account.** Signing up with an email that already has an account gets the same answer as a new one, and only the owner of that email gets a notice.
 
 ## Signing in
 
@@ -59,7 +59,7 @@ flowchart TD
 
 ## Phone
 
-- After a sign-in without a verified phone, the app offers to add one. "Ahora no" skips it.
+- After a sign-in without a verified phone, the app offers to add one. The person can skip it.
 - The phone is added from Perfil. It must be a Peruvian mobile number, and it is verified with a code sent by SMS.
 - The app shows the number masked.
 
@@ -77,20 +77,19 @@ Perfil shows the account: the photo from Google when there is one, the name, the
 |-----------|----------------------|------------|
 | Email not confirmed | A request to confirm the email, with a button to resend the link | Open the link in the email |
 | Link used or expired | The link is refused | Ask for a new link |
-| Wrong password or unknown email | "El correo o la contraseña no son correctos." | Try again |
-| Too many attempts | "Demasiados intentos", with the time to wait | Wait for the countdown |
-| A passkey fails | "No pudimos usar tu passkey" | Try again, or use another method |
-| Phone already used by another account | "Este número ya está en otra cuenta" | Use another number |
+| Wrong password or unknown email | A message that the email or the password is not correct | Try again |
+| Too many attempts | A message that there were too many attempts, with the time to wait | Wait for the countdown |
+| A passkey fails | A message that the passkey could not be used | Try again, or use another method |
 
 ## Planned
 
 - Sign-up by invitation only, with invitations that the team sends from the console.
-- A maintenance pause of the app's sign-in, with a "we are doing maintenance" screen.
+- A maintenance pause of the app's sign-in, with a maintenance screen.
 - Account deactivation by the team, with a reason, which closes every session and keeps the data.
 - Accepting a new major version of the terms or the privacy policy again.
 - Linking Google from Perfil.
 - Adding the other account type from Perfil.
-- Passkeys on Android, and account deletion.
+- Password recovery, passkeys on Android, and account deletion.
 
 ## Related pages
 

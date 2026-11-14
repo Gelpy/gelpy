@@ -12,8 +12,8 @@ Gelpy connects general-services professionals with people who need help, with sa
 
 These parts are in production:
 
-- the app on the web, since 2026-11-03;
-- identity, since 2026-11-07;
+- the app shell on the web, since 2026-11-03;
+- accounts and sign-in, since 2026-11-07;
 - the first production Android build, push notifications, the admin console, and the legal pages of the website, since 2026-11-08.
 
 A capability is documented as available only after it reaches production; the rest is marked as planned. See [What is in production](../product/overview.md).

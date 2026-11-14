@@ -25,7 +25,7 @@ Planned. The marketplace runs in the test environment and is off in production. 
 | Gelpies | Describe the need in a few words and get a suggested trade |
 | The team | Open trades and categories, and turn the assisted search on or off, from the console |
 
-Booking a Gelper comes later: on the profile, "Solicitar Gelp" shows "Próximamente".
+Booking a Gelper comes later: on the profile, the booking button shows that it is coming soon.
 
 ## Finding a Gelper
 
@@ -44,11 +44,11 @@ flowchart TD
 ## Rules that protect people
 
 - **A complete profile.** A Gelper is listed only with a display name, at least one trade and service, a description, an active district, and a verified phone. A complete profile does not mean a verified person, and the profile never claims a background check.
-- **What clients see.** The display name is the first name and the last initial. The public profile shows the trades, the services, the description, the districts, and, only when set, the optional details. It never shows a phone, an email, an address, or the full name.
+- **What clients see.** The display name is the first name and the initial of the surname, or the first name only. The public profile shows the trades, the services, the description, the districts, and, only when set, the optional details. It never shows a phone, an email, an address, or the full name.
 - **The photo.** A Gelper can show the account's Google photo only by checking a box, and can uncheck it at any time. Gelpy keeps no copy.
-- **No reviews yet.** Profiles read "Nuevo" until reviews exist. No stars, averages, or job counts are invented.
+- **No reviews yet.** Profiles show that they are new until reviews exist. No stars, averages, or job counts are invented.
 - **Addresses.** A Gelpie's addresses are never public. On Android, the Gelpie can confirm an address with the phone's location: the phone compares it with the address, and Gelpy only receives that they match and the date, never the location.
-- **Assisted search.** The app sends only the text of the search. Gelpy removes emails and long numbers from it, and an AI service suggests a trade from the active catalog, with no data that identifies the person. The text is never stored. A notice under the box says so before anything is sent.
+- **Assisted search.** The app sends only the text of the search, and Gelpy removes emails and long numbers from it. An artificial intelligence service (Anthropic) suggests a trade from the active catalog. Gelpy does not send it the name, the email, or any account data. Gelpy does not store the text. Anthropic deletes it within 30 days at most, or within up to 2 years if its systems flag it for breaking its usage policies. A notice under the search box says that the text goes to an AI service before anything is sent.
 - **Statistics.** A Gelper sees counts only, never who viewed the profile.
 
 ## Related pages

@@ -12,8 +12,8 @@ Gelpy conecta a profesionales de servicios generales con personas que necesitan 
 
 Estas partes están en producción:
 
-- la app en la web, desde el 2026-11-03;
-- la identidad, desde el 2026-11-07;
+- la base de la app en la web, desde el 2026-11-03;
+- las cuentas y el inicio de sesión, desde el 2026-11-07;
 - el primer build de producción para Android, las notificaciones push, la consola de administración y las páginas legales del sitio web, desde el 2026-11-08.
 
 Una capacidad se documenta como disponible solo cuando llega a producción; lo demás figura como previsto. Ver [Qué está en producción](../product/overview.md).

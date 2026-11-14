@@ -25,7 +25,7 @@ Previsto. El marketplace funciona en el entorno de test y está apagado en produ
 | Gelpies | Describir lo que necesitan en pocas palabras y recibir un oficio sugerido |
 | El equipo | Abrir oficios y categorías, y encender o apagar la búsqueda asistida, desde la consola |
 
-Reservar a un Gelper llega después: en el perfil, "Solicitar Gelp" muestra "Próximamente".
+Reservar a un Gelper llega después: en el perfil, el botón de reserva muestra que llega pronto.
 
 ## Encontrar a un Gelper
 
@@ -44,11 +44,11 @@ flowchart TD
 ## Reglas que protegen a las personas
 
 - **Un perfil completo.** Un Gelper aparece en la lista solo con un nombre visible, al menos un oficio y un servicio, una descripción, un distrito activo y un teléfono verificado. Un perfil completo no significa una persona verificada, y el perfil nunca afirma una revisión de antecedentes.
-- **Lo que ven los clientes.** El nombre visible es el primer nombre y la inicial del apellido. El perfil público muestra los oficios, los servicios, la descripción, los distritos y, solo si están puestos, los detalles opcionales. Nunca muestra un teléfono, un correo, una dirección ni el nombre completo.
+- **Lo que ven los clientes.** El nombre visible es el primer nombre y la inicial del apellido, o solo el primer nombre. El perfil público muestra los oficios, los servicios, la descripción, los distritos y, solo si están puestos, los detalles opcionales. Nunca muestra un teléfono, un correo, una dirección ni el nombre completo.
 - **La foto.** Un Gelper puede mostrar la foto de Google de su cuenta solo si marca una casilla, y puede desmarcarla en cualquier momento. Gelpy no guarda una copia.
-- **Todavía sin opiniones.** Los perfiles dicen "Nuevo" hasta que existan opiniones. No se inventan estrellas, promedios ni conteos de trabajos.
+- **Todavía sin opiniones.** Los perfiles muestran que son nuevos hasta que existan opiniones. No se inventan estrellas, promedios ni conteos de trabajos.
 - **Direcciones.** Las direcciones de un Gelpie nunca son públicas. En Android, el Gelpie puede confirmar una dirección con la ubicación del teléfono: el teléfono la compara con la dirección, y Gelpy solo recibe que coinciden y la fecha, nunca la ubicación.
-- **Búsqueda asistida.** La app envía solo el texto de la búsqueda. Gelpy le quita correos y números largos, y un servicio de inteligencia artificial sugiere un oficio del catálogo activo, sin datos que identifiquen a la persona. El texto nunca se guarda. Un aviso debajo de la caja lo dice antes de enviar nada.
+- **Búsqueda asistida.** La app envía solo el texto de la búsqueda, y Gelpy le quita correos y números largos. Un servicio de inteligencia artificial (Anthropic) sugiere un oficio del catálogo activo. Gelpy no le envía el nombre, el correo ni ningún dato de la cuenta. Gelpy no guarda el texto. Anthropic lo borra en 30 días como máximo, o en hasta 2 años si sus sistemas lo marcan por incumplir sus políticas de uso. Un aviso debajo de la caja de búsqueda dice que el texto va a un servicio de inteligencia artificial antes de enviar nada.
 - **Estadísticas.** Un Gelper ve solo conteos, nunca quién vio su perfil.
 
 ## Páginas relacionadas
