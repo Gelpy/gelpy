@@ -42,10 +42,14 @@ test('checkLive passes when every live path comes from the Worker', async () => 
     'check:public --live: https://docs.gelpy.app/es/security/biometrics-passkeys: 200 from Cloudflare (es)',
     'check:public --live: https://docs.gelpy.app/architecture/website: 200 from Cloudflare (en)',
     'check:public --live: https://docs.gelpy.app/es/architecture/website: 200 from Cloudflare (es)',
+    'check:public --live: https://docs.gelpy.app/product/overview: 200 from Cloudflare (en)',
+    'check:public --live: https://docs.gelpy.app/es/product/overview: 200 from Cloudflare (es)',
+    'check:public --live: https://docs.gelpy.app/quality/overview: 200 from Cloudflare (en)',
+    'check:public --live: https://docs.gelpy.app/es/quality/overview: 200 from Cloudflare (es)',
   ]);
 });
 
-test('the live paths include the framework overview (Work Item 001-021) and the push, fingerprint and passkeys, and website pages (Work Items 009-005, 008-006, 010-025) in both languages, without a trailing slash', () => {
+test('the live paths include the framework overview (Work Item 001-021), the push, fingerprint and passkeys, and website pages (Work Items 009-005, 008-006, 010-025), and the product and quality overviews (Work Item 001-059) in both languages, without a trailing slash', () => {
   assert.deepEqual(LIVE_PATHS, [
     {path: '/', lang: 'en'},
     {path: '/es/', lang: 'es'},
@@ -57,6 +61,10 @@ test('the live paths include the framework overview (Work Item 001-021) and the 
     {path: '/es/security/biometrics-passkeys', lang: 'es'},
     {path: '/architecture/website', lang: 'en'},
     {path: '/es/architecture/website', lang: 'es'},
+    {path: '/product/overview', lang: 'en'},
+    {path: '/es/product/overview', lang: 'es'},
+    {path: '/quality/overview', lang: 'en'},
+    {path: '/es/quality/overview', lang: 'es'},
   ]);
 });
 
@@ -73,7 +81,7 @@ test('checkLive retries, then fails with the reason', async () => {
   const status = await checkLive('https://docs.gelpy.app', {request, wait: async (ms) => waits.push(ms), attempts: 3, delayMs: 5, log: () => {}, error: (line) => errors.push(line)});
   assert.equal(status, 1);
   assert.equal(calls, 2 + 3 + (LIVE_PATHS.length - 2), '2 for / (one retry), 3 for /es/, 1 for each other page');
-  assert.equal(calls, 13);
+  assert.equal(calls, 17);
   assert.deepEqual(waits, [5, 5, 5]);
   assert.deepEqual(errors, ['check:public --live: https://docs.gelpy.app/es/: served by GitHub Pages']);
 });
@@ -141,6 +149,10 @@ test('every failed attempt is logged with what it saw', async () => {
     'check:public --live: https://docs.gelpy.app/es/security/biometrics-passkeys: 200 from Cloudflare (es)',
     'check:public --live: https://docs.gelpy.app/architecture/website: 200 from Cloudflare (en)',
     'check:public --live: https://docs.gelpy.app/es/architecture/website: 200 from Cloudflare (es)',
+    'check:public --live: https://docs.gelpy.app/product/overview: 200 from Cloudflare (en)',
+    'check:public --live: https://docs.gelpy.app/es/product/overview: 200 from Cloudflare (es)',
+    'check:public --live: https://docs.gelpy.app/quality/overview: 200 from Cloudflare (en)',
+    'check:public --live: https://docs.gelpy.app/es/quality/overview: 200 from Cloudflare (es)',
   ]);
 });
 
@@ -258,7 +270,7 @@ test('viaDoh resolves, then fetches pinned; the default checkLive uses it on a D
     const log = [];
     assert.equal(await checkLive(origin, {request: doh, wait: async () => {}, log: (line) => log.push(line), error: () => {}}), 0);
     assert.match(log[0], /attempt 1\/30: network error: fetch failed \(ENOTFOUND\); via DNS over HTTPS \(127\.0\.0\.1\): status 200, server cloudflare$/);
-    assert.match(log.at(-1), /\/es\/architecture\/website: 200 from Cloudflare \(es\)$/);
+    assert.match(log.at(-1), /\/es\/quality\/overview: 200 from Cloudflare \(es\)$/);
   } finally {
     server.close();
   }
