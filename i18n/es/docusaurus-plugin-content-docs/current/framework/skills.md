@@ -19,7 +19,7 @@ El catálogo tiene 23 skills.
 | | `gelpy-track-work-item` | Estado del Work Item, nombres de rama, higiene de PRs, sincronización de issues |
 | | `gelpy-orchestrate-agents` | Registro de agentes y protocolo de mensajes |
 | | `gelpy-scaffold-ecosystem` | Archivos base obligatorios para un repo nuevo |
-| | `gelpy-update-docs` | Changelog, memoria, ADRs, acompañantes en español y docs públicos después de cada cambio |
+| | `gelpy-update-docs` | Changelog, memoria, ADRs, los documentos del estándar de documentación, acompañantes en español y docs públicos después de cada cambio |
 | | `gelpy-validate-compliance` | Auditar los repos contra el framework |
 | | `gelpy-self-improve` | Retrospectiva sin culpas que puede cambiar una regla |
 | Revisión crítica | `gelpy-challenge-request` | Un veredicto estricto por punto en cada pedido del dueño y en cada `DELEGATE`: aceptar, aceptar con ajustes o rechazar. El dueño decide |
@@ -50,6 +50,10 @@ El catálogo tiene 23 skills.
 | `gelpy-codex-review` | PRs de release |
 | `gelpy-update-docs` | Después de cada cambio |
 | `gelpy-db-table-standards` | Cada migración que crea o modifica una tabla, y cada auditoría del esquema |
+
+## El paso de documentación
+
+`gelpy-update-docs` incluye un paso para el [estándar de documentación](./documentation-standard.md) (ADR-0021). Un pull request que cambia un script, una variable, un paso del gate local, una ruta, un permiso o una tabla actualiza el documento que lo describe, en el mismo pull request. Después el agente actualiza los bloques generados con `npm run check:docs -- --write` y corre `npm run check:docs`.
 
 ## Páginas relacionadas
 

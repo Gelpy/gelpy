@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 7
 title: Owner rules and safety
 description: What the owner always approves, when agents stop, how secrets are handled, and the ADRs behind the framework.
 ---
@@ -58,7 +58,7 @@ An agent stops and asks the owner when:
 ## Secrets policy
 
 - Secrets never go in code, chat, logs, issues, or docs.
-- Inventories list secret names only, never values.
+- Inventories and documents list secret names only, never values.
 - Runtime secrets are set per Worker.
 - Deploy credentials live only in production build settings, entered by the owner.
 - PR and preview builds never receive deploy tokens.
@@ -86,7 +86,7 @@ See [Documentation rules](../contributing/documentation-rules.md) for the full l
 | 0004 | Release and versioning |
 | 0005 | Environments and branching |
 | 0006 | Cloudflare cloud platform |
-| 0007 | Documentation language strategy |
+| 0007 | Documentation language strategy (amended: bilingual only for the main documents of a repo) |
 | 0008 | Agent orchestration governance (amended: startup organization) |
 | 0009 | Database schema source of truth |
 | 0010 | Brand and design system |
@@ -99,6 +99,8 @@ See [Documentation rules](../contributing/documentation-rules.md) for the full l
 | 0017 | CI/CD pipeline policy: validate once, deploy on merge, no deploy secrets in PRs |
 | 0018 | CI/CD on Cloudflare Workers Builds |
 | 0019 | Phase 2 opens with the controlled marketplace pilot |
+| 0020 | Measurement by design |
+| 0021 | Documentation standard for every repo |
 
 ## Related pages
 
