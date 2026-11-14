@@ -99,7 +99,7 @@ See [Documentation rules](../contributing/documentation-rules.md) for the full l
 | 0017 | CI/CD pipeline policy: validate once, deploy on merge, no deploy secrets in PRs |
 | 0018 | CI/CD on Cloudflare Workers Builds |
 | 0019 | Phase 2 opens with the controlled marketplace pilot |
-| 0020 | Measurement by design |
+| 0020 | Measurement by design, with Legal as an enabler |
 | 0021 | Documentation standard for every repo |
 
 ## Related pages
