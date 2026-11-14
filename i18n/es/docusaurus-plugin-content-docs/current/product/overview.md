@@ -1,13 +1,73 @@
 ---
 sidebar_position: 1
-title: Visión general del producto
-description: Lo que Gelpy hace hoy en producción, y lo que está previsto.
+title: Qué hace Gelpy hoy
+description: Lo que las personas pueden hacer con Gelpy hoy en producción, y lo que está previsto.
 ---
 
-# Visión general del producto
+# Qué hace Gelpy hoy
 
-:::note En preparación
+Gelpy conecta a profesionales de servicios generales con personas que necesitan ayuda en casa, con seguridad y confianza. Esta sección describe el producto desde el punto de vista de quienes lo usan: qué pueden hacer, quién puede hacerlo y si ya funciona.
 
-Esta sección se está escribiendo. Va a listar lo que Gelpy hace hoy en producción y marcar lo demás como previsto.
+:::note Estado
+
+Estado al 2026-11-14. Solo lo que funciona en producción se describe como disponible. Todo lo demás figura como previsto, y esta sección cambia cuando llega a producción.
 
 :::
+
+## Palabras que se usan aquí
+
+| Palabra | Significado |
+|---------|-------------|
+| Gelpie | Una persona que necesita ayuda: el cliente |
+| Gelper | Un profesional que ofrece un servicio |
+| Equipo | El personal de Gelpy que opera la plataforma desde la consola de administración |
+
+## Dónde funciona Gelpy
+
+| Superficie | Quién la usa | En producción |
+|------------|--------------|---------------|
+| La app Gelpy en la web | Gelpies y Gelpers | Desde el 2026-11-03 |
+| La app Gelpy en Android | Gelpies y Gelpers | Desde el primer build de producción del 2026-11-08, instalado como APK; la app no está en Google Play |
+| El sitio web | Cualquier persona | Desde la versión 0.6.0 del 2026-11-08, con sus páginas legales |
+| La consola de administración | El equipo de Gelpy | Desde el 2026-11-07 |
+
+## Lo que se puede hacer hoy
+
+| Qué | Quién | Dónde |
+|-----|-------|-------|
+| Crear una cuenta con correo y contraseña o con Google, como Gelpie, Gelper o ambos | Cualquier persona | App, web y Android |
+| Iniciar sesión con correo y contraseña o con Google | Gelpies y Gelpers | App, web y Android |
+| Iniciar sesión con una passkey, y crear, ver y revocar passkeys | Gelpies y Gelpers | App, web |
+| Agregar un número de teléfono y verificarlo por SMS | Gelpies y Gelpers | App, web y Android |
+| Desbloquear la app con la huella o el rostro | Gelpies y Gelpers | App, Android |
+| Encender las notificaciones "Novedades de Gelpy" | Gelpies y Gelpers | App, Android |
+| Leer las páginas públicas y las páginas de privacidad, cookies y términos | Cualquier persona | Sitio web |
+| Enviar una notificación push y seguir su entrega | El equipo | Consola de administración |
+
+Dentro de la app, Inicio y Tareas muestran que esas secciones se están construyendo. El marketplace, donde un Gelpie encuentra y reserva a un Gelper, todavía no está abierto.
+
+## Previsto
+
+Estas capacidades todavía no están en producción:
+
+- **Reglas de cuenta:** registro solo por invitación, una pausa de mantenimiento del inicio de sesión de la app, la desactivación de cuentas por el equipo, aceptar otra vez una nueva versión mayor de los textos legales, vincular Google desde Perfil y agregar el otro tipo de cuenta desde Perfil.
+- **Más opciones de acceso:** passkeys en Android y la eliminación de la cuenta.
+- **Notificaciones:** el consentimiento registrado con la versión de su texto, un envío repetido que sale una sola vez y avisos sobre las reservas.
+- **Consola de administración:** roles y permisos, cuentas de la app, invitaciones de registro, configuración de la plataforma y categorías.
+- **El Libro de Reclamaciones** que exige la ley peruana.
+- **El piloto del marketplace:** perfiles de Gelper, el directorio, las direcciones de los clientes, la búsqueda asistida, estadísticas para los Gelpers y, más adelante, las reservas.
+- **La medición** del uso del producto, solo con consentimiento.
+
+## En esta sección
+
+- [Cuentas y perfil](./accounts.md)
+- [Notificaciones](./notifications.md)
+- [Consola de administración](./console.md)
+- [Libro de Reclamaciones (previsto)](./complaints-book.md)
+- [Piloto del marketplace (previsto)](./marketplace-pilot.md)
+
+## Páginas relacionadas
+
+- [Visión general de la arquitectura](../architecture/overview.md)
+- [Identidad e inicio de sesión](../security/identity.md)
+- [Visión general de la calidad](../quality/overview.md)
