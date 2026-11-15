@@ -10,7 +10,7 @@ This page describes the public website at `gelpy.app`: how it is built, which ro
 
 :::note Status
 
-The website is in production since version 0.6.0 (2026-11-08). Version 0.7.0, since 2026-11-15, adds the complaints book, measurement only with consent, the published versions of the legal texts, and the Digital Asset Links file. Version 0.7.1 keeps every Google tag and Clarity off the complaints book pages. Production is served with noindex: indexing waits for the owner's approval, and there is no indexing during the pilot. The site has no login. Its only call to the product API is the complaints book form.
+The website is in production since version 0.6.0 (2026-11-08). Version 0.7.0, since 2026-11-15, adds the complaints book, measurement only with consent, the published versions of the legal texts, and the Digital Asset Links file. Version 0.7.1, since 2026-11-15, keeps every Google tag and Clarity off the complaints book pages. Production is served with noindex: indexing waits for the owner's approval, and there is no indexing during the pilot. The site has no login. Its only call to the product API is the complaints book form.
 
 :::
 

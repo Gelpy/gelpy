@@ -10,7 +10,7 @@ Esta página describe el sitio web público en `gelpy.app`: cómo está construi
 
 :::note Estado
 
-El sitio web está en producción desde la versión 0.6.0 (2026-11-08). La versión 0.7.0, desde el 2026-11-15, agrega el Libro de Reclamaciones, la medición solo con consentimiento, las versiones publicadas de los textos legales y el archivo Digital Asset Links. La versión 0.7.1 mantiene toda etiqueta de Google y Clarity fuera de las páginas del Libro de Reclamaciones. Producción se sirve con noindex: la indexación espera la aprobación del dueño, y no hay indexación durante el piloto. El sitio no tiene inicio de sesión. Su única llamada a la API del producto es el formulario del Libro de Reclamaciones.
+El sitio web está en producción desde la versión 0.6.0 (2026-11-08). La versión 0.7.0, desde el 2026-11-15, agrega el Libro de Reclamaciones, la medición solo con consentimiento, las versiones publicadas de los textos legales y el archivo Digital Asset Links. La versión 0.7.1, desde el 2026-11-15, mantiene toda etiqueta de Google y Clarity fuera de las páginas del Libro de Reclamaciones. Producción se sirve con noindex: la indexación espera la aprobación del dueño, y no hay indexación durante el piloto. El sitio no tiene inicio de sesión. Su única llamada a la API del producto es el formulario del Libro de Reclamaciones.
 
 :::
 
