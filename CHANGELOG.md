@@ -40,3 +40,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - Steps that call Cloudflare stop their whole process tree when they run out of time (Gelpy/gelpy#22).
 - The live check falls back to DNS over HTTPS when the build's resolver still caches a "no such name" from a first cutover (Gelpy/gelpy#22).
 - Add the identity and sign-in page in English and Spanish: account types, email and password with a confirmation link, Google, phone by SMS, sessions, fingerprint unlock, passkeys, the admin console, and data handling, each with its status. Update the sign-in sections of the data flow and security overview pages to match.
+
+### Security
+
+- Clear the SonarCloud findings of `main` (Work Item 003-087). The `pages.yml` failover installs with `npm ci --ignore-scripts`, so no package lifecycle script runs (githubactions:S6505); none of its steps needs one. An npm override moves `undici`, which only `wrangler`'s `miniflare` uses, from 7.30.1 to 7.30.2: every `miniflare` release pins 7.30.1, and 7.30.2 fixes its six advisories. No page text changes.

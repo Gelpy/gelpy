@@ -40,10 +40,13 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
+      # No package lifecycle scripts run (SonarCloud githubactions:S6505). None of these steps
+      # needs one: esbuild and workerd (install scripts) serve only wrangler, which this
+      # workflow never runs, and core-js's postinstall only prints a message.
       - name: Install dependencies
         env:
           GELPY_PACKAGES_TOKEN: ${{ env.TRUSTED_SOURCE == 'true' && secrets.GELPY_PACKAGES_TOKEN || '' }}
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Require the brand theme
         if: env.TRUSTED_SOURCE == 'true'
