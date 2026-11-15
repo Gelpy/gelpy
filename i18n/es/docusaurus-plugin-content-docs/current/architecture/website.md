@@ -6,11 +6,11 @@ description: "Cómo está construido el sitio web de Gelpy en gelpy.app: el stac
 
 # Sitio web comercial
 
-Esta página describe el sitio web público en `gelpy.app`: cómo está construido, qué rutas sirve, qué controles pasa cada cambio, cómo se diseñan sus páginas, cómo se va a medir y cómo se despliega.
+Esta página describe el sitio web público en `gelpy.app`: cómo está construido, qué rutas sirve, qué controles pasa cada cambio, cómo se diseñan sus páginas, cómo se mide y cómo se despliega.
 
 :::note Estado
 
-El sitio web está en producción desde la versión 0.6.0 (2026-11-08); la verificación en producción encontró 20 páginas y 0 problemas. Producción se sirve con noindex: la indexación espera la aprobación del dueño, y no hay indexación durante el piloto. El sitio no tiene inicio de sesión y no llama a la API del producto.
+El sitio web está en producción desde la versión 0.6.0 (2026-11-08). La versión 0.7.0, desde el 2026-11-15, agrega el Libro de Reclamaciones, la medición solo con consentimiento, las versiones publicadas de los textos legales y el archivo Digital Asset Links. La versión 0.7.1, desde el 2026-11-15, mantiene toda etiqueta de Google y Clarity fuera de las páginas del Libro de Reclamaciones. Producción se sirve con noindex: la indexación espera la aprobación del dueño, y no hay indexación durante el piloto. El sitio no tiene inicio de sesión. Su única llamada a la API del producto es el formulario del Libro de Reclamaciones.
 
 :::
 
@@ -44,28 +44,30 @@ El stack lo fija una decisión de arquitectura (ADR-0013):
 | Privacidad | `/privacidad/` | `/en/privacy/` | Borrador |
 | Cookies | `/cookies/` | `/en/cookies/` | Borrador |
 | Términos | `/terminos/` | `/en/terms/` | Borrador |
+| Libro de Reclamaciones | `/libro-de-reclamaciones/` | `/en/complaints-book/` | Sin cuenta; el formulario envía solo a la API de Gelpy de su propio entorno. Ver [Libro de Reclamaciones](../product/complaints-book.md) |
 | No encontrada | 404 localizado | 404 localizado | Un estado 404 real |
 
-Rutas previstas:
+El sitio también sirve, desde el 2026-11-15:
 
-- La página del Libro de Reclamaciones (`/libro-de-reclamaciones/` y `/en/complaints-book/`): en test desde el 2026-11-10, a producción con el próximo release del sitio.
-- `/legal/versions.json`, la lista de versiones de los textos legales.
-- `/.well-known/assetlinks.json`, el archivo Digital Asset Links que necesitan las passkeys en Android.
+- `/legal/versions.json`: la versión, la fecha y el hash SHA-256 de cada texto legal en cada idioma.
+- `/.well-known/assetlinks.json`: el archivo Digital Asset Links que necesitan las passkeys en Android. Las passkeys en Android siguen pendientes de verificación en un teléfono.
 
 ## Estructura de la página
 
 - Un encabezado fijo de 64 px con cuatro páginas. "Abrir la app" abre la app en una pestaña nueva.
 - Por debajo de 768 px, el encabezado pasa a un menú hamburguesa.
 - El hero de inicio reproduce la animación de bienvenida una sola vez, durante unos 3.3 s.
-- El pie de página tiene 9 enlaces a páginas y un grupo "Tecnología" con enlaces al portal de ingeniería, la wiki y la consola.
+- El pie de página tiene 9 enlaces a páginas, "Preferencias de cookies", el enlace al Libro de Reclamaciones y un grupo "Tecnología" con enlaces al portal de ingeniería, la wiki y la consola.
 - La línea de copyright muestra la versión del sitio.
 
 ## Páginas legales
 
-- Las páginas de privacidad, cookies y términos son borradores desde el 2026-11-08. Cada una muestra el aviso "Borrador en revisión / Draft under review" y la fecha de versión 2026-11-08.
+- Las páginas de privacidad, cookies y términos son borradores. Cada una muestra el aviso "Borrador en revisión / Draft under review", que dice que un abogado todavía no revisó el texto.
+- Desde el 2026-11-15, cada una es la versión 1.0.0, vigente desde el 15/11/2026. Hasta el lanzamiento, la versión sigue en 1.0.0 y solo cambia la fecha.
 - El build rechaza cualquier marcador entre corchetes, así que ningún texto sin terminar puede salir publicado.
 - Desde el 2026-11-08, registrarse en la app requiere aceptar los términos y la política de privacidad.
-- Previsto: la aprobación de un abogado, que quita el aviso de borrador, y una segunda versión de privacidad con etiquetas de versión y hashes publicados de cada texto.
+- Las versiones publicadas y los hashes de los textos están en `/legal/versions.json`.
+- Previsto: la aprobación de un abogado, que quita el aviso de borrador.
 
 ## Controles de calidad
 
@@ -131,16 +133,21 @@ flowchart LR
 
 ## Medición
 
-Hoy no carga en `gelpy.app` ningún proveedor de analítica, gestor de etiquetas ni grabación de sesiones, y no hay banner de consentimiento. Lo que existe hoy:
+Desde el 2026-11-15, `gelpy.app` mide su uso solo con el consentimiento de quien lo visita:
+
+- Un banner de consentimiento pregunta primero, y nada carga antes del consentimiento. La analítica y la experiencia son finalidades separadas.
+- Con el consentimiento de analítica, Google Analytics 4 carga a través de Google Tag Manager, con las señales de publicidad denegadas.
+- Con el consentimiento de analítica, la etiqueta de Google también busca en las páginas textos con forma de correo, teléfono, nombre o dirección, y los envía a Google convertidos en un hash, como dice la política de privacidad. Fuera del Libro de Reclamaciones, el sitio no pide ninguno de esos datos.
+- Con el consentimiento de experiencia, Microsoft Clarity graba sesiones con el contenido de la página oculto.
+- "Preferencias de cookies" en el pie de página cambia o retira el consentimiento. Rechazar quita las cookies de los proveedores.
+- En las páginas del Libro de Reclamaciones no carga ninguna etiqueta de Google ni Clarity. Lo aseguran el código del sitio y una política de seguridad de contenido propia de esas páginas.
+- Las páginas legales que describen esta medición todavía llevan el aviso de borrador: un abogado todavía no las revisó.
+
+Además, el sitio mantiene:
 
 - Los registros de laboratorio de arriba
 - Un checklist interno de visibilidad
 - El verificador en vivo después de cada despliegue
-
-Previsto, en este orden:
-
-1. Un controlador de consentimiento. Nada carga antes del consentimiento. La analítica y la experiencia son finalidades separadas. El consentimiento se puede retirar desde el pie de página. El banner funciona con el teclado. Rechazar quita los proveedores. Las señales de publicidad quedan denegadas. Las herramientas de Google cargan solo a través de Tag Manager, y la grabación de sesiones oculta el contenido.
-2. Google Analytics 4, Google Tag Manager y Microsoft Clarity en producción, después de la aprobación del abogado.
 
 ## Despliegue
 

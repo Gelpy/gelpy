@@ -6,11 +6,11 @@ description: "How the Gelpy website at gelpy.app is built: the stack, the routes
 
 # Commercial website
 
-This page describes the public website at `gelpy.app`: how it is built, which routes it serves, which checks every change passes, how its pages are designed, how it will be measured, and how it is deployed.
+This page describes the public website at `gelpy.app`: how it is built, which routes it serves, which checks every change passes, how its pages are designed, how it is measured, and how it is deployed.
 
 :::note Status
 
-The website is in production since version 0.6.0 (2026-11-08); the production check found 20 pages and 0 problems. Production is served with noindex: indexing waits for the owner's approval, and there is no indexing during the pilot. The site has no login and makes no calls to the product API.
+The website is in production since version 0.6.0 (2026-11-08). Version 0.7.0, since 2026-11-15, adds the complaints book, measurement only with consent, the published versions of the legal texts, and the Digital Asset Links file. Version 0.7.1, since 2026-11-15, keeps every Google tag and Clarity off the complaints book pages. Production is served with noindex: indexing waits for the owner's approval, and there is no indexing during the pilot. The site has no login. Its only call to the product API is the complaints book form.
 
 :::
 
@@ -44,28 +44,30 @@ The stack is set by an architecture decision (ADR-0013):
 | Privacy | `/privacidad/` | `/en/privacy/` | Draft |
 | Cookies | `/cookies/` | `/en/cookies/` | Draft |
 | Terms | `/terminos/` | `/en/terms/` | Draft |
+| Complaints book | `/libro-de-reclamaciones/` | `/en/complaints-book/` | No account; the form sends only to the Gelpy API of its own environment. See [Complaints book](../product/complaints-book.md) |
 | Not found | localized 404 | localized 404 | A real 404 status |
 
-Planned routes:
+The site also serves, since 2026-11-15:
 
-- The complaints book page (`/libro-de-reclamaciones/` and `/en/complaints-book/`): on test since 2026-11-10, production with the next web release.
-- `/legal/versions.json`, the list of legal text versions.
-- `/.well-known/assetlinks.json`, the Digital Asset Links file that passkeys on Android need.
+- `/legal/versions.json`: the version, the date, and the SHA-256 hash of each legal text in each language.
+- `/.well-known/assetlinks.json`: the Digital Asset Links file that passkeys on Android need. Passkeys on Android are still pending verification on a phone.
 
 ## Shell
 
 - A 64 px sticky header with four pages. "Abrir la app" (open the app) opens the app in a new tab.
 - Below 768 px, the header turns into a hamburger menu.
 - The home hero plays the splash animation once, for about 3.3 s.
-- The footer has 9 page links and a "Tecnología" group that links the engineering portal, the wiki, and the console.
+- The footer has 9 page links, "Preferencias de cookies" (cookie preferences), the complaints book link, and a "Tecnología" group that links the engineering portal, the wiki, and the console.
 - The copyright line shows the site version.
 
 ## Legal pages
 
-- The privacy, cookies, and terms pages are drafts since 2026-11-08. Each shows the notice "Borrador en revisión / Draft under review" and the version date 2026-11-08.
+- The privacy, cookies, and terms pages are drafts. Each shows the notice "Borrador en revisión / Draft under review", which says that a lawyer has not reviewed the text yet.
+- Since 2026-11-15, each is version 1.0.0, effective 15/11/2026. Until the launch, the version stays 1.0.0 and only the date changes.
 - The build refuses any bracketed placeholder, so no unfinished text can ship.
 - Since 2026-11-08, signing up in the app requires accepting the terms and the privacy policy.
-- Planned: a lawyer's approval that removes the draft notice, and a second privacy version with version labels and published text hashes.
+- The published versions and text hashes are in `/legal/versions.json`.
+- Planned: a lawyer's approval that removes the draft notice.
 
 ## Quality gates
 
@@ -131,16 +133,21 @@ flowchart LR
 
 ## Measurement
 
-Today, no analytics, tag manager, or session-recording provider loads on `gelpy.app`, and there is no consent banner. What exists today:
+Since 2026-11-15, `gelpy.app` measures its use only with the visitor's consent:
+
+- A consent banner asks first, and nothing loads before consent. Analytics and experience are separate purposes.
+- With analytics consent, Google Analytics 4 loads through Google Tag Manager, with advertising signals denied.
+- With analytics consent, the Google tag also looks on the pages for text shaped like an email, a phone number, a name, or an address, and sends it to Google as a hash, as the privacy policy says. Outside the complaints book, the site asks for none of those data.
+- With experience consent, Microsoft Clarity records sessions with the page content masked.
+- "Preferencias de cookies" in the footer changes or withdraws the consent. Rejecting removes the providers' cookies.
+- On the complaints book pages, no Google tag and no Clarity load. The site's code and a content security policy of those pages make sure of it.
+- The legal pages that describe this measurement still carry the draft notice: a lawyer has not reviewed them yet.
+
+Besides that, the site keeps:
 
 - The lab records above
 - An internal visibility checklist
 - The live verifier after every deploy
-
-Planned, in this order:
-
-1. A consent controller. Nothing loads before consent. Analytics and experience are separate purposes. Consent can be withdrawn from the footer. The banner works with the keyboard. Rejecting removes the providers. Advertising signals stay denied. Google tools load only through Tag Manager, and session recording masks content.
-2. Google Analytics 4, Google Tag Manager, and Microsoft Clarity in production, after the lawyer's approval.
 
 ## Deploy
 

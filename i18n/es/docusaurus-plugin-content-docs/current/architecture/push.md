@@ -10,7 +10,7 @@ Esta página describe cómo Gelpy envía notificaciones push: cómo se activan, 
 
 :::note Estado
 
-Las notificaciones push están en producción desde el 2026-11-08: en la API, en la app del build de producción de Android y en la consola de admins. La prueba de punta a punta del dueño en producción pasó el 2026-11-08. El build de producción de Android se instala como APK; la app no está en Google Play.
+Las notificaciones push están en producción desde el 2026-11-08: en la API, en la app del build de producción de Android y en la consola de admins. La prueba de punta a punta del dueño en producción pasó el 2026-11-08. El build de producción de Android se instala como APK; la app no está en Google Play. Desde el 2026-11-15, el módulo de Push de la consola sigue los roles y permisos de la consola.
 
 :::
 
@@ -24,7 +24,7 @@ Las notificaciones push están en producción desde el 2026-11-08: en la API, en
 | Procesamiento programado de las confirmaciones | Previsto |
 | Un envío idéntico repetido dentro de 10 minutos devuelve el envío guardado | Previsto |
 | Borrar el token guardado al revocar un dispositivo | Previsto |
-| Roles de la consola por función | Previsto |
+| Roles y permisos de la consola | Producción desde el 2026-11-15 |
 | Un tipo transaccional para el piloto del marketplace | Previsto |
 | Las cuentas desactivadas salen de las audiencias | Previsto |
 
@@ -85,7 +85,7 @@ Las confirmaciones se procesan a pedido, sin ninguna tarea programada. Los estad
 
 ## Consola de admins
 
-La consola está en producción desde el 2026-11-08. Solo entran los admins con una cuenta Google de la organización `gelpy.app`. El menú sigue los permisos que devuelve la API: `console:access`, `push:read` y `push:send`. En producción cada admin tiene los tres; los roles de la consola por función están previstos.
+La consola está en producción desde el 2026-11-08. Solo entran los miembros del equipo con una cuenta Google de la organización `gelpy.app` y un rol. Desde el 2026-11-15, el Super admin asigna roles armados a partir de permisos, y el menú sigue los permisos que devuelve la API: "Historial" necesita el permiso de lectura de push, y "Enviar" necesita el permiso de envío de push.
 
 La consola funciona en español y en inglés, en claro y en oscuro, en computadora y en teléfono.
 
@@ -110,7 +110,7 @@ La consola funciona en español y en inglés, en claro y en oscuro, en computado
 - Cada envío guarda quién lo hizo, la audiencia, el contenido y los conteos, y un evento de auditoría con el ID del admin y el ID del envío.
 - Ninguna línea de log ni fila de auditoría guarda un correo. El correo que se escribe para buscar a un destinatario nunca se registra.
 - Ninguna respuesta de la API incluye un token push, y ningún log guarda un token push ni un token de acceso.
-- Las respuestas de admin que muestran correos solo llegan a quienes tienen `push:read`, y nunca se guardan en caché.
+- Las respuestas de admin que muestran correos solo llegan a los miembros del equipo con el permiso de lectura de push, y nunca se guardan en caché.
 
 ## Páginas relacionadas
 

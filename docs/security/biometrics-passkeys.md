@@ -10,7 +10,7 @@ This page describes two ways to sign in to Gelpy without typing a password: fing
 
 :::note Status
 
-Passkeys are available on the web since 2026-11-07. Fingerprint unlock is in the production Android build since 2026-11-08; that build is installed as an APK, and the app is not on Google Play. Passkeys on Android and the stronger session binding below are planned.
+Passkeys are available on the web since 2026-11-07. Fingerprint unlock is in the production Android build since 2026-11-08; that build is installed as an APK, and the app is not on Google Play. Passkeys on Android are pending verification on a phone, and the stronger session binding below is planned.
 
 :::
 
@@ -18,9 +18,9 @@ Passkeys are available on the web since 2026-11-07. Fingerprint unlock is in the
 |------------|--------|
 | Passkeys on the web | Available since 2026-11-07 |
 | Fingerprint unlock on Android | In the production Android build since 2026-11-08 |
-| Passkeys on Android | Planned: they need the Digital Asset Links file served on `gelpy.app` |
-| Saved session bound to the fingerprint check | Planned: on test, production with the next app release |
-| Guarded passkey counter | Planned: on test |
+| Passkeys on Android | Pending verification on a phone: the app offers them, and `gelpy.app` serves the Digital Asset Links file since 2026-11-15 |
+| Saved session bound to the fingerprint check | Planned: it reaches the phones with a new Android build |
+| Guarded passkey counter | Planned |
 | iOS | Planned, deferred |
 
 Google sign-in and email with password stay available as fallbacks for both.
@@ -46,7 +46,7 @@ flowchart LR
 
 ### Planned: a stronger binding
 
-These changes run on test and reach production with the next app release, shipped as an over-the-air update:
+These changes are planned. The phones keep the Android build of 2026-11-08 until a new one is approved, so the changes reach them with that new build:
 
 - If the app cannot read the biometric preference, it treats it as unknown and opens no session until the check passes or the person signs in again. The app always ends in a defined state.
 - The saved session is bound to the fingerprint check with an envelope key: a random key stored once in the device's secure storage, readable only after a successful biometric check. The session is stored encrypted with that key.
@@ -86,11 +86,11 @@ sequenceDiagram
 
 ### Planned: a guarded counter
 
-On test, the passkey's signature counter rises in one guarded step before any session exists, and only while the passkey is active. A cloned, replayed, or just-revoked passkey then cannot open a session. A failed attempt's audit record holds only the reason.
+The passkey's signature counter will rise in one guarded step before any session exists, and only while the passkey is active. A cloned, replayed, or just-revoked passkey will then be unable to open a session. A failed attempt's audit record will hold only the reason.
 
 ### Passkeys on Android
 
-Passkeys on Android are planned. They need the Digital Asset Links file served on `gelpy.app`, which links the app to the site; the production Android build alone does not enable them.
+The production Android build offers passkeys, and since 2026-11-15 `gelpy.app` serves the Digital Asset Links file, which links the app to the site. They are not tested end to end on a phone yet, so they are pending verification and not listed as available.
 
 ## What is never stored
 

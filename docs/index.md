@@ -6,17 +6,19 @@ title: Introduction
 
 # Gelpy Engineering
 
-Gelpy connects general-services professionals with people who need help, with safety and trust.
+Gelpy is being built to connect general-services professionals with people who need help, with safety and trust. Gelpy is in pre-launch and has no customers. "In production" means deployed in the production environment, where the team tests it before the launch. Sign-up is by invitation only, and the website is not promoted.
 
-This site holds Gelpy's public engineering documentation. It covers high-level architecture, data flow, security posture, and the engineering method. Phase 1 builds the application base only.
+This site holds Gelpy's public engineering documentation. It covers what works in production, high-level architecture, data flow, quality, security posture, and the engineering method. Phase 1 builds the application base only.
 
 ## Start here
 
+- [What works in production](./product/overview.md): what works in the production environment today, and what is planned.
 - [Architecture overview](./architecture/overview.md): components, platform, environments, and release flow.
 - [Data flow](./architecture/data-flow.md): how requests and data move through the system.
 - [App shell](./architecture/app-shell.md): navigation, onboarding, languages, and themes in the app.
 - [Security overview](./security/overview.md): security posture and data-handling rules.
 - [Identity and sign-in](./security/identity.md): registration, sign-in, the admin console, and identity data.
+- [Quality overview](./quality/overview.md): how every change is tested and checked before production.
 - [Agentic framework](./framework/overview.md): the working method that builds Gelpy, with one human owner and a team of AI agents.
 - [Documentation rules](./contributing/documentation-rules.md): how these docs grow and what may be published.
 

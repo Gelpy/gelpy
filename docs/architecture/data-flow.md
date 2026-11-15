@@ -21,14 +21,17 @@ sequenceDiagram
   C->>W: HTTPS request with access token
   W->>A: Forward request
   A->>A: Validate input and token
-  A->>D: Query
+  A->>A: Check the session and the permission
+  A->>D: Query, filtered by the account
   D-->>A: Rows
   A-->>W: JSON response
-  W-->>C: HTTPS response
+  W-->>C: HTTPS response, never cached
 ```
 
 - All traffic uses HTTPS.
 - The API validates request input with schemas (Zod) before it uses it.
+- Protected routes check the session, and console routes also check the admin permission.
+- Email, SMS, and push messages leave through the Worker, which relays them to their providers.
 
 ## Sign-in
 

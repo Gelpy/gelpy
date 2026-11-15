@@ -21,14 +21,17 @@ sequenceDiagram
   C->>W: Petición HTTPS con token de acceso
   W->>A: Reenvía la petición
   A->>A: Valida la entrada y el token
-  A->>D: Consulta
+  A->>A: Revisa la sesión y el permiso
+  A->>D: Consulta, filtrada por la cuenta
   D-->>A: Filas
   A-->>W: Respuesta JSON
-  W-->>C: Respuesta HTTPS
+  W-->>C: Respuesta HTTPS, nunca en caché
 ```
 
 - Todo el tráfico usa HTTPS.
 - La API valida la entrada de cada petición con esquemas (Zod) antes de usarla.
+- Las rutas protegidas revisan la sesión, y las rutas de la consola revisan además el permiso de administrador.
+- Los correos, SMS y notificaciones push salen por el Worker, que los lleva a sus proveedores.
 
 ## Inicio de sesión
 

@@ -6,17 +6,19 @@ title: Introducción
 
 # Ingeniería de Gelpy
 
-Gelpy conecta a profesionales de servicios generales con personas que necesitan ayuda, con seguridad y confianza.
+Gelpy se está construyendo para conectar a profesionales de servicios generales con personas que necesitan ayuda, con seguridad y confianza. Gelpy está en prelanzamiento y no tiene clientes. «En producción» significa desplegado en el entorno de producción, donde el equipo lo prueba antes del lanzamiento. El registro es solo por invitación, y el sitio web no se promociona.
 
-Este sitio reúne la documentación pública de ingeniería de Gelpy. Cubre la arquitectura de alto nivel, el flujo de datos, la postura de seguridad y el método de ingeniería. La Fase 1 construye solo la base de la aplicación.
+Este sitio reúne la documentación pública de ingeniería de Gelpy. Cubre lo que funciona en producción, la arquitectura de alto nivel, el flujo de datos, la calidad, la postura de seguridad y el método de ingeniería. La Fase 1 construye solo la base de la aplicación.
 
 ## Empieza aquí
 
+- [Qué funciona en producción](./product/overview.md): lo que funciona hoy en el entorno de producción, y lo que está previsto.
 - [Visión general de la arquitectura](./architecture/overview.md): componentes, plataforma, entornos y flujo de release.
 - [Flujo de datos](./architecture/data-flow.md): cómo se mueven las peticiones y los datos en el sistema.
 - [Base de la app](./architecture/app-shell.md): navegación, onboarding, idiomas y temas de la app.
 - [Visión general de seguridad](./security/overview.md): postura de seguridad y reglas de manejo de datos.
 - [Identidad e inicio de sesión](./security/identity.md): registro, inicio de sesión, la consola de admins y los datos de identidad.
+- [Visión general de la calidad](./quality/overview.md): cómo se prueba y se revisa cada cambio antes de producción.
 - [Framework agéntico](./framework/overview.md): el método de trabajo que construye Gelpy, con un dueño humano y un equipo de agentes de IA.
 - [Reglas de documentación](./contributing/documentation-rules.md): cómo crecen estos docs y qué se puede publicar.
 
