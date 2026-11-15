@@ -6,11 +6,11 @@ description: The push notifications, emails, and SMS that Gelpy sends, and how p
 
 # Notifications
 
-Gelpy tells people things in three ways: a push notification in the Android app, an account email, and an SMS code. The technical side of push is in [Push notifications](../architecture/push.md).
+Gelpy tells people things in three ways: a push notification in the Android app, an email, and an SMS code. The technical side of push is in [Push notifications](../architecture/push.md).
 
 :::note Status
 
-Push is in production since 2026-11-08: in the production Android build and in the admin console. The planned changes are at the end of this page.
+Push is in production since 2026-11-08: in the production Android build and in the admin console. The sign-up invitation email and the complaints book emails are in production since 2026-11-15. The planned changes are at the end of this page.
 
 :::
 
@@ -27,7 +27,7 @@ Push is in production since 2026-11-08: in the production Android build and in t
 ## Push in the app
 
 - Today there is one type of push: "Novedades de Gelpy", news about Gelpy. It is promotional, so it is opt-in and starts off.
-- Its switch is in Perfil, under Notificaciones, with the line "Funciones nuevas y avisos importantes."
+- Its switch is in Perfil, under Notificaciones.
 - Android asks for the notifications permission when it is needed: on the onboarding step of Android 13 or newer, and when the person turns the switch on.
 - Push works in the Android app only. The web version of the app has no notifications row. Push in the browser and on iOS are out of scope.
 - "Cerrar sesión" also stops push to that device.
@@ -56,7 +56,8 @@ sequenceDiagram
 
 ## Emails and SMS
 
-- **Account emails**, never marketing: the confirmation link, and the notice to the owner of an email that already has an account. They follow the Gelpy brand, and a token in a link never reaches a server log.
+- **Account emails**, never marketing: the confirmation link, the notice to the owner of an email that already has an account, and the sign-up invitation. They follow the Gelpy brand, and a token in a link never reaches a server log.
+- **Complaints book emails:** the copy of a claim, and the team's answer. See [Complaints book](./complaints-book.md).
 - **SMS:** only the code that verifies a phone.
 
 ## What the person sees when something fails
@@ -71,7 +72,6 @@ sequenceDiagram
 
 - A send repeated by mistake goes out only once.
 - Notices about bookings, a second push type that is on by default and can be turned off, for the marketplace pilot.
-- Emails for sign-up invitations and for the complaints book.
 
 ## Related pages
 

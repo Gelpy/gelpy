@@ -10,7 +10,7 @@ The admin console is where the Gelpy team runs the platform. It is a web app for
 
 :::note Status
 
-In production since 2026-11-07, with the Push module since 2026-11-08. The planned modules are at the end of this page.
+In production since 2026-11-07, with the Push module since 2026-11-08 and the other modules since 2026-11-15. The planned modules are at the end of this page.
 
 :::
 
@@ -18,15 +18,15 @@ In production since 2026-11-07, with the Push module since 2026-11-08. The plann
 
 - Only Google accounts of the Gelpy company organization. The console has no email and password sign-in.
 - An app account cannot use the console.
-- An account outside the organization is refused, and so is an organization account that is not an admin. Console sign-in never creates accounts.
+- An account outside the organization is refused. An organization account without a role sees a request to ask the Super admin for one. Console sign-in never creates accounts.
 - The console keeps its session only in the open page, so a reload asks to sign in again.
 
 ```mermaid
 flowchart TD
   A[Sign in with Google] --> B{Account of the Gelpy organization?}
   B -- No --> X[This account is not Gelpy's]
-  B -- Yes --> C{An existing admin account?}
-  C -- No --> NO[No access to the console]
+  B -- Yes --> C{A team member with a role?}
+  C -- No --> NO[Ask the Super admin for a role]
   C -- Yes --> S[Console session]
   S --> M[Menu with the allowed modules]
 ```
@@ -37,17 +37,20 @@ flowchart TD
 |--------|--------------|
 | Push: Enviar | Writes a push, shows how many people and devices it reaches, and sends it after a confirmation. See [Notifications](./notifications.md) |
 | Push: Historial | Lists each send with its sender, audience, and delivery counts, and refreshes the statuses on demand |
+| Acceso | The Super admin decides who on the team enters the console, builds roles from permissions, and gives them to team members. Only the Super admin sees this module |
+| Usuarios del app | Finds an app account by its exact email, and deactivates or activates it with a reason after a confirmation. See [Accounts and profile](./accounts.md) |
+| Invitaciones de registro | Invites a person to create an app account while sign-up is closed, and resends or revokes an invitation |
+| Configuración de la plataforma | Opens or closes sign-up, pauses the app's sign-in for maintenance, and turns the assisted search on or off. Only the Super admin changes these settings |
+| Libro de Reclamaciones | Reads, answers, exports, and prints each claim, and resends an answer email that could not be sent. See [Complaints book](./complaints-book.md) |
+| Categorías, Funciones, Idiomas de la app | The catalog that the marketplace pilot will use: the trades and services, the details of the work, and the languages |
+| Proveedores | The register of the outside services that Gelpy pays for or uses |
 
-Each send records who sent it, and no log or audit record holds an email.
+Each person sees only the modules and the actions that their roles allow; a module without the permission says so. Each send and each change records who made it, and no log or audit record holds an email.
 
 ## Planned
 
-- **Roles and permissions:** the Super admin builds roles from permissions and gives them to team members. Each person sees only the modules of their roles.
-- **App accounts:** find an account by its exact email, and deactivate or activate it with a reason.
-- **Sign-up invitations:** invite a person to sign up while sign-up is closed.
-- **Platform settings:** open or close sign-up, pause the app's sign-in for maintenance, and turn the assisted search on or off.
-- **The complaints book:** read, answer, export, and print each claim. See [Complaints book](./complaints-book.md).
-- **Categories:** the trades and services of the marketplace.
+- **Pilot invitations**, for the people invited to the marketplace pilot. See [Marketplace pilot](./marketplace-pilot.md).
+- **Registering a claim that arrives by email** in the complaints book.
 
 ## Related pages
 

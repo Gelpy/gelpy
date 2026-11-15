@@ -14,7 +14,8 @@ These parts are in production:
 
 - the app shell on the web, since 2026-11-03;
 - accounts and sign-in, since 2026-11-07;
-- the first production Android build, push notifications, the admin console, and the legal pages of the website, since 2026-11-08.
+- the first production Android build, push notifications, the admin console, and the legal pages of the website, since 2026-11-08;
+- the complaints book, sign-up by invitation, and the new modules of the admin console, since 2026-11-15. The app's changes of that day are on the web, and reach Android with its next build.
 
 A capability is documented as available only after it reaches production; the rest is marked as planned. See [What is in production](../product/overview.md).
 
@@ -144,7 +145,7 @@ The gates of each component are on the [Quality overview](../quality/overview.md
 | Accounts, sessions, profiles | The API, in PostgreSQL | Each account has a UUID, and sensitive queries filter by it. Passwords are stored only as salted hashes; passkey private keys are never stored |
 | Design tokens | The design system | No color, font family, or logo is hard-coded outside it (ADR-0010) |
 | Website content | The website repository | Files in the repository, in Spanish and English |
-| Analytics | Planned, behind consent | Third parties would get a pseudonymous analytics ID, never the account ID (ADR-0020) |
+| Analytics | The website, behind consent; the app, planned | The website loads Google Analytics and Microsoft Clarity only after the person allows it. In the app, third parties would get a pseudonymous analytics ID, never the account ID (ADR-0020) |
 
 ## Decisions
 

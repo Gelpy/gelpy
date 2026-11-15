@@ -23,9 +23,10 @@ Previsto. El marketplace funciona en el entorno de test y está apagado en produ
 | Gelpies | Recorrer las categorías abiertas, ver los Gelpers del distrito de una dirección guardada y abrir el perfil público de un Gelper |
 | Gelpies | Guardar los lugares donde necesitan ayuda, como la casa o la oficina |
 | Gelpies | Describir lo que necesitan en pocas palabras y recibir un oficio sugerido |
-| El equipo | Abrir oficios y categorías, y encender o apagar la búsqueda asistida, desde la consola |
 
 Reservar a un Gelper llega después: en el perfil, el botón de reserva muestra que llega pronto.
+
+La parte del equipo ya está en la consola de administración, desde el 2026-11-15: el catálogo de oficios y categorías, y el interruptor de la búsqueda asistida. La búsqueda asistida está apagada, y las personas no ven nada del marketplace hasta que abra el piloto. Ver [Consola de administración](./console.md).
 
 ## Encontrar a un Gelper
 

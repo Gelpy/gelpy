@@ -6,11 +6,11 @@ description: Las notificaciones push, los correos y los SMS que envía Gelpy, y 
 
 # Notificaciones
 
-Gelpy avisa a las personas de tres formas: una notificación push en la app de Android, un correo de cuenta y un código por SMS. El lado técnico de las push está en [Notificaciones push](../architecture/push.md).
+Gelpy avisa a las personas de tres formas: una notificación push en la app de Android, un correo y un código por SMS. El lado técnico de las push está en [Notificaciones push](../architecture/push.md).
 
 :::note Estado
 
-Las push están en producción desde el 2026-11-08: en el build de producción de Android y en la consola de administración. Los cambios previstos están al final de esta página.
+Las push están en producción desde el 2026-11-08: en el build de producción de Android y en la consola de administración. El correo de invitación de registro y los correos del Libro de Reclamaciones están en producción desde el 2026-11-15. Los cambios previstos están al final de esta página.
 
 :::
 
@@ -27,7 +27,7 @@ Las push están en producción desde el 2026-11-08: en el build de producción d
 ## Push en la app
 
 - Hoy hay un solo tipo de push: "Novedades de Gelpy", noticias sobre Gelpy. Es publicitaria, así que se activa por elección y empieza apagada.
-- Su interruptor está en Perfil, en Notificaciones, con la línea "Funciones nuevas y avisos importantes."
+- Su interruptor está en Perfil, en Notificaciones.
 - Android pide el permiso de notificaciones cuando hace falta: en el paso de la bienvenida en Android 13 o más nuevo, y cuando la persona enciende el interruptor.
 - Las push funcionan solo en la app de Android. La versión web de la app no tiene la fila de notificaciones. Las push en el navegador y en iOS están fuera del alcance.
 - "Cerrar sesión" también detiene las push a ese dispositivo.
@@ -56,7 +56,8 @@ sequenceDiagram
 
 ## Correos y SMS
 
-- **Correos de cuenta**, nunca de marketing: el link de confirmación y el aviso al dueño de un correo que ya tiene cuenta. Siguen la marca Gelpy, y un token de un link nunca llega a un log del servidor.
+- **Correos de cuenta**, nunca de marketing: el link de confirmación, el aviso al dueño de un correo que ya tiene cuenta y la invitación de registro. Siguen la marca Gelpy, y un token de un link nunca llega a un log del servidor.
+- **Correos del Libro de Reclamaciones:** la copia de un reclamo y la respuesta del equipo. Ver [Libro de Reclamaciones](./complaints-book.md).
 - **SMS:** solo el código que verifica un teléfono.
 
 ## Lo que ve la persona cuando algo falla
@@ -71,7 +72,6 @@ sequenceDiagram
 
 - Un envío repetido por error sale una sola vez.
 - Avisos sobre las reservas, un segundo tipo de push encendido por defecto que se puede apagar, para el piloto del marketplace.
-- Correos de las invitaciones de registro y del Libro de Reclamaciones.
 
 ## Páginas relacionadas
 

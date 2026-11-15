@@ -23,9 +23,10 @@ Planned. The marketplace runs in the test environment and is off in production. 
 | Gelpies | Browse the open categories, see the Gelpers of the district of a saved address, and open a Gelper's public profile |
 | Gelpies | Save the places where they need help, such as home or the office |
 | Gelpies | Describe the need in a few words and get a suggested trade |
-| The team | Open trades and categories, and turn the assisted search on or off, from the console |
 
 Booking a Gelper comes later: on the profile, the booking button shows that it is coming soon.
+
+The team's part is already in the admin console, since 2026-11-15: the catalog of trades and categories, and the assisted search switch. The assisted search is off, and people see nothing of the marketplace until the pilot opens. See [Admin console](./console.md).
 
 ## Finding a Gelper
 
