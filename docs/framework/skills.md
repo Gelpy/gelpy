@@ -19,7 +19,7 @@ The catalog has 23 skills.
 | | `gelpy-track-work-item` | Work Item state, branch names, PR hygiene, issue sync |
 | | `gelpy-orchestrate-agents` | Agent registry and message protocol |
 | | `gelpy-scaffold-ecosystem` | Mandatory baseline files for a new repo |
-| | `gelpy-update-docs` | Changelog, memory, ADRs, Spanish companions, and public docs after each change |
+| | `gelpy-update-docs` | Changelog, memory, ADRs, the documents of the documentation standard, Spanish companions, and public docs after each change |
 | | `gelpy-validate-compliance` | Audit repos against the framework |
 | | `gelpy-self-improve` | Blameless retrospective that can change a rule |
 | Critical review | `gelpy-challenge-request` | A strict verdict per point on every owner request and every `DELEGATE`: accept, accept with adjustments, or reject. The owner decides |
@@ -50,6 +50,10 @@ The catalog has 23 skills.
 | `gelpy-codex-review` | Release PRs |
 | `gelpy-update-docs` | After every change |
 | `gelpy-db-table-standards` | Every migration that creates or alters a table, and every schema audit |
+
+## The documentation step
+
+`gelpy-update-docs` includes a step for the [documentation standard](./documentation-standard.md) (ADR-0021). A pull request that changes a script, a variable, a step of the local gate, a route, a permission, or a table updates the document that describes it, in the same pull request. Then the agent refreshes the generated blocks with `npm run check:docs -- --write` and runs `npm run check:docs`.
 
 ## Related pages
 

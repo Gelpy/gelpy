@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 7
 title: Reglas del dueño y seguridad
 description: Qué aprueba siempre el dueño, cuándo se detienen los agentes, cómo se manejan los secretos y los ADRs detrás del framework.
 ---
@@ -58,7 +58,7 @@ Un agente se detiene y consulta al dueño cuando:
 ## Política de secretos
 
 - Los secretos nunca van en el código, el chat, los logs, los issues ni los docs.
-- Los inventarios listan solo nombres de secretos, nunca valores.
+- Los inventarios y los documentos listan solo nombres de secretos, nunca valores.
 - Los secretos de runtime se configuran por Worker.
 - Las credenciales de deploy viven solo en la configuración de los builds de producción, ingresadas por el dueño.
 - Los builds de PR y de vista previa nunca reciben tokens de deploy.
@@ -86,7 +86,7 @@ Consulta las [Reglas de documentación](../contributing/documentation-rules.md) 
 | 0004 | Release and versioning |
 | 0005 | Environments and branching |
 | 0006 | Cloudflare cloud platform |
-| 0007 | Documentation language strategy |
+| 0007 | Documentation language strategy (amended: bilingual only for the main documents of a repo) |
 | 0008 | Agent orchestration governance (amended: startup organization) |
 | 0009 | Database schema source of truth |
 | 0010 | Brand and design system |
@@ -98,7 +98,9 @@ Consulta las [Reglas de documentación](../contributing/documentation-rules.md) 
 | 0016 | API connects to Postgres through the provider pooler, without Hyperdrive |
 | 0017 | CI/CD pipeline policy: validate once, deploy on merge, no deploy secrets in PRs |
 | 0018 | CI/CD on Cloudflare Workers Builds |
-| 0019 | La Fase 2 se abre con el piloto controlado del marketplace |
+| 0019 | Phase 2 opens with the controlled marketplace pilot |
+| 0020 | Measurement by design, with Legal as an enabler |
+| 0021 | Documentation standard for every repo |
 
 Los títulos de los ADRs se mantienen en inglés, que es su idioma canónico.
 

@@ -21,6 +21,14 @@ La sección [Framework agéntico](../framework/overview.md) describe el método 
 - Cada cambio del framework actualiza esta sección en el mismo ciclo.
 - La sección describe un método que ya está en uso, así que la regla de "previsto hasta producción" no se aplica.
 
+## La capa pública del estándar de documentación
+
+Cada repo de Gelpy se documenta según el [estándar de documentación](../framework/documentation-standard.md) (ADR-0021). Este sitio es su capa pública:
+
+- Los repos guardan lo interno; este sitio guarda lo que se puede publicar.
+- Este sitio no enlaza nada interno.
+- La versión pública de la guía funcional vive aquí. Solo Agent Docs la edita, y sigue la regla de cierre de arriba.
+
 ## Qué se puede publicar
 
 Se publica:

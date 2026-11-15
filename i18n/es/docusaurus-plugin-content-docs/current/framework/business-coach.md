@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 8
 title: Gerente de Estrategia
 description: El jefe del área de Negocio, asesor del dueño en estrategia de startups en Perú, su equipo, sus reglas de evidencia y sus límites.
 ---

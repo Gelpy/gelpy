@@ -25,7 +25,8 @@ Cada principio viene de una regla que siguen los agentes.
 5. **Test antes de producción.** El trabajo llega primero a `staging` y al entorno de test. Los releases a producción necesitan la aprobación explícita del dueño (ADR-0005).
 6. **Secretos nunca en el código ni en el chat.** Los inventarios guardan solo nombres, y los agentes nunca ven los valores.
 7. **Un dueño por repo.** Cada repo tiene un agente especializado. Los agentes nunca editan otro repo; lo piden mediante el protocolo.
-8. **Memoria bilingüe.** El inglés es el canónico y el español es el acompañante. El dueño trabaja en español (ADR-0007).
+8. **Memoria bilingüe.** El inglés es el canónico y el español es el acompañante. En cada repo, solo los documentos principales tienen acompañante en español; las referencias técnicas quedan en inglés. El dueño trabaja en español (ADR-0007, enmendado el 2026-11-14).
+9. **Documentado igual en todas partes.** Cada repo tiene el mismo conjunto de documentos, y `check:docs` los revisa en el gate local (ADR-0021). Ver [Estándar de documentación](./documentation-standard.md).
 
 ## Organización
 
@@ -100,7 +101,7 @@ Cada repo de producto tiene su propio gate `AGENTS.md`, un perfil de agente y un
 |----------|----------|
 | Agentes | 13, más Codex, más roles a pedido |
 | Skills | 23 |
-| ADRs | 19 |
+| ADRs | 21 |
 | Specs | 11 |
 | Work Items en la Fase 1 | Unos 170 |
 | Repos | 8 |
@@ -124,6 +125,7 @@ Cada repo de producto tiene su propio gate `AGENTS.md`, un perfil de agente y un
 - [Skills](./skills.md)
 - [Work Items y sprints](./work-items.md)
 - [Entrega: gates, entornos y releases](./delivery.md)
+- [Estándar de documentación](./documentation-standard.md)
 - [Reglas del dueño y seguridad](./rules.md)
 - [Gerente de Estrategia](./business-coach.md)
 - [Origen y evolución](./evolution.md)
