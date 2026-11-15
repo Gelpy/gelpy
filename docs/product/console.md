@@ -54,6 +54,6 @@ Each person sees only the modules and the actions that their roles allow; a modu
 
 ## Related pages
 
-- [What Gelpy does today](./overview.md)
+- [What works in production](./overview.md)
 - [Identity and sign-in](../security/identity.md)
 - [Push notifications](../architecture/push.md)

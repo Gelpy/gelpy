@@ -100,7 +100,7 @@ Perfil muestra la cuenta: la foto de Google cuando la hay, el nombre, el correo 
 
 ## Páginas relacionadas
 
-- [Qué hace Gelpy hoy](./overview.md)
+- [Qué funciona en producción](./overview.md)
 - [Identidad e inicio de sesión](../security/identity.md)
 - [Desbloqueo con huella y passkeys](../security/biometrics-passkeys.md)
 - [Base de la app](../architecture/app-shell.md)

@@ -6,7 +6,7 @@ description: El Libro de Reclamaciones virtual de Gelpy, como pide la ley peruan
 
 # Libro de Reclamaciones
 
-Como atiende a consumidores también por internet, Gelpy tiene un Libro de Reclamaciones virtual, como pide la ley peruana. Es un formulario en el sitio web que cualquier persona puede usar, y un módulo en la consola de administración donde el equipo responde.
+Como atenderá a consumidores también por internet, Gelpy tiene un Libro de Reclamaciones virtual, como pide la ley peruana. Es un formulario en el sitio web que cualquier persona puede usar, y un módulo en la consola de administración donde el equipo responde.
 
 :::note Estado
 
@@ -59,6 +59,6 @@ sequenceDiagram
 
 ## Páginas relacionadas
 
-- [Qué hace Gelpy hoy](./overview.md)
+- [Qué funciona en producción](./overview.md)
 - [Consola de administración](./console.md)
 - [Sitio web comercial](../architecture/website.md)

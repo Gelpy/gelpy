@@ -100,7 +100,7 @@ Perfil shows the account: the photo from Google when there is one, the name, the
 
 ## Related pages
 
-- [What Gelpy does today](./overview.md)
+- [What works in production](./overview.md)
 - [Identity and sign-in](../security/identity.md)
 - [Fingerprint unlock and passkeys](../security/biometrics-passkeys.md)
 - [App shell](../architecture/app-shell.md)

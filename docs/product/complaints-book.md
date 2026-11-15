@@ -6,7 +6,7 @@ description: The virtual Libro de Reclamaciones of Gelpy, as Peruvian law asks.
 
 # Complaints book
 
-Because it serves consumers online too, Gelpy has a virtual Libro de Reclamaciones, as Peruvian law asks. It is a form on the website that anyone can use, and a module in the admin console where the team answers.
+Because it will serve consumers online too, Gelpy has a virtual Libro de Reclamaciones, as Peruvian law asks. It is a form on the website that anyone can use, and a module in the admin console where the team answers.
 
 :::note Status
 
@@ -59,6 +59,6 @@ sequenceDiagram
 
 ## Related pages
 
-- [What Gelpy does today](./overview.md)
+- [What works in production](./overview.md)
 - [Admin console](./console.md)
 - [Commercial website](../architecture/website.md)

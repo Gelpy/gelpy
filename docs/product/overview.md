@@ -1,14 +1,16 @@
 ---
 sidebar_position: 1
-title: What Gelpy does today
-description: What people can do with Gelpy in production today, and what is planned.
+title: What works in production
+description: What works in Gelpy's production environment, where the team tests it before the launch, and what is planned.
 ---
 
-# What Gelpy does today
+# What works in production
 
-Gelpy connects general-services professionals with people who need help at home, with safety and trust. This section describes the product from the point of view of the people who use it: what they can do, who can do it, and whether it is live.
+Gelpy is being built to connect general-services professionals with people who need help at home, with safety and trust. This section describes the product from the point of view of the people who will use it: what they can do, who can do it, and whether it is in production yet.
 
 :::note Status
+
+Gelpy is in pre-launch and has no customers. "In production" means deployed in the production environment, where the team tests it before the launch. Sign-up is by invitation only, and the website is not promoted.
 
 State on 2026-11-15. Only what runs in production is described as available. Everything else is marked as planned, and this section changes when it reaches production.
 
@@ -24,14 +26,14 @@ State on 2026-11-15. Only what runs in production is described as available. Eve
 
 ## Where Gelpy runs
 
-| Surface | Who uses it | In production |
+| Surface | For whom | In production |
 |---------|-------------|---------------|
 | The Gelpy app on the web | Gelpies and Gelpers | The app shell since 2026-11-03; accounts and sign-in since 2026-11-07; app release 0.5.0 since 2026-11-15 |
 | The Gelpy app on Android | Gelpies and Gelpers | Since the first production build of 2026-11-08, installed as an APK; the app is not on Google Play. The app changes of 2026-11-15 reach Android with its next build |
 | The website | Anyone | Since 2026-11-08, with its legal pages; the complaints book since 2026-11-15 |
 | The admin console | The Gelpy team | Since 2026-11-07; the modules for access, app accounts, invitations, platform settings, the complaints book, and the catalog since 2026-11-15 |
 
-## What people can do today
+## What works in production today
 
 In the app:
 
@@ -45,7 +47,7 @@ In the app:
 | Unlock the app with a fingerprint or the face | Android |
 | Turn on the "Novedades de Gelpy" notifications | Android |
 
-On the website, anyone can read the public pages and the privacy, cookies, and terms pages, and file a claim in the [complaints book](./complaints-book.md) without an account. The website measures its own use with Google Analytics and Microsoft Clarity only if the person allows it, in "Cookie preferences".
+The website has its public pages, the privacy, cookies, and terms pages, and the [complaints book](./complaints-book.md), which takes a claim without an account. The website measures its own use with Google Analytics and Microsoft Clarity only if the person allows it, in "Cookie preferences".
 
 In the admin console, the Gelpy team sends push notifications, manages app accounts and sign-up invitations, answers the complaints book, and keeps the catalog that the marketplace pilot will use. See [Admin console](./console.md).
 

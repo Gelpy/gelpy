@@ -75,6 +75,6 @@ sequenceDiagram
 
 ## Páginas relacionadas
 
-- [Qué hace Gelpy hoy](./overview.md)
+- [Qué funciona en producción](./overview.md)
 - [Notificaciones push](../architecture/push.md)
 - [Consola de administración](./console.md)

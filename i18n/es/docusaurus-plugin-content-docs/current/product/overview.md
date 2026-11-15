@@ -1,14 +1,16 @@
 ---
 sidebar_position: 1
-title: Qué hace Gelpy hoy
-description: Lo que las personas pueden hacer con Gelpy hoy en producción, y lo que está previsto.
+title: Qué funciona en producción
+description: Lo que funciona en el entorno de producción de Gelpy, donde el equipo lo prueba antes del lanzamiento, y lo que está previsto.
 ---
 
-# Qué hace Gelpy hoy
+# Qué funciona en producción
 
-Gelpy conecta a profesionales de servicios generales con personas que necesitan ayuda en casa, con seguridad y confianza. Esta sección describe el producto desde el punto de vista de quienes lo usan: qué pueden hacer, quién puede hacerlo y si ya funciona.
+Gelpy se está construyendo para conectar a profesionales de servicios generales con personas que necesitan ayuda en casa, con seguridad y confianza. Esta sección describe el producto desde el punto de vista de quienes lo usarán: qué pueden hacer, quién puede hacerlo y si ya está en producción.
 
 :::note Estado
+
+Gelpy está en prelanzamiento y no tiene clientes. «En producción» significa desplegado en el entorno de producción, donde el equipo lo prueba antes del lanzamiento. El registro es solo por invitación, y el sitio web no se promociona.
 
 Estado al 2026-11-15. Solo lo que funciona en producción se describe como disponible. Todo lo demás figura como previsto, y esta sección cambia cuando llega a producción.
 
@@ -24,14 +26,14 @@ Estado al 2026-11-15. Solo lo que funciona en producción se describe como dispo
 
 ## Dónde funciona Gelpy
 
-| Superficie | Quién la usa | En producción |
+| Superficie | Para quién | En producción |
 |------------|--------------|---------------|
 | La app Gelpy en la web | Gelpies y Gelpers | La base de la app desde el 2026-11-03; las cuentas y el inicio de sesión desde el 2026-11-07; la versión 0.5.0 de la app desde el 2026-11-15 |
 | La app Gelpy en Android | Gelpies y Gelpers | Desde el primer build de producción del 2026-11-08, instalado como APK; la app no está en Google Play. Los cambios de la app del 2026-11-15 llegan a Android con su próximo build |
 | El sitio web | Cualquier persona | Desde el 2026-11-08, con sus páginas legales; el Libro de Reclamaciones desde el 2026-11-15 |
 | La consola de administración | El equipo de Gelpy | Desde el 2026-11-07; los módulos de acceso, cuentas de la app, invitaciones, configuración de la plataforma, Libro de Reclamaciones y catálogo desde el 2026-11-15 |
 
-## Lo que se puede hacer hoy
+## Lo que funciona hoy en producción
 
 En la app:
 
@@ -45,7 +47,7 @@ En la app:
 | Desbloquear la app con la huella o el rostro | Android |
 | Encender las notificaciones "Novedades de Gelpy" | Android |
 
-En el sitio web, cualquier persona puede leer las páginas públicas y las páginas de privacidad, cookies y términos, y presentar un reclamo en el [Libro de Reclamaciones](./complaints-book.md) sin una cuenta. El sitio web mide su propio uso con Google Analytics y Microsoft Clarity solo si la persona lo permite, en "Preferencias de cookies".
+El sitio web tiene sus páginas públicas, las páginas de privacidad, cookies y términos, y el [Libro de Reclamaciones](./complaints-book.md), que recibe un reclamo sin una cuenta. El sitio web mide su propio uso con Google Analytics y Microsoft Clarity solo si la persona lo permite, en "Preferencias de cookies".
 
 En la consola de administración, el equipo de Gelpy envía notificaciones push, administra las cuentas de la app y las invitaciones de registro, responde el Libro de Reclamaciones y mantiene el catálogo que usará el piloto del marketplace. Ver [Consola de administración](./console.md).
 

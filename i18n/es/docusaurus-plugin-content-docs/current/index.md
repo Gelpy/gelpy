@@ -6,13 +6,13 @@ title: Introducción
 
 # Ingeniería de Gelpy
 
-Gelpy conecta a profesionales de servicios generales con personas que necesitan ayuda, con seguridad y confianza.
+Gelpy se está construyendo para conectar a profesionales de servicios generales con personas que necesitan ayuda, con seguridad y confianza. Gelpy está en prelanzamiento y no tiene clientes. «En producción» significa desplegado en el entorno de producción, donde el equipo lo prueba antes del lanzamiento. El registro es solo por invitación, y el sitio web no se promociona.
 
-Este sitio reúne la documentación pública de ingeniería de Gelpy. Cubre lo que hace hoy el producto, la arquitectura de alto nivel, el flujo de datos, la calidad, la postura de seguridad y el método de ingeniería. La Fase 1 construye solo la base de la aplicación.
+Este sitio reúne la documentación pública de ingeniería de Gelpy. Cubre lo que funciona en producción, la arquitectura de alto nivel, el flujo de datos, la calidad, la postura de seguridad y el método de ingeniería. La Fase 1 construye solo la base de la aplicación.
 
 ## Empieza aquí
 
-- [Qué hace Gelpy hoy](./product/overview.md): lo que las personas pueden hacer hoy en producción, y lo que está previsto.
+- [Qué funciona en producción](./product/overview.md): lo que funciona hoy en el entorno de producción, y lo que está previsto.
 - [Visión general de la arquitectura](./architecture/overview.md): componentes, plataforma, entornos y flujo de release.
 - [Flujo de datos](./architecture/data-flow.md): cómo se mueven las peticiones y los datos en el sistema.
 - [Base de la app](./architecture/app-shell.md): navegación, onboarding, idiomas y temas de la app.

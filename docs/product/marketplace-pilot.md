@@ -54,6 +54,6 @@ flowchart TD
 
 ## Related pages
 
-- [What Gelpy does today](./overview.md)
+- [What works in production](./overview.md)
 - [Accounts and profile](./accounts.md)
 - [Architecture overview](../architecture/overview.md)

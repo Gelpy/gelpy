@@ -6,11 +6,11 @@ description: High-level view of the Gelpy system, its components, and how it is 
 
 # Architecture overview
 
-Gelpy connects general-services professionals with people who need help, with safety and trust. Phase 1 builds the application base: accounts, sign-in, app navigation, and notifications. Phase 2, the controlled marketplace pilot, opened on 2026-11-08; in production it stays off behind the pilot invitation gate.
+Gelpy is being built to connect general-services professionals with people who need help, with safety and trust. Phase 1 builds the application base: accounts, sign-in, app navigation, and notifications. Work on Phase 2, the controlled marketplace pilot, started on 2026-11-08; in production it stays off behind the pilot invitation gate.
 
 :::note Status
 
-These parts are in production:
+Gelpy is in pre-launch and has no customers. "In production" means deployed in the production environment, where the team tests it before the launch. These parts are in production:
 
 - the app shell on the web, since 2026-11-03;
 - accounts and sign-in, since 2026-11-07;
@@ -23,11 +23,11 @@ A capability is documented as available only after it reaches production; the re
 
 ## System context
 
-Two kinds of people use Gelpy through three surfaces. Every surface talks to one API, and only the API reads and writes the database.
+Two kinds of people will use Gelpy through three surfaces. Every surface talks to one API, and only the API reads and writes the database.
 
 ```mermaid
 flowchart LR
-  user([Person using Gelpy])
+  user([Gelpie or Gelper])
   admin([Gelpy operator])
 
   subgraph clients[Client surfaces]
@@ -67,7 +67,7 @@ flowchart LR
 
 | Component | Role | Technology |
 |-----------|------|------------|
-| App | The product people use, on Android and in the browser | Expo, React Native, TypeScript, Expo Router, TanStack Query |
+| App | The product for Gelpies and Gelpers, on Android and in the browser | Expo, React Native, TypeScript, Expo Router, TanStack Query |
 | Website | Public pages in Spanish and English | Nuxt (prerendered), Vue, TypeScript, Tailwind CSS |
 | Admin console | Administration for the Gelpy team | Next.js (static export), React, TypeScript, Tailwind CSS |
 | API | Business logic, authentication, and data access | Node.js, Express, TypeScript, Zod, Prisma client |

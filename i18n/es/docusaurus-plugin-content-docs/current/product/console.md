@@ -54,6 +54,6 @@ Cada persona ve solo los módulos y las acciones que sus roles permiten; un mód
 
 ## Páginas relacionadas
 
-- [Qué hace Gelpy hoy](./overview.md)
+- [Qué funciona en producción](./overview.md)
 - [Identidad e inicio de sesión](../security/identity.md)
 - [Notificaciones push](../architecture/push.md)

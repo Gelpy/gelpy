@@ -6,11 +6,11 @@ description: Vista de alto nivel del sistema Gelpy, sus componentes y cómo se c
 
 # Visión general de la arquitectura
 
-Gelpy conecta a profesionales de servicios generales con personas que necesitan ayuda, con seguridad y confianza. La Fase 1 construye la base de la aplicación: cuentas, inicio de sesión, navegación y notificaciones. La Fase 2, el piloto controlado del marketplace, empezó el 2026-11-08; en producción queda apagada detrás de la puerta de invitación del piloto.
+Gelpy se está construyendo para conectar a profesionales de servicios generales con personas que necesitan ayuda, con seguridad y confianza. La Fase 1 construye la base de la aplicación: cuentas, inicio de sesión, navegación y notificaciones. El trabajo de la Fase 2, el piloto controlado del marketplace, empezó el 2026-11-08; en producción queda apagada detrás de la puerta de invitación del piloto.
 
 :::note Estado
 
-Estas partes están en producción:
+Gelpy está en prelanzamiento y no tiene clientes. «En producción» significa desplegado en el entorno de producción, donde el equipo lo prueba antes del lanzamiento. Estas partes están en producción:
 
 - la base de la app en la web, desde el 2026-11-03;
 - las cuentas y el inicio de sesión, desde el 2026-11-07;
@@ -23,11 +23,11 @@ Una capacidad se documenta como disponible solo cuando llega a producción; lo d
 
 ## Contexto del sistema
 
-Dos tipos de personas usan Gelpy a través de tres superficies. Cada superficie habla con una sola API, y solo la API lee y escribe en la base de datos.
+Dos tipos de personas usarán Gelpy a través de tres superficies. Cada superficie habla con una sola API, y solo la API lee y escribe en la base de datos.
 
 ```mermaid
 flowchart LR
-  user([Persona que usa Gelpy])
+  user([Gelpie o Gelper])
   admin([Operador de Gelpy])
 
   subgraph clients[Superficies cliente]
@@ -67,7 +67,7 @@ flowchart LR
 
 | Componente | Función | Tecnología |
 |------------|---------|------------|
-| App | El producto que usan las personas, en Android y en el navegador | Expo, React Native, TypeScript, Expo Router, TanStack Query |
+| App | El producto para Gelpies y Gelpers, en Android y en el navegador | Expo, React Native, TypeScript, Expo Router, TanStack Query |
 | Sitio web | Páginas públicas en español e inglés | Nuxt (prerenderizado), Vue, TypeScript, Tailwind CSS |
 | Consola de administración | Administración para el equipo de Gelpy | Next.js (exportación estática), React, TypeScript, Tailwind CSS |
 | API | Lógica de negocio, autenticación y acceso a datos | Node.js, Express, TypeScript, Zod, cliente de Prisma |
