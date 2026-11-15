@@ -10,7 +10,7 @@ Esta página describe dos formas de entrar a Gelpy sin escribir una contraseña:
 
 :::note Estado
 
-Las passkeys están disponibles en la web desde el 2026-11-07. El desbloqueo con huella está en el build de producción de Android desde el 2026-11-08; ese build se instala como APK, y la app no está en Google Play. Las passkeys en Android y el vínculo más fuerte de la sesión que se describe abajo están previstos.
+Las passkeys están disponibles en la web desde el 2026-11-07. El desbloqueo con huella está en el build de producción de Android desde el 2026-11-08; ese build se instala como APK, y la app no está en Google Play. Las passkeys en Android están pendientes de verificación en un teléfono, y el vínculo más fuerte de la sesión que se describe abajo está previsto.
 
 :::
 
@@ -18,9 +18,9 @@ Las passkeys están disponibles en la web desde el 2026-11-07. El desbloqueo con
 |-----------|--------|
 | Passkeys en la web | Disponibles desde el 2026-11-07 |
 | Desbloqueo con huella en Android | En el build de producción de Android desde el 2026-11-08 |
-| Passkeys en Android | Previsto: necesitan el archivo Digital Asset Links publicado en `gelpy.app` |
-| Sesión guardada atada a la verificación de la huella | Previsto: en test, a producción con el próximo release de la app |
-| Contador de la passkey protegido | Previsto: en test |
+| Passkeys en Android | Pendientes de verificación en un teléfono: la app las ofrece, y `gelpy.app` publica el archivo Digital Asset Links desde el 2026-11-15 |
+| Sesión guardada atada a la verificación de la huella | Previsto: llega a los teléfonos con un nuevo build de Android |
+| Contador de la passkey protegido | Previsto |
 | iOS | Previsto, postergado |
 
 En los dos casos siguen disponibles, como alternativa, el inicio de sesión con Google y el correo con contraseña.
@@ -46,7 +46,7 @@ flowchart LR
 
 ### Previsto: un vínculo más fuerte
 
-Estos cambios corren en test y llegan a producción con el próximo release de la app, como una actualización over-the-air:
+Estos cambios están previstos. Los teléfonos conservan el build de Android del 2026-11-08 hasta que se apruebe uno nuevo, así que los cambios les llegan con ese build nuevo:
 
 - Si la app no puede leer la preferencia biométrica, la trata como desconocida y no abre ninguna sesión hasta que la verificación pase o la persona inicie sesión otra vez. La app siempre termina en un estado definido.
 - La sesión guardada queda atada a la verificación de la huella con una clave sobre (envelope key): una clave aleatoria que se guarda una sola vez en el almacenamiento seguro del dispositivo y que solo se puede leer después de una verificación biométrica exitosa. La sesión se guarda cifrada con esa clave.
@@ -86,11 +86,11 @@ sequenceDiagram
 
 ### Previsto: un contador protegido
 
-En test, el contador de firmas de la passkey sube en un solo paso protegido antes de que exista ninguna sesión, y solo mientras la passkey está activa. Así, una passkey clonada, reutilizada o recién revocada no puede abrir una sesión. La auditoría de un intento fallido guarda solo el motivo.
+El contador de firmas de la passkey subirá en un solo paso protegido antes de que exista ninguna sesión, y solo mientras la passkey está activa. Así, una passkey clonada, reutilizada o recién revocada no podrá abrir una sesión. La auditoría de un intento fallido guardará solo el motivo.
 
 ### Passkeys en Android
 
-Las passkeys en Android están previstas. Necesitan el archivo Digital Asset Links publicado en `gelpy.app`, que vincula la app con el sitio; el build de producción de Android por sí solo no las activa.
+El build de producción de Android ofrece las passkeys, y desde el 2026-11-15 `gelpy.app` publica el archivo Digital Asset Links, que vincula la app con el sitio. Todavía no se probaron de punta a punta en un teléfono, así que están pendientes de verificación y no figuran como disponibles.
 
 ## Lo que nunca se guarda
 

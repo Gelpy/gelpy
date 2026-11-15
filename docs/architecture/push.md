@@ -10,7 +10,7 @@ This page describes how Gelpy sends push notifications: how people opt in, how d
 
 :::note Status
 
-Push notifications are in production since 2026-11-08: in the API, in the app in the production Android build, and in the admin console. The owner's end-to-end check in production passed on 2026-11-08. The production Android build is installed as an APK; the app is not on Google Play.
+Push notifications are in production since 2026-11-08: in the API, in the app in the production Android build, and in the admin console. The owner's end-to-end check in production passed on 2026-11-08. The production Android build is installed as an APK; the app is not on Google Play. Since 2026-11-15, the console's Push module follows the console's roles and permissions.
 
 :::
 
@@ -24,7 +24,7 @@ Push notifications are in production since 2026-11-08: in the API, in the app in
 | Scheduled receipt processing | Planned |
 | An identical send repeated within 10 minutes returns the stored send | Planned |
 | Deleting the stored token when a device is revoked | Planned |
-| Console roles per feature | Planned |
+| Console roles and permissions | Production since 2026-11-15 |
 | A transactional type for the marketplace pilot | Planned |
 | Deactivated accounts leave the audiences | Planned |
 
@@ -85,7 +85,7 @@ Receipts are processed on demand, with no scheduled job. Delivery statuses move 
 
 ## Admin console
 
-The console is in production since 2026-11-08. Only admins with a Google account of the `gelpy.app` organization can enter it. The menu follows the permissions the API returns: `console:access`, `push:read`, and `push:send`. In production every admin holds all three; console roles per feature are planned.
+The console is in production since 2026-11-08. Only team members with a Google account of the `gelpy.app` organization and a role can enter it. Since 2026-11-15, the Super admin gives roles built from permissions, and the menu follows the permissions the API returns: "Historial" needs the push read permission, and "Enviar" needs the push send permission.
 
 The console works in Spanish and English, in light and dark, on desktop and phone.
 
@@ -110,7 +110,7 @@ The console works in Spanish and English, in light and dark, on desktop and phon
 - Each send stores who sent it, the audience, the content, and the counts, plus one audit event with the admin's ID and the send's ID.
 - No log line or audit row holds an email. The email typed to find a recipient is never logged.
 - No API answer holds a push token, and no log holds a push token or an access token.
-- Admin answers that show emails go only to holders of `push:read`, and they are never cached.
+- Admin answers that show emails go only to team members with the push read permission, and they are never cached.
 
 ## Related pages
 

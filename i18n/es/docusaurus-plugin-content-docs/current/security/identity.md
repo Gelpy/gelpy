@@ -10,7 +10,7 @@ Esta página describe cómo las personas crean una cuenta e inician sesión en G
 
 :::note Estado
 
-La identidad está en producción desde el 2026-11-07 en la web: en la versión web de la app y en la consola de admins. El primer build de producción de Android salió el 2026-11-08. Se instala como APK; la app no está en Google Play. Cada sección indica dónde funciona hoy cada parte.
+La identidad está en producción desde el 2026-11-07 en la web: en la versión web de la app y en la consola de admins. El primer build de producción de Android salió el 2026-11-08. Se instala como APK; la app no está en Google Play. Desde el 2026-11-15, el registro es solo por invitación, y la consola tiene roles y permisos. Las pantallas nuevas de la app de ese día están en la web; Android las recibe con su próximo build. Cada sección indica dónde funciona hoy cada parte.
 
 :::
 
@@ -21,9 +21,12 @@ La identidad está en producción desde el 2026-11-07 en la web: en la versión 
 | Inicio de sesión con Google en Android | En el build de producción de Android desde el 2026-11-08 |
 | Verificación del teléfono por SMS | Producción |
 | Desbloqueo con huella en Android | En el build de producción de Android desde el 2026-11-08 |
-| Passkeys | Disponibles en la web; en Android, previstas hasta que `gelpy.app` publique el archivo Digital Asset Links |
+| Passkeys | Disponibles en la web. En Android, la app las ofrece y `gelpy.app` publica el archivo Digital Asset Links desde el 2026-11-15, pero están pendientes de verificación en un teléfono |
 | Aceptación obligatoria de los términos y la política de privacidad al registrarse | Producción desde el 2026-11-08 |
+| Registro solo por invitación | Producción desde el 2026-11-15 |
+| Aceptar una nueva versión mayor de los textos legales, la pausa de mantenimiento, la desactivación de cuentas y vincular Google con la sesión iniciada | Producción desde el 2026-11-15; las pantallas de la app están en la web, y Android las recibe con su próximo build |
 | Consola de admins solo con cuentas Google de `gelpy.app` | Producción |
+| Roles y permisos de la consola | Producción desde el 2026-11-15 |
 
 ## Tipos de cuenta
 
@@ -35,9 +38,18 @@ Al registrarse, con cualquier método, cada persona elige cómo usa Gelpy:
 
 La cuenta no se crea hasta que se elige un tipo, también en el primer inicio de sesión con Google. La app todavía no puede agregar el otro tipo a una cuenta existente.
 
-Desde el 2026-11-08, registrarse también requiere marcar una casilla que acepta los términos y la política de privacidad. La cuenta guarda un registro de esa aceptación, con las versiones de los textos.
+Desde el 2026-11-08, registrarse también requiere marcar una casilla que acepta los términos y la política de privacidad. La cuenta guarda un registro de esa aceptación, con las versiones de los textos. Cuando un texto legal tiene una nueva versión mayor, la app en la web pide a cada cuenta aceptarlo otra vez antes de seguir.
 
 Las cuentas también tienen una marca interna de admin. Está apagada por defecto, y ninguna parte pública de la API puede activarla.
+
+## Registro por invitación
+
+Desde el 2026-11-15, el registro está cerrado. Solo una invitación del equipo de Gelpy permite que una persona cree una cuenta:
+
+- El equipo envía la invitación desde la consola de administración.
+- El link de la invitación sirve una sola vez, solo para el correo invitado, y vence el día que muestra.
+- Solo se guarda un hash del token de la invitación.
+- Mientras el registro está cerrado, la app ofrece solo iniciar sesión, y todo otro intento de registro recibe la misma respuesta de registro cerrado.
 
 ## Correo y contraseña
 
@@ -73,7 +85,8 @@ sequenceDiagram
 Nada revela si un correo ya tiene cuenta:
 
 - Un inicio de sesión fallido con un correo desconocido se ve igual que una contraseña incorrecta: la misma respuesta y el mismo tiempo.
-- Registrarse con un correo que ya tiene cuenta da la misma respuesta "Revisa tu correo" que una cuenta nueva. Solo el dueño de ese correo recibe un aviso, que lo saluda con el nombre que ya tiene su cuenta.
+- Mientras el registro está cerrado, todo intento de registro recibe la misma respuesta de registro cerrado, sea cual sea el correo, antes de cualquier búsqueda.
+- Cuando el registro está abierto, registrarse con un correo que ya tiene cuenta da la misma respuesta "Revisa tu correo" que una cuenta nueva. Solo el dueño de ese correo recibe un aviso, que lo saluda con el nombre que ya tiene su cuenta.
 
 ## Google
 
@@ -82,6 +95,8 @@ Nada revela si un correo ya tiene cuenta:
 - En la web, la app recibe el token de Google directamente en el navegador.
 - En Android, la app usa el Credential Manager del sistema. Está en el build de producción de Android desde el 2026-11-08.
 - No se usa ni se guarda ningún secreto de cliente de Google.
+
+En la web, una persona con la sesión iniciada también puede vincular Google a la cuenta desde Perfil, en "Seguridad y acceso". Necesita un inicio de sesión reciente con Google y un correo confirmado.
 
 Si alguien se registró con un correo y una contraseña pero nunca lo confirmó, y el dueño real de ese correo inicia sesión después con Google, la API primero elimina la contraseña sin confirmar y cierra sus sesiones. Así se bloquea la toma de cuentas antes de su creación.
 
@@ -99,6 +114,8 @@ Si alguien se registró con un correo y una contraseña pero nunca lo confirmó,
 - Cada token de refresco sirve una sola vez: al usarlo se emite uno nuevo, y reusar uno viejo falla.
 - Cerrar sesión termina la sesión, y su token de refresco deja de funcionar.
 - Los tokens nunca se guardan con las preferencias locales de la app.
+- El equipo puede pausar el inicio de sesión de la app por mantenimiento. La pausa aplica solo a la app, nunca a la consola. También detiene el registro y las invitaciones, y no cierra ninguna sesión.
+- El equipo puede desactivar una cuenta con un motivo. Todas sus sesiones se cierran al instante, y no puede iniciar sesión. La desactivación conserva los datos; no es una eliminación. Nadie puede desactivar su propia cuenta, al Super admin ni a un miembro de la consola.
 
 ## Desbloqueo con huella (Android)
 
@@ -113,7 +130,7 @@ Si alguien se registró con un correo y una contraseña pero nunca lo confirmó,
 - Las personas pueden crear, usar y revocar passkeys. El servidor las registra, las verifica y las revoca.
 - Cada desafío vence y sirve una sola vez, y solo se aceptan los orígenes del propio entorno.
 - Ninguna clave privada llega a Gelpy: la guarda el dispositivo.
-- Las passkeys están disponibles en la web. En Android están previstas hasta que `gelpy.app` publique el archivo Digital Asset Links.
+- Las passkeys están disponibles en la web. En Android, la app las ofrece y `gelpy.app` publica el archivo Digital Asset Links desde el 2026-11-15, pero están pendientes de verificación en un teléfono.
 - Consulta [Desbloqueo con huella y passkeys](./biometrics-passkeys.md) para ver el flujo y lo que nunca se guarda.
 
 ## Consola de admins
@@ -121,11 +138,12 @@ Si alguien se registró con un correo y una contraseña pero nunca lo confirmó,
 La consola de admins es solo para los operadores de Gelpy. Solo se entra con cuentas Google de la organización `gelpy.app`:
 
 - Google mismo rechaza las cuentas de fuera de la organización.
-- La API acepta un inicio de sesión en la consola solo si el token se emitió para la consola, la cuenta pertenece a `gelpy.app`, su correo está verificado y la cuenta ya existe como admin. El inicio de sesión de la consola nunca crea cuentas.
+- La API acepta un inicio de sesión en la consola solo si el token se emitió para la consola, la cuenta pertenece a `gelpy.app`, su correo está verificado y la cuenta está activa y tiene un rol, o es el Super admin.
+- El primer inicio de sesión de una cuenta de la organización la registra como miembro del equipo sin rol. No empieza ninguna sesión, y la consola le pide solicitar un rol al Super admin. El inicio de sesión de la consola nunca crea una cuenta de la app.
 - Las sesiones de la consola están separadas de las de la app y duran menos. Las acciones de admin solo aceptan sesiones de la consola, así que la sesión de la app de un admin no puede hacerlas.
 - Cualquier otra persona ve una página sin acceso, y no se guarda ninguna sesión.
 
-La Fase 2 empezó el 2026-11-08. Los roles de la consola por función están previstos; hoy cada admin tiene todos los permisos de la consola.
+Desde el 2026-11-15, el Super admin arma roles a partir de permisos en el módulo Acceso y los asigna a los miembros del equipo. Cada miembro ve solo los módulos y las acciones de sus roles. Exportar es siempre un permiso propio. Cada cambio registra quién lo hizo, sin nombre, correo ni dirección IP.
 
 ## Manejo de datos
 
@@ -134,6 +152,7 @@ La Fase 2 empezó el 2026-11-08. Los roles de la consola por función están pre
 | Correo, nombre, teléfono | Base de datos | Se recogen solo cuando hacen falta; el teléfono se muestra enmascarado |
 | Contraseña | Base de datos, como hash argon2id | Nunca se guarda, se devuelve ni se registra en claro |
 | Links de confirmación | Base de datos, como hashes | Un solo uso, 24 horas |
+| Invitaciones de registro | Base de datos; el token como hash | Un solo uso, solo para el correo invitado |
 | Códigos SMS | El proveedor de SMS | Gelpy nunca los guarda ni los registra |
 | Sesiones | Base de datos, como hashes | Los tokens de refresco rotan; cerrar sesión los revoca |
 | Passkeys | Clave pública en la base de datos; clave privada en el dispositivo | Desafíos de un solo uso |
