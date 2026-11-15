@@ -10,7 +10,7 @@ This page describes the public website at `gelpy.app`: how it is built, which ro
 
 :::note Status
 
-The website is in production since version 0.6.0 (2026-11-08). Version 0.7.0, since 2026-11-15, adds the complaints book, measurement only with consent, the published versions of the legal texts, and the Digital Asset Links file. Production is served with noindex: indexing waits for the owner's approval, and there is no indexing during the pilot. The site has no login. Its only call to the product API is the complaints book form.
+The website is in production since version 0.6.0 (2026-11-08). Version 0.7.0, since 2026-11-15, adds the complaints book, measurement only with consent, the published versions of the legal texts, and the Digital Asset Links file. Version 0.7.1 keeps every Google tag and Clarity off the complaints book pages. Production is served with noindex: indexing waits for the owner's approval, and there is no indexing during the pilot. The site has no login. Its only call to the product API is the complaints book form.
 
 :::
 
@@ -137,9 +137,10 @@ Since 2026-11-15, `gelpy.app` measures its use only with the visitor's consent:
 
 - A consent banner asks first, and nothing loads before consent. Analytics and experience are separate purposes.
 - With analytics consent, Google Analytics 4 loads through Google Tag Manager, with advertising signals denied.
+- With analytics consent, the Google tag also looks on the pages for text shaped like an email, a phone number, a name, or an address, and sends it to Google as a hash, as the privacy policy says. Outside the complaints book, the site asks for none of those data.
 - With experience consent, Microsoft Clarity records sessions with the page content masked.
 - "Preferencias de cookies" in the footer changes or withdraws the consent. Rejecting removes the providers' cookies.
-- On the complaints book page, Clarity never starts. Google Tag Manager does load there, with consent.
+- On the complaints book pages, no Google tag and no Clarity load. The site's code and a content security policy of those pages make sure of it.
 - The legal pages that describe this measurement still carry the draft notice: a lawyer has not reviewed them yet.
 
 Besides that, the site keeps:

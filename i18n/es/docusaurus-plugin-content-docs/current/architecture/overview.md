@@ -145,7 +145,7 @@ Los gates de cada componente están en la [Visión general de la calidad](../qua
 | Cuentas, sesiones, perfiles | La API, en PostgreSQL | Cada cuenta tiene un UUID, y las consultas sensibles filtran por él. Las contraseñas se guardan solo como hashes con sal; las llaves privadas de las passkeys nunca se guardan |
 | Tokens de diseño | El sistema de diseño | Ningún color, familia tipográfica ni logo se escribe fijo fuera de él (ADR-0010) |
 | Contenido del sitio web | El repositorio del sitio web | Archivos en el repositorio, en español e inglés |
-| Analítica | El sitio web, detrás del consentimiento; la app, prevista | El sitio web carga Google Analytics y Microsoft Clarity solo después de que la persona lo permite. En la app, los terceros recibirían un ID de analítica seudónimo, nunca el ID de la cuenta (ADR-0020) |
+| Analítica | El sitio web, detrás del consentimiento; la app, prevista | El sitio web carga Google Analytics y Microsoft Clarity solo después de que la persona lo permite, y nunca en las páginas del Libro de Reclamaciones. En la app, los terceros recibirían un ID de analítica seudónimo, nunca el ID de la cuenta (ADR-0020) |
 
 ## Decisiones
 

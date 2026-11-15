@@ -10,7 +10,7 @@ Esta página describe el sitio web público en `gelpy.app`: cómo está construi
 
 :::note Estado
 
-El sitio web está en producción desde la versión 0.6.0 (2026-11-08). La versión 0.7.0, desde el 2026-11-15, agrega el Libro de Reclamaciones, la medición solo con consentimiento, las versiones publicadas de los textos legales y el archivo Digital Asset Links. Producción se sirve con noindex: la indexación espera la aprobación del dueño, y no hay indexación durante el piloto. El sitio no tiene inicio de sesión. Su única llamada a la API del producto es el formulario del Libro de Reclamaciones.
+El sitio web está en producción desde la versión 0.6.0 (2026-11-08). La versión 0.7.0, desde el 2026-11-15, agrega el Libro de Reclamaciones, la medición solo con consentimiento, las versiones publicadas de los textos legales y el archivo Digital Asset Links. La versión 0.7.1 mantiene toda etiqueta de Google y Clarity fuera de las páginas del Libro de Reclamaciones. Producción se sirve con noindex: la indexación espera la aprobación del dueño, y no hay indexación durante el piloto. El sitio no tiene inicio de sesión. Su única llamada a la API del producto es el formulario del Libro de Reclamaciones.
 
 :::
 
@@ -137,9 +137,10 @@ Desde el 2026-11-15, `gelpy.app` mide su uso solo con el consentimiento de quien
 
 - Un banner de consentimiento pregunta primero, y nada carga antes del consentimiento. La analítica y la experiencia son finalidades separadas.
 - Con el consentimiento de analítica, Google Analytics 4 carga a través de Google Tag Manager, con las señales de publicidad denegadas.
+- Con el consentimiento de analítica, la etiqueta de Google también busca en las páginas textos con forma de correo, teléfono, nombre o dirección, y los envía a Google convertidos en un hash, como dice la política de privacidad. Fuera del Libro de Reclamaciones, el sitio no pide ninguno de esos datos.
 - Con el consentimiento de experiencia, Microsoft Clarity graba sesiones con el contenido de la página oculto.
 - "Preferencias de cookies" en el pie de página cambia o retira el consentimiento. Rechazar quita las cookies de los proveedores.
-- En la página del Libro de Reclamaciones, Clarity nunca empieza. Google Tag Manager sí carga ahí, con consentimiento.
+- En las páginas del Libro de Reclamaciones no carga ninguna etiqueta de Google ni Clarity. Lo aseguran el código del sitio y una política de seguridad de contenido propia de esas páginas.
 - Las páginas legales que describen esta medición todavía llevan el aviso de borrador: un abogado todavía no las revisó.
 
 Además, el sitio mantiene:

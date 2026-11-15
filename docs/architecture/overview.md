@@ -145,7 +145,7 @@ The gates of each component are on the [Quality overview](../quality/overview.md
 | Accounts, sessions, profiles | The API, in PostgreSQL | Each account has a UUID, and sensitive queries filter by it. Passwords are stored only as salted hashes; passkey private keys are never stored |
 | Design tokens | The design system | No color, font family, or logo is hard-coded outside it (ADR-0010) |
 | Website content | The website repository | Files in the repository, in Spanish and English |
-| Analytics | The website, behind consent; the app, planned | The website loads Google Analytics and Microsoft Clarity only after the person allows it. In the app, third parties would get a pseudonymous analytics ID, never the account ID (ADR-0020) |
+| Analytics | The website, behind consent; the app, planned | The website loads Google Analytics and Microsoft Clarity only after the person allows it, and never on the complaints book pages. In the app, third parties would get a pseudonymous analytics ID, never the account ID (ADR-0020) |
 
 ## Decisions
 
