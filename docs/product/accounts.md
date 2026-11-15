@@ -44,13 +44,13 @@ flowchart TD
   L --> M[The app offers to add a phone]
 ```
 
-- **By invitation.** Sign-up is closed: the app offers only sign-in, and a new email gets the same sign-up-closed answer. The Gelpy team invites a person from the admin console. The invitation link works once, only for the invited email, and the screen shows the day it expires.
+- **By invitation.** Sign-up is closed: the app offers only sign-in, and every sign-up attempt gets the same sign-up-closed answer, whatever the email. The Gelpy team invites a person from the admin console. The invitation link works once, only for the invited email, and the screen shows the day it expires.
 - **Account type.** Every account says how the person uses Gelpy: Gelpie, Gelper, or both. The account does not exist without a type. The app cannot add the other type later yet.
 - **Password.** It has 8 to 64 characters, with no composition rules.
 - **Confirmation link.** An email-and-password account starts unconfirmed. The link in the email works once and lasts 24 hours, and no session starts before it is used. The check-your-email screen can send the link again after a short wait.
 - **Google.** Google proves the email, so a Google account starts confirmed.
 - **Legal texts.** Sign-up needs the checkbox "Acepto los Términos y condiciones y leí la Política de privacidad de Gelpy.", unchecked by default. Without it, nothing is created. Each acceptance is recorded with the version of each text. When a legal text gets a new major version, the app on the web asks each account to accept it again, and shows only that screen and "Cerrar sesión" until the person accepts.
-- **The app does not reveal whether an email has an account.** Signing up with an email that already has an account gets the same answer as a new one, and only the owner of that email gets a notice.
+- **The app does not reveal whether an email has an account.** While sign-up is closed, every attempt gets the same answer. When sign-up is open, signing up with an email that already has an account gets the same answer as a new one, and only the owner of that email gets a notice.
 
 ## Signing in
 
@@ -95,7 +95,8 @@ Perfil shows the account: the photo from Google when there is one, the name, the
 
 - On Android, the screens of 2026-11-15: the maintenance screen, the deactivated account, accepting a new version of the legal texts, and linking Google, with the next Android build.
 - Adding the other account type from Perfil.
-- Password recovery, passkeys on Android, and account deletion.
+- Password recovery and account deletion.
+- Passkeys on Android: the app offers them, but they are pending verification on a phone.
 
 ## Related pages
 

@@ -56,7 +56,7 @@ sequenceDiagram
 
 ## Correos y SMS
 
-- **Correos de cuenta**, nunca de marketing: el link de confirmación, el aviso al dueño de un correo que ya tiene cuenta y la invitación de registro. Siguen la marca Gelpy, y un token de un link nunca llega a un log del servidor.
+- **Correos de cuenta**, nunca de marketing: el link de confirmación, el aviso al dueño de un correo que ya tiene cuenta (solo mientras el registro está abierto) y la invitación de registro. Siguen la marca Gelpy, y un token de un link nunca llega a un log del servidor.
 - **Correos del Libro de Reclamaciones:** la copia de un reclamo y la respuesta del equipo. Ver [Libro de Reclamaciones](./complaints-book.md).
 - **SMS:** solo el código que verifica un teléfono.
 

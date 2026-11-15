@@ -57,7 +57,7 @@ These capabilities are not in production yet:
 
 - **The Android app:** the app changes of 2026-11-15, such as the maintenance screen, accepting a new version of the legal texts, linking Google, and the links to the complaints book, come with its next build.
 - **Account rules:** adding the other account type from Perfil.
-- **More sign-in options:** password recovery, passkeys on Android, and account deletion.
+- **More sign-in options:** password recovery, account deletion, and passkeys on Android, which the app offers but which are pending verification on a phone.
 - **Notifications:** a repeated send that goes out only once, and notices about bookings.
 - **The marketplace pilot:** Gelper profiles, the directory, client addresses, assisted search, statistics for Gelpers, and later, booking.
 - **Usage analytics** of the app with Google Analytics and Microsoft Clarity, which turn on only with the person's permission. Other technical and operating data are handled without that permission, as the [privacy policy](https://gelpy.app/en/privacy/) explains.

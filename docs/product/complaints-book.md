@@ -45,6 +45,7 @@ sequenceDiagram
 - The form is on the website, in Spanish and English, and needs no account. The page defines a reclamo and a queja.
 - The form asks for the data that the regulation lists: the claimant's identity and contact details, what was contracted, the detail of the claim, and the request. For a minor, a parent or guardian's data are also required.
 - Each claim gets a correlative number for its year. The receipt shows the number, the date, the due date of the answer, and the data sent. It can be printed or saved as PDF.
+- If the copy by email fails, Gelpy retries it on its own, up to 3 times.
 - Gelpy answers within 15 business days, by email. Filing a claim does not stop the consumer from going to Indecopi, the consumer protection authority.
 - A filed claim cannot be deleted or changed: only its status and its answer change. Claims are kept for at least 2 years, as the regulation asks.
 - In the console, the list shows each claim's number, date, type, status, and business days left, and marks the claims that are due soon or overdue. An answer needs a confirmation, and once sent it cannot be edited. If the answer email could not be sent, the claim says so, and a team member who answers claims can resend it.

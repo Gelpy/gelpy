@@ -45,6 +45,7 @@ sequenceDiagram
 - El formulario está en el sitio web, en español e inglés, y no necesita cuenta. La página define qué es un reclamo y qué es una queja.
 - El formulario pide los datos que lista la norma: la identidad y los datos de contacto de quien reclama, lo que se contrató, el detalle del reclamo y el pedido. Para un menor de edad también se piden los datos de su padre, madre o tutor.
 - Cada reclamo recibe un número correlativo de su año. La constancia muestra el número, la fecha, la fecha límite de la respuesta y los datos enviados. Se puede imprimir o guardar como PDF.
+- Si la copia por correo falla, Gelpy la reintenta sola, hasta 3 veces.
 - Gelpy responde en un plazo de 15 días hábiles, por correo. Presentar un reclamo no impide que el consumidor acuda a Indecopi, la autoridad de protección al consumidor.
 - Un reclamo presentado no se puede borrar ni cambiar: solo cambian su estado y su respuesta. Los reclamos se guardan al menos 2 años, como pide la norma.
 - En la consola, la lista muestra el número, la fecha, el tipo, el estado y los días hábiles que quedan de cada reclamo, y marca los que vencen pronto o ya vencieron. Una respuesta necesita una confirmación y, una vez enviada, no se puede editar. Si el correo de la respuesta no se pudo enviar, el reclamo lo dice, y un miembro del equipo que responde reclamos puede reenviarlo.

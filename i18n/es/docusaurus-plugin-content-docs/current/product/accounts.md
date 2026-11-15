@@ -44,13 +44,13 @@ flowchart TD
   L --> M[La app ofrece agregar un teléfono]
 ```
 
-- **Por invitación.** El registro está cerrado: la app ofrece solo iniciar sesión, y un correo nuevo recibe la misma respuesta de registro cerrado. El equipo de Gelpy invita a una persona desde la consola de administración. El link de la invitación sirve una sola vez, solo para el correo invitado, y la pantalla muestra el día en que vence.
+- **Por invitación.** El registro está cerrado: la app ofrece solo iniciar sesión, y todo intento de registro recibe la misma respuesta de registro cerrado, sea cual sea el correo. El equipo de Gelpy invita a una persona desde la consola de administración. El link de la invitación sirve una sola vez, solo para el correo invitado, y la pantalla muestra el día en que vence.
 - **Tipo de cuenta.** Cada cuenta dice cómo usa Gelpy la persona: Gelpie, Gelper o ambos. La cuenta no existe sin un tipo. La app todavía no puede agregar el otro tipo después.
 - **Contraseña.** Tiene de 8 a 64 caracteres, sin reglas de composición.
 - **Link de confirmación.** Una cuenta con correo y contraseña empieza sin confirmar. El link del correo sirve una sola vez y dura 24 horas, y ninguna sesión empieza antes de usarlo. La pantalla que pide revisar el correo puede enviar el link otra vez tras una breve espera.
 - **Google.** Google prueba el correo, así que una cuenta de Google empieza confirmada.
 - **Textos legales.** El registro necesita la casilla "Acepto los Términos y condiciones y leí la Política de privacidad de Gelpy.", sin marcar por defecto. Sin ella no se crea nada. Cada aceptación se registra con la versión de cada texto. Cuando un texto legal tiene una nueva versión mayor, la app en la web pide a cada cuenta aceptarlo otra vez, y muestra solo esa pantalla y "Cerrar sesión" hasta que la persona acepta.
-- **La app no revela si un correo tiene cuenta.** Registrarse con un correo que ya tiene cuenta recibe la misma respuesta que uno nuevo, y solo el dueño de ese correo recibe un aviso.
+- **La app no revela si un correo tiene cuenta.** Mientras el registro está cerrado, todo intento recibe la misma respuesta. Cuando el registro está abierto, registrarse con un correo que ya tiene cuenta recibe la misma respuesta que uno nuevo, y solo el dueño de ese correo recibe un aviso.
 
 ## Iniciar sesión
 
@@ -95,7 +95,8 @@ Perfil muestra la cuenta: la foto de Google cuando la hay, el nombre, el correo 
 
 - En Android, las pantallas del 2026-11-15: la pantalla de mantenimiento, la cuenta desactivada, aceptar una nueva versión de los textos legales y vincular Google, con el próximo build de Android.
 - Agregar el otro tipo de cuenta desde Perfil.
-- Recuperar la contraseña, passkeys en Android y la eliminación de la cuenta.
+- Recuperar la contraseña y la eliminación de la cuenta.
+- Passkeys en Android: la app las ofrece, pero están pendientes de verificación en un teléfono.
 
 ## Páginas relacionadas
 

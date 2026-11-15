@@ -57,7 +57,7 @@ Estas capacidades todavía no están en producción:
 
 - **La app en Android:** los cambios de la app del 2026-11-15, como la pantalla de mantenimiento, aceptar una nueva versión de los textos legales, vincular Google y los enlaces al Libro de Reclamaciones, llegan con su próximo build.
 - **Reglas de cuenta:** agregar el otro tipo de cuenta desde Perfil.
-- **Más opciones de acceso:** recuperar la contraseña, passkeys en Android y la eliminación de la cuenta.
+- **Más opciones de acceso:** recuperar la contraseña, la eliminación de la cuenta y las passkeys en Android, que la app ofrece pero que están pendientes de verificación en un teléfono.
 - **Notificaciones:** un envío repetido que sale una sola vez y avisos sobre las reservas.
 - **El piloto del marketplace:** perfiles de Gelper, el directorio, las direcciones de los clientes, la búsqueda asistida, estadísticas para los Gelpers y, más adelante, las reservas.
 - **La analítica de uso** de la app con Google Analytics y Microsoft Clarity, que solo se enciende con el permiso de la persona. Otros datos técnicos y de funcionamiento se tratan sin ese permiso, como explica la [política de privacidad](https://gelpy.app/privacidad/).

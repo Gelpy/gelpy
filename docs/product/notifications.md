@@ -56,7 +56,7 @@ sequenceDiagram
 
 ## Emails and SMS
 
-- **Account emails**, never marketing: the confirmation link, the notice to the owner of an email that already has an account, and the sign-up invitation. They follow the Gelpy brand, and a token in a link never reaches a server log.
+- **Account emails**, never marketing: the confirmation link, the notice to the owner of an email that already has an account (only while sign-up is open), and the sign-up invitation. They follow the Gelpy brand, and a token in a link never reaches a server log.
 - **Complaints book emails:** the copy of a claim, and the team's answer. See [Complaints book](./complaints-book.md).
 - **SMS:** only the code that verifies a phone.
 
