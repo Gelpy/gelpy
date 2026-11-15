@@ -21,6 +21,14 @@ The [Agentic framework](../framework/overview.md) section describes the working 
 - Every framework change updates this section in the same cycle.
 - The section describes a method that is already in use, so the "planned until production" rule does not apply to it.
 
+## The public layer of the documentation standard
+
+Every Gelpy repo documents itself by the [documentation standard](../framework/documentation-standard.md) (ADR-0021). This site is its public layer:
+
+- The repos keep what is internal; this site keeps what can be published.
+- This site links to nothing internal.
+- The public version of the functional guide lives here. Only Agent Docs edits it, and it follows the closing rule above.
+
 ## What may be published
 
 Publish:

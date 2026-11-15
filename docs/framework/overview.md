@@ -25,7 +25,8 @@ Each principle comes from a rule that the agents follow.
 5. **Test before production.** Work reaches `staging` and the test environment first. Production releases need the owner's explicit approval (ADR-0005).
 6. **Secrets never in code or chat.** Inventories hold names only, and agents never see values.
 7. **One owner per repo.** Each repo has one specialized agent. Agents never edit another repo; they ask through the protocol.
-8. **Bilingual memory.** English is canonical and Spanish is the companion. The owner works in Spanish (ADR-0007).
+8. **Bilingual memory.** English is canonical and Spanish is the companion. In each repo, only the main documents have a Spanish companion; the technical references stay in English. The owner works in Spanish (ADR-0007, amended on 2026-11-14).
+9. **Documented the same way everywhere.** Every repo has the same set of documents, and `check:docs` checks them in the local gate (ADR-0021). See [Documentation standard](./documentation-standard.md).
 
 ## Organization
 
@@ -100,7 +101,7 @@ Each product repo has its own `AGENTS.md` gate, an agent profile, and a `codex/`
 |------|-------|
 | Agents | 13, plus Codex, plus on-demand roles |
 | Skills | 23 |
-| ADRs | 19 |
+| ADRs | 21 |
 | Specs | 11 |
 | Work Items in Phase 1 | About 170 |
 | Repos | 8 |
@@ -124,6 +125,7 @@ Each product repo has its own `AGENTS.md` gate, an agent profile, and a `codex/`
 - [Skills](./skills.md)
 - [Work Items and sprints](./work-items.md)
 - [Delivery: gates, environments, and releases](./delivery.md)
+- [Documentation standard](./documentation-standard.md)
 - [Owner rules and safety](./rules.md)
 - [Strategy Manager](./business-coach.md)
 - [Origin and evolution](./evolution.md)

@@ -17,9 +17,10 @@ Estas reglas vienen del ADR-0005 y del ADR-0008.
 
 ## Gates de pull request
 
-Estas reglas vienen de los ADR-0011, ADR-0015, ADR-0017 y ADR-0018.
+Estas reglas vienen de los ADR-0011, ADR-0015, ADR-0017, ADR-0018 y ADR-0021.
 
 - El CI local corre cada paso: auditoría, tests, lint, build y un deploy de prueba. Su evidencia se publica como comentario en el PR para el commit de cabeza.
+- `check:docs` revisa los documentos del repo contra el [estándar de documentación](./documentation-standard.md), en el CI local de cada repo que ya lo adoptó.
 - El quality gate de SonarCloud.
 - El escaneo de secretos con gitleaks.
 - Cobertura mínima de 90%, con meta de 95%.
@@ -78,5 +79,6 @@ flowchart TB
 ## Páginas relacionadas
 
 - [Work Items y sprints](./work-items.md)
+- [Estándar de documentación](./documentation-standard.md)
 - [Reglas del dueño y seguridad](./rules.md)
 - [Visión general de la arquitectura](../architecture/overview.md)

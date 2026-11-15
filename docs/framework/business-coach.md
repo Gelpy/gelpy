@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 8
 title: Strategy Manager
 description: The head of the Business area, the owner's advisor on startup strategy in Peru, its team, its evidence rules, and its limits.
 ---

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 9
 title: Origin and evolution
 description: Where the Gelpy Agentic Framework came from, what Gelpy added, and how the framework keeps evolving.
 ---
@@ -49,6 +49,7 @@ From the base's public framework page:
 | 2026-10-31 | Gelpy adopts the base framework's gates |
 | 2026-11-08 | Version 1.0 documented on this site |
 | 2026-11-09 | The agents are organized as a startup office: two heads, office roles, teams without a lead, and a Product Designer |
+| 2026-11-14 | A documentation standard for every repo: one set of documents, Mermaid diagrams, names never values, and the `check:docs` gate (ADR-0021) |
 
 ## Lessons learned
 
