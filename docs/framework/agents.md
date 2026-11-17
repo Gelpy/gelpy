@@ -77,6 +77,8 @@ The skill `gelpy-orchestrate-agents` defines the protocol.
 - Replies are `STATUS` messages: `ACCEPTED`, `COMPLETED`, `BLOCKED`, or `NEEDS_INFO`.
 - **Disagreement.** A repo agent that disagrees with a `DELEGATE` answers `STATUS: NEEDS_INFO` with its verdict. The Technical Product Manager takes it to the owner, who decides.
 
+Headquarters reporting uses these same messages to build a business timeline; it does not replace communication. See [Headquarters reporting](./headquarters.md) for the planned contract.
+
 ## One Work Item, end to end
 
 ```mermaid

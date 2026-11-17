@@ -8,6 +8,8 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
+- Document the planned Headquarters reporting contract in English and Spanish (Work Item 014-005): the existing agent messages remain the source, with delivery confirmation, correlated replies, retry deduplication, business summaries, honest timing and completion, and limited internal records. Link it from the agent-team pages. No claim of production availability and no release or version bump.
+
 - Add Agent Docs instructions and the repo baseline.
 - Add the Codex review rule.
 - Add the Docusaurus site with English and Spanish locales, a build that fails on broken links, and the `docs.gelpy.app` domain.
