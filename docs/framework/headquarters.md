@@ -41,11 +41,11 @@ flowchart LR
 
 ## Report business progress
 
-The planned office has one robot per session, with an appearance for its role. The Technical Product Manager and Strategy Manager share an office. A confirmed message represents a visit to the recipient; its reply represents the return conversation. The robot's panel brings together the objective, current activity, latest result, next step, and timeline. Sessions working on the same task remain distinct and can be viewed together.
+The planned Headquarters has one office per area: Product and Engineering, and Business, with another office added when a new area is defined. The Technical Product Manager and Strategy Manager share a central workspace. Every subagent session has its own robot, with an appearance for its role; several sessions in the same role remain separate robots. A confirmed message represents a visit to the recipient; its reply represents the return conversation. The robot's panel brings together the objective, current activity, latest result, next step, and timeline. Sessions working on the same task remain distinct and can be viewed together.
 
 A useful summary says, for example, “Preparing the reservation notices; waiting for the approved wording.” It explains the result or the missing decision in business language. It does not copy the full `Context`, `Dependencies`, or `Artifacts` fields. Presence, pause, resume, and session-close events complement the protocol; a heartbeat alone is not proof of progress.
 
-The planned service has a single office in production. Events can describe work on `staging`; the work's branch and the place where owners view its events are different concepts. The reporting contract covers Claude and Codex sessions, but each integration needs a real message-and-reply check before it is described as operational.
+A single Headquarters service in production supports these area offices. Events can describe work on `staging`; the work's branch and the place where owners view its events are different concepts. The reporting contract covers Claude and Codex sessions, but each integration needs a real message-and-reply check before it is described as operational.
 
 ## Times and completion mean different things
 

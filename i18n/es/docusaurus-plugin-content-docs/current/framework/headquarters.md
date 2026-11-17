@@ -41,11 +41,11 @@ flowchart LR
 
 ## Registrar avances de negocio
 
-La oficina prevista tendrá un robot por sesión, con la apariencia de su oficio. El Technical Product Manager y el Gerente de Estrategia compartirán oficina. Un mensaje confirmado representará una visita al destinatario; su respuesta, la conversación de vuelta. El panel del robot reunirá el objetivo, la actividad actual, el último resultado, el siguiente paso y el historial. Las sesiones de una misma tarea se mantienen separadas y se pueden consultar juntas.
+Headquarters tendrá una oficina por área: Producto e Ingeniería y Negocio; cuando se defina un área nueva, se añadirá su oficina. El Technical Product Manager y el Gerente de Estrategia compartirán un espacio central. Cada sesión de un subagente tendrá su propio robot, con la apariencia de su oficio; varias sesiones de un mismo oficio seguirán siendo robots separados. Un mensaje confirmado representará una visita al destinatario; su respuesta, la conversación de vuelta. El panel del robot reunirá el objetivo, la actividad actual, el último resultado, el siguiente paso y el historial. Las sesiones de una misma tarea se mantienen separadas y se pueden consultar juntas.
 
 Un resumen útil dice, por ejemplo, «Preparando los avisos de las reservas; espera el texto aprobado». Explica el resultado o la decisión que falta en lenguaje de negocio. No copia completos los campos `Context`, `Dependencies` o `Artifacts`. Los eventos de presencia, pausa, reanudación y cierre complementan el protocolo; una señal de presencia no prueba por sí sola un avance.
 
-El servicio previsto tendrá una sola oficina en producción. Los eventos pueden describir trabajo en `staging`: la rama donde se trabaja y el lugar donde los dueños consultan sus eventos son conceptos diferentes. El contrato cubre sesiones de Claude y Codex, pero cada integración necesita una comprobación con un mensaje y una respuesta reales antes de declararse operativa.
+Un único servicio de Headquarters en producción dará soporte a estas oficinas por área. Los eventos pueden describir trabajo en `staging`: la rama donde se trabaja y el lugar donde los dueños consultan sus eventos son conceptos diferentes. El contrato cubre sesiones de Claude y Codex, pero cada integración necesita una comprobación con un mensaje y una respuesta reales antes de declararse operativa.
 
 ## Los tiempos y el cierre significan cosas distintas
 
