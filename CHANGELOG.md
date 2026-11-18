@@ -8,6 +8,8 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
+- Document Headquarters reporting in English and Spanish (Work Item 014-005): existing protocol messages remain the source, with delivery confirmation, correlated replies, retries, business summaries, honest times and limited records. Link the guide from the agent-team pages and READMEs. Distinguish verified Codex receipt from the pending first office-view delivery to staging and the separately deferred real Claude verification. Describe one production event service shared by test and production readers with separate API authentication and origin-bound capabilities; production UI promotion is a later approval. Document explicit direct/proxy publisher authentication without requiring an environment key for Claude Cloud proxy mode. No claim of complete production availability and no release or version bump.
+
 - Add Agent Docs instructions and the repo baseline.
 - Add the Codex review rule.
 - Add the Docusaurus site with English and Spanish locales, a build that fails on broken links, and the `docs.gelpy.app` domain.
