@@ -10,7 +10,7 @@ Headquarters is the planned internal office view for the business owners. It fol
 
 :::note Status
 
-Implementation planned in Sprint 3. This page defines the reporting contract; it does not claim that the office or its integrations are available in production.
+As of 2026-11-18, the backend has acknowledged a real Codex protocol message and its response with HTTP 202. This confirms receipt, not durable replay after a restart or authenticated reading in the production console. The office view is coming soon: its production deployment and walkthrough remain pending. Real Claude verification is deferred separately; saved settings or local tests do not count as Claude acceptance.
 
 :::
 
@@ -45,7 +45,16 @@ The planned Headquarters has one office per area: Product and Engineering, and B
 
 A useful summary says, for example, “Preparing the reservation notices; waiting for the approved wording.” It explains the result or the missing decision in business language. It does not copy the full `Context`, `Dependencies`, or `Artifacts` fields. Presence, pause, resume, and session-close events complement the protocol; a heartbeat alone is not proof of progress.
 
-A single Headquarters service in production supports these area offices. Events can describe work on `staging`; the work's branch and the place where owners view its events are different concepts. The reporting contract covers Claude and Codex sessions, but each integration needs a real message-and-reply check before it is described as operational.
+The backend is one production service; its reporting contract supports these area offices. Events can describe work on `staging`; the work's branch and the place where owners view its events are different concepts. Codex receipt is verified. The production console reading is still pending, and live Claude verification is tracked separately rather than inferred from Codex.
+
+## Publisher authentication
+
+The emitter uses the runtime's secure configuration; credentials never go in the command, message file, or business summary. Authentication mode is explicit:
+
+- **Direct mode**, the default, uses the configured `HQ_PUBLISH_KEY`. A missing or invalid key fails; the emitter does not silently switch modes.
+- **Proxy mode** uses `HQ_AUTH_MODE=proxy` and `HQ_PRODUCER_ID`. The runtime's configured HTTP proxy supplies the Bearer credential. Claude Cloud does not need an `HQ_PUBLISH_KEY` environment value in this mode, and the emitter deliberately omits its own Authorization header.
+
+Both modes send to the approved production destination. Proxy settings must be restricted to that destination and reporting operation. A missing or invalid injection is rejected by the service; the sanitized event remains queued. Configuration and local header tests do not prove a successful cloud report: each source needs its own real receipt and timeline check.
 
 ## Times and completion mean different things
 

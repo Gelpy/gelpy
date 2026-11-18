@@ -10,7 +10,7 @@ Headquarters es la vista interna de oficina prevista para los dueños del negoci
 
 :::note Estado
 
-Implementación prevista en el Sprint 3. Esta página define el contrato de registro; no afirma que la oficina o sus integraciones estén disponibles en producción.
+Al 2026-11-18, el servicio confirmó con HTTP 202 la recepción de un mensaje real del protocolo desde Codex y de su respuesta. Esto prueba la recepción, no la recuperación del historial tras un reinicio ni su lectura autenticada en la consola de producción. La vista de oficina está próxima: faltan su despliegue en producción y su recorrido de validación. La comprobación real de Claude se postergó por separado; los ajustes guardados o las pruebas locales no acreditan su aceptación.
 
 :::
 
@@ -45,7 +45,16 @@ Headquarters tendrá una oficina por área: Producto e Ingeniería y Negocio; cu
 
 Un resumen útil dice, por ejemplo, «Preparando los avisos de las reservas; espera el texto aprobado». Explica el resultado o la decisión que falta en lenguaje de negocio. No copia completos los campos `Context`, `Dependencies` o `Artifacts`. Los eventos de presencia, pausa, reanudación y cierre complementan el protocolo; una señal de presencia no prueba por sí sola un avance.
 
-Un único servicio de Headquarters en producción dará soporte a estas oficinas por área. Los eventos pueden describir trabajo en `staging`: la rama donde se trabaja y el lugar donde los dueños consultan sus eventos son conceptos diferentes. El contrato cubre sesiones de Claude y Codex, pero cada integración necesita una comprobación con un mensaje y una respuesta reales antes de declararse operativa.
+El backend es un único servicio de producción; su contrato de registro contempla estas oficinas por área. Los eventos pueden describir trabajo en `staging`: la rama donde se trabaja y el lugar donde los dueños consultan sus eventos son conceptos diferentes. La recepción desde Codex está comprobada. Falta la lectura en la consola de producción, y la comprobación real de Claude se sigue por separado, sin deducirla de la de Codex.
+
+## Autenticación del emisor
+
+El emisor usa la configuración segura de su entorno; las credenciales nunca van en el comando, el archivo del mensaje ni el resumen de negocio. El modo de autenticación es explícito:
+
+- **Modo directo**, el predeterminado, usa `HQ_PUBLISH_KEY` configurada. Si la clave falta o no es válida, falla; el emisor no cambia de modo automáticamente.
+- **Modo proxy** usa `HQ_AUTH_MODE=proxy` y `HQ_PRODUCER_ID`. El proxy HTTP configurado del entorno añade la credencial Bearer. Claude Cloud no necesita una variable de entorno `HQ_PUBLISH_KEY` en este modo, y el emisor omite deliberadamente su propia cabecera Authorization.
+
+Ambos modos envían al destino de producción aprobado. La configuración del proxy debe limitarse a ese destino y a la operación de registro. Si la credencial no se añade o no es válida, el servicio la rechaza; el evento sin datos sensibles queda en cola. La configuración y las pruebas locales de cabeceras no prueban una entrega desde la nube: cada origen necesita su propia comprobación real de recepción e historial.
 
 ## Los tiempos y el cierre significan cosas distintas
 

@@ -6,6 +6,8 @@ Public engineering documentation for Gelpy. This repo is public.
 
 The Docusaurus site builds in English and Spanish. Cloudflare Workers Builds builds it and the `gelpy-docs` Worker serves it at `https://docs.gelpy.app` (ADR-0018). Each merge to `main` also mirrors `docs/` into the GitHub wiki. Implementation runs from `gelpy-architecture/handoffs/fase-1-corrida.md`.
 
+The [Headquarters reporting guide](docs/framework/headquarters.md), also available in Spanish, distinguishes the verified Codex receipt milestone from the pending production office view and the separately deferred Claude check. It documents the existing message protocol, direct/proxy publisher authentication, and the limits of each acceptance claim.
+
 ## Local Development
 
 Use Node 22 (`.nvmrc`).

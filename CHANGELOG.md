@@ -8,7 +8,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
-- Document the planned Headquarters reporting contract in English and Spanish (Work Item 014-005): the existing agent messages remain the source, with delivery confirmation, correlated replies, retry deduplication, business summaries, honest timing and completion, and limited internal records. Link it from the agent-team pages. No claim of production availability and no release or version bump.
+- Document Headquarters reporting in English and Spanish (Work Item 014-005): existing protocol messages remain the source, with delivery confirmation, correlated replies, retries, business summaries, honest times and limited records. Link the guide from the agent-team pages and READMEs. Distinguish the verified Codex backend receipt from the still-pending production office view and the separately deferred real Claude verification, and document explicit direct/proxy publisher authentication without requiring an environment key for Claude Cloud proxy mode. No claim of complete production availability and no release or version bump.
 
 - Add Agent Docs instructions and the repo baseline.
 - Add the Codex review rule.
