@@ -6,7 +6,7 @@ Documentación pública de ingeniería de Gelpy. Este repo es público.
 
 El sitio Docusaurus compila en inglés y español. Cloudflare Workers Builds lo construye y el Worker `gelpy-docs` lo sirve en `https://docs.gelpy.app` (ADR-0018). Cada merge a `main` también refleja `docs/` en la wiki de GitHub. La implementación corre desde `gelpy-architecture/handoffs/fase-1-corrida.md`.
 
-La [guía de trazabilidad de Headquarters](i18n/es/docusaurus-plugin-content-docs/current/framework/headquarters.md), también disponible en inglés, distingue la recepción comprobada desde Codex de la vista de oficina pendiente en producción y de la prueba Claude postergada por separado. Documenta el protocolo existente, la autenticación directa o por proxy y el alcance de cada comprobación.
+La [guía de trazabilidad de Headquarters](i18n/es/docusaurus-plugin-content-docs/current/framework/headquarters.md), también disponible en inglés, distingue la recepción comprobada desde Codex de la primera entrega de la vista de oficina, pendiente en la consola de pruebas desde `staging`. Ambas consolas leerán un único servicio de producción, cada una con su autenticación y acceso ligado al origen; la vista de producción requiere una promoción posterior aprobada. La guía también cubre la publicación directa o por proxy y la prueba Claude postergada por separado.
 
 ## Desarrollo local
 
