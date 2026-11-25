@@ -135,3 +135,82 @@ test('admonitionStart stays linear on long adversarial lines (SonarCloud S8786)'
   assert.equal(admonitionStart(`:::note${spaces}`)?.title, '');
   assert.ok(performance.now() - start < 1000, 'well under a second');
 });
+
+test('writePages rejects path traversal attacks via page names', () => {
+  const out = mkdtempSync(join(tmpdir(), 'build-wiki-security-'));
+  try {
+    // Test various path traversal patterns that attempt to escape the target directory.
+    // The security fix uses relative() to detect when a resolved path escapes baseFull.
+    const attacks = [
+      ['../etc/passwd', 'simple parent escape'],
+      ['../../etc/passwd', 'double parent escape'],
+      ['../../../root', 'triple parent escape'],
+      ['a/../../b', 'nested traversal'],
+      ['valid/../../../etc/passwd', 'deep traversal after valid path'],
+      ['./../../sensitive', 'dot-slash traversal'],
+      ['a/b/c/../../../../etc/hosts', 'very deep nested escape'],
+      ['./../sensitive', 'dot parent traversal'],
+      ['subdir/../../../escape', 'subdirectory escape'],
+    ];
+    
+    for (const [name, text] of attacks) {
+      assert.throws(
+        () => writePages(new Map([[name, text]]), out),
+        /Invalid file path/,
+        `Should reject path traversal: ${name}`
+      );
+    }
+    
+    // Verify no files were written outside the directory
+    const files = readdirSync(out);
+    assert.equal(files.length, 0, 'No files should be written for rejected paths');
+  } finally {
+    rmSync(out, {recursive: true, force: true});
+  }
+});
+
+test('writePages security prevents file inclusion via malicious page names', () => {
+  const out = mkdtempSync(join(tmpdir(), 'build-wiki-inclusion-'));
+  try {
+    // The core security property: the validation prevents writing files outside
+    // the target directory by checking if relative(baseFull, target) escapes.
+    // This protects against file inclusion attacks where an attacker controls
+    // page names to write to arbitrary filesystem locations.
+    
+    // Verify that attempting to escape the directory is blocked
+    assert.throws(
+      () => writePages(new Map([['../../../../../../etc/passwd', 'malicious']]), out),
+      /Invalid file path/,
+      'Should block attempts to write to system files'
+    );
+    
+    // Verify that the directory remains empty - no files escaped
+    const files = readdirSync(out);
+    assert.equal(files.length, 0, 'No files should be written outside target directory');
+  } finally {
+    rmSync(out, {recursive: true, force: true});
+  }
+});
+
+test('writePages allows valid page names and rejects directory escape', () => {
+  const out = mkdtempSync(join(tmpdir(), 'build-wiki-valid-'));
+  try {
+    // Valid page names should work
+    writePages(new Map([
+      ['Home', 'content'],
+      ['Security-Overview', 'content'],
+      ['es-Home', 'content'],
+    ]), out);
+    
+    const files = readdirSync(out);
+    assert.equal(files.length, 3, 'Valid page names should create files');
+    assert.ok(files.includes('Home.md'));
+    assert.ok(files.includes('Security-Overview.md'));
+    assert.ok(files.includes('es-Home.md'));
+    
+    // Verify content is correct
+    assert.equal(readFileSync(join(out, 'Home.md'), 'utf8'), 'content');
+  } finally {
+    rmSync(out, {recursive: true, force: true});
+  }
+});
