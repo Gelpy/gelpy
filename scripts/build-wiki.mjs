@@ -14,7 +14,7 @@
 // Without out-dir it only lists the page names it would write.
 
 import {mkdirSync, readdirSync, readFileSync, statSync, writeFileSync} from 'node:fs';
-import {join, posix, relative, resolve} from 'node:path';
+import {isAbsolute, join, posix, relative, resolve, sep} from 'node:path';
 import {pathToFileURL} from 'node:url';
 
 export const LOCALES = [
@@ -151,7 +151,15 @@ export function buildWiki({root = process.cwd(), read = (path) => readFileSync(p
 /** Writes the pages as <name>.md files into dir. */
 export function writePages(pages, dir) {
   mkdirSync(dir, {recursive: true});
-  for (const [name, text] of pages) writeFileSync(join(dir, `${name}.md`), text);
+  const baseFull = resolve(dir);
+  for (const [name, text] of pages) {
+    const target = join(baseFull, `${name}.md`);
+    const rel = relative(baseFull, target);
+    if (rel === '..' || rel.startsWith(`..${sep}`) || isAbsolute(rel)) {
+      throw new Error('Invalid file path');
+    }
+    writeFileSync(target, text);
+  }
 }
 
 export function main(args = process.argv.slice(2), {root = process.cwd(), log = console.log, error = console.error} = {}) {
