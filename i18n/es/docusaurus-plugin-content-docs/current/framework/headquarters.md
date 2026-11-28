@@ -10,7 +10,7 @@ Headquarters es la vista interna de oficina prevista para los dueños del negoci
 
 :::note Estado
 
-Al 2026-11-18, el servicio confirmó con HTTP 202 la recepción de un mensaje real del protocolo desde Codex y de su respuesta. Esto prueba la recepción, no la recuperación del historial tras un reinicio ni un recorrido autenticado en la consola. La vista de oficina se entregará primero en la consola de pruebas desde `staging`; ese despliegue sigue pendiente. La vista en la consola de producción requiere una promoción posterior, aprobada por separado. La comprobación real de Claude se postergó por separado; los ajustes guardados o las pruebas locales no acreditan su aceptación.
+Al 2026-11-27, la vista de oficina está entregada en la consola de pruebas desde `staging`, y el propietario confirmó la primera versión en una demostración en vivo el 2026-11-18. El servicio confirma con HTTP 202 la recepción de mensajes reales del protocolo desde Codex y Claude; la recepción por sí sola no prueba la recuperación del historial tras un reinicio. La consola de producción no lee Headquarters: no tiene vista de oficina, y abrir ese lector es una decisión posterior, aprobada por separado. La comprobación completa de los reportes de Claude sigue en curso; los ajustes guardados o las pruebas locales no acreditan su aceptación.
 
 :::
 
@@ -45,11 +45,11 @@ Headquarters tendrá una oficina por área: Producto e Ingeniería y Negocio; cu
 
 Un resumen útil dice, por ejemplo, «Preparando los avisos de las reservas; espera el texto aprobado». Explica el resultado o la decisión que falta en lenguaje de negocio. No copia completos los campos `Context`, `Dependencies` o `Artifacts`. Los eventos de presencia, pausa, reanudación y cierre complementan el protocolo; una señal de presencia no prueba por sí sola un avance.
 
-El backend sigue siendo un único servicio de producción, compartido por las consolas de pruebas y de producción; no se crea otro entorno de Headquarters. Los eventos pueden describir trabajo en `staging`; esa rama no selecciona otro historial. La recepción desde Codex está comprobada. El siguiente paso de entrega es el recorrido en la consola de pruebas; la promoción de la vista a producción y la comprobación real de Claude se siguen por separado, sin deducirlas de esa recepción.
+El backend sigue siendo un único servicio de producción, compartido por las consolas de pruebas y de producción; no se crea otro entorno de Headquarters. Los eventos pueden describir trabajo en `staging`; esa rama no selecciona otro historial. La recepción desde Codex está comprobada y la vista de la consola de pruebas está entregada. Abrir la consola de producción y completar la comprobación de Claude se siguen por separado, sin deducirlas de esa recepción.
 
 ## Acceso desde las consolas
 
-El contrato de lectura admite los orígenes exactos de las consolas de pruebas y de producción. Cada consola conserva su propia autenticación: el servicio comprueba la sesión de la consola de pruebas con la API de pruebas, y la de producción con la API de producción. Los permisos temporales de lectura quedan ligados al origen que los solicitó y no se pueden reutilizar desde la otra consola. Compartir el historial de eventos no convierte una sesión de pruebas en una cuenta de producción. Este cambio de acceso forma parte de la entrega pendiente a staging; no acredita que alguna de las vistas de oficina esté desplegada.
+El contrato de lectura admite los orígenes exactos de las consolas de pruebas y de producción. Cada consola conserva su propia autenticación: el servicio comprueba la sesión de la consola de pruebas con la API de pruebas, y la de producción con la API de producción. Los permisos temporales de lectura quedan ligados al origen que los solicitó y no se pueden reutilizar desde la otra consola. Compartir el historial de eventos no convierte una sesión de pruebas en una cuenta de producción. El servicio conserva ambas comprobaciones, pero hoy solo la consola de pruebas usa su acceso; la consola de producción no tiene vista de oficina.
 
 ## Autenticación del emisor
 

@@ -10,7 +10,7 @@ Headquarters is the planned internal office view for the business owners. It fol
 
 :::note Status
 
-As of 2026-11-18, the backend has acknowledged a real Codex protocol message and its response with HTTP 202. This confirms receipt, not durable replay after a restart or an authenticated console walkthrough. The office view will be delivered first to the test console from `staging`; that deployment is still pending. The production console view requires a later, separately approved promotion. Real Claude verification is deferred separately; saved settings or local tests do not count as Claude acceptance.
+As of 2026-11-27, the office view is delivered to the test console from `staging`, and the owner confirmed the first version in a live demo on 2026-11-18. The backend acknowledges real Codex and Claude protocol messages with HTTP 202; receipt alone does not prove durable replay after a restart. The production console does not read Headquarters: it has no office view, and opening that reader is a later, separately approved decision. Full verification of Claude reporting is still in progress; saved settings or local tests do not count as Claude acceptance.
 
 :::
 
@@ -45,11 +45,11 @@ The planned Headquarters has one office per area: Product and Engineering, and B
 
 A useful summary says, for example, “Preparing the reservation notices; waiting for the approved wording.” It explains the result or the missing decision in business language. It does not copy the full `Context`, `Dependencies`, or `Artifacts` fields. Presence, pause, resume, and session-close events complement the protocol; a heartbeat alone is not proof of progress.
 
-The backend remains one production service, shared by the test and production consoles; no additional Headquarters environment is created. Events can describe work on `staging`; that branch does not select another event store. Codex receipt is verified. The test-console walkthrough is the next delivery step, while production UI promotion and live Claude verification are tracked separately rather than inferred from that receipt.
+The backend remains one production service, shared by the test and production consoles; no additional Headquarters environment is created. Events can describe work on `staging`; that branch does not select another event store. Codex receipt is verified and the test-console view is delivered. Opening the production console and completing Claude verification are tracked separately rather than inferred from that receipt.
 
 ## Console access
 
-The reader contract permits the exact test-console and production-console origins. Each console keeps its own authentication: the service checks a test-console session with the test API, and a production-console session with the production API. Short-lived reading capabilities are bound to the requesting origin and cannot be reused by the other console. Shared event history does not turn a test session into a production account. This access change is part of the pending staging delivery; it is not proof that either office view has been deployed.
+The reader contract permits the exact test-console and production-console origins. Each console keeps its own authentication: the service checks a test-console session with the test API, and a production-console session with the production API. Short-lived reading capabilities are bound to the requesting origin and cannot be reused by the other console. Shared event history does not turn a test session into a production account. The service keeps both checks, but only the test console uses its access today; the production console has no office view.
 
 ## Publisher authentication
 
